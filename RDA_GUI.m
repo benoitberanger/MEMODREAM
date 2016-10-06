@@ -18,12 +18,12 @@ if isempty(figPtr) % Create the figure
     % Create a figure
     figHandle = figure( ...
         'HandleVisibility', 'off'                    ,... % close all does not close the figure
-        'MenuBar'         , 'none'                   , ...
-        'Toolbar'         , 'none'                   , ...
+        'MenuBar'         , 'figure'                   , ...
+        'Toolbar'         , 'auto'                   , ...
         'Name'            , mfilename                , ...
         'NumberTitle'     , 'off'                    , ...
         'Units'           , 'Normalized'             , ...
-        'Position'        , [0.01, 0.01, 0.98, 0.95] , ...
+        'Position'        , [0.01, 0.01, 0.98, 0.91] , ...
         'Tag'             , mfilename                );
     
     % Create GUI handles : pointers to access the graphic objects
@@ -37,15 +37,27 @@ if isempty(figPtr) % Create the figure
     %% Graphic objects
     
     % Graph
-    a_osci.x = 0.05;
-    a_osci.w = 0.90;
+    a_osci.x = 0.03;
+    a_osci.w = 0.45;
     a_osci.y = 0.05 ;
-    a_osci.h = 0.80;
+    a_osci.h = 0.85;
     a_osci.tag = 'axes_Oscillo';
     handles.(a_osci.tag) = axes('Parent',figHandle,...
         'Tag',a_osci.tag,...
         'Units','Normalized',...
         'Position',[ a_osci.x a_osci.y a_osci.w a_osci.h ]);
+    
+    
+    % Position
+    a_pos.x = a_osci.x + a_osci.w + 0.03;
+    a_pos.w = 0.45;
+    a_pos.y = a_osci.y ;
+    a_pos.h = a_osci.h;
+    a_pos.tag = 'axes_Position';
+    handles.(a_pos.tag) = axes('Parent',figHandle,...
+        'Tag',a_pos.tag,...
+        'Units','Normalized',...
+        'Position',[ a_pos.x a_pos.y a_pos.w a_pos.h ]);
     
     
     % IP adress
@@ -246,15 +258,18 @@ switch get(hObject,'Value')
         
     case 0
         
-        try
-            stop( handles.TimerHandle );
-            delete( handles.TimerHandle );
-        catch err %#ok<*NASGU>
-            warning('GUI:Timer','Cannot delete the timer object. delete(timerfind) can clean all timers in the memory')
+        if isfield(handles,'TimerHandle')
+            
+            try
+                stop( handles.TimerHandle );
+                delete( handles.TimerHandle );
+            catch err %#ok<*NASGU>
+                warning('GUI:Timer','Cannot delete the timer object. delete(timerfind) can clean all timers in the memory')
+            end
+            
+            fprintf('Streaming off \n')
+            
         end
-        
-        fprintf('Streaming off \n')
-        
         
         set(hObject,'BackgroundColor',handles.buttonBGcolor)
         
@@ -271,7 +286,9 @@ function DoStream(hObject,eventdata,hFigure) %#ok<*INUSL>
 
 global props
 global lastBlock
-global data1s
+global streamBuffer
+
+bufferSize = 1; % second
 
 try
     
@@ -300,7 +317,7 @@ try
                 
                 % Fill data buffer with zeros and plot first time to
                 % get handles
-                data1s = nan(props.channelCount,1000000 / props.samplingInterval);
+                streamBuffer = nan(props.channelCount, bufferSize * 1000000 / props.samplingInterval);
                 
             case 4       % 32Bit Data block
                 % Read data and markers from message
@@ -321,24 +338,39 @@ try
                 
                 % Process EEG data,
                 % in this case extract last recorded second,
-                
                 EEGData = reshape(data, props.channelCount, length(data) / props.channelCount);
                 
+                % Apply scaling resolution
                 for k = 1:props.channelCount
-                    
-                    EEGData (k,:) = EEGData (k,:) * props.resolutions (k);
-                    
+                    EEGData(k,:) = EEGData (k,:) * props.resolutions (k);
                 end
                 
-                data1s = [data1s EEGData];
-                dims = size(data1s);
-                if dims(2) > 1000000 / props.samplingInterval
-                    data1s = data1s(:, dims(2) - 1000000 / props.samplingInterval : dims(2));
-                end
+                streamBuffer = circshift(streamBuffer,[0 size(EEGData,2)]);
+                streamBuffer(:,1:size(EEGData,2)) = EEGData;
                 
-                time = (1:length(data1s(1,:)))*props.samplingInterval/1000000;
-                plot(handles.axes_Oscillo,time,data1s(1,:),'blue',time,data1s(2,:),'red')
-                xlim(handles.axes_Oscillo,[0 1])
+                % Amplitude : µV
+                time = (1:length(streamBuffer(1,:)))*props.samplingInterval/(1000000);
+                time = fliplr(time); % for labels
+                plot(handles.axes_Oscillo,time,streamBuffer(1,:),'blue',time,streamBuffer(2,:),'red')
+                set(handles.axes_Oscillo,'Xdir','reverse')
+                xlim(handles.axes_Oscillo,[0 bufferSize])
+                ylim(handles.axes_Oscillo,[-100 100]);
+                
+                % "Position"
+                xx=[streamBuffer(1,:);streamBuffer(1,:)];
+                yy=[streamBuffer(2,:);streamBuffer(2,:)];
+                zz=[size(xx,2):-1:1;size(xx,2):-1:1];
+                
+                surf(handles.axes_Position,xx,yy,zz,zz,'EdgeColor','interp');
+                grid(handles.axes_Position,'off')
+                colormap(handles.axes_Position,'jet(255)')
+                view(handles.axes_Position,0,90)
+                axis(handles.axes_Position,'equal')
+                axis(handles.axes_Position,[-100 100 -100 100])
+                hold(handles.axes_Position,'on')
+                plot(handles.axes_Position,streamBuffer(1,1),streamBuffer(2,1),'xk','markersize',50)
+                hold(handles.axes_Position,'off')
+                
                 
             case 3       % Stop message
                 disp('Stop');
