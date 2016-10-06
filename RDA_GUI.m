@@ -19,11 +19,11 @@ if isempty(figPtr) % Create the figure
     figHandle = figure( ...
         'HandleVisibility', 'off'                    ,... % close all does not close the figure
         'MenuBar'         , 'figure'                   , ...
-        'Toolbar'         , 'auto'                   , ...
+        'Toolbar'         , 'figure'                   , ...
         'Name'            , mfilename                , ...
         'NumberTitle'     , 'off'                    , ...
         'Units'           , 'Normalized'             , ...
-        'Position'        , [0.01, 0.01, 0.98, 0.91] , ...
+        'Position'        , [0.01, 0.01, 0.98, 0.88] , ...
         'Tag'             , mfilename                );
     
     % Create GUI handles : pointers to access the graphic objects
@@ -109,6 +109,22 @@ if isempty(figPtr) % Create the figure
         'String','Stream',...
         'Tooltip','Switch On/Off the data streaming',...
         'Callback',@toggle_Stream_Callback,....
+        'Visible','Off');
+    
+    % Apply filter
+    c_filter.x = t_stream.x + t_stream.w + 0.05;
+    c_filter.w = e_adr.w;
+    c_filter.y = e_adr.y;
+    c_filter.h = e_adr.h;
+    c_filter.tag = 'checkbox_Filter';
+    handles.(c_filter.tag) = uicontrol(figHandle,...
+        'Style','checkbox',...
+        'Tag',c_filter.tag,...
+        'Units', 'Normalized',...
+        'Position',[c_filter.x c_filter.y c_filter.w c_filter.h],...
+        'BackgroundColor',handles.figureBGcolor,...
+        'String','Filter',...
+        'Tooltip','Switch On/Off the filter',...
         'Visible','Off');
     
     
@@ -202,6 +218,7 @@ switch get(hObject,'Value')
         
         set(hObject,'BackgroundColor',[0.5 0.5 1])
         set(handles.toggle_Stream,'Visible','On')
+        set(handles.checkbox_Filter,'Visible','On')
         
     case 0
         
@@ -217,6 +234,7 @@ switch get(hObject,'Value')
         
         set(hObject,'BackgroundColor',handles.buttonBGcolor)
         set(handles.toggle_Stream,'Visible','Off')
+        set(handles.checkbox_Filter,'Visible','Off')
         
 end
 
@@ -236,9 +254,8 @@ switch get(hObject,'Value')
         
         % Clear axes and ADC data
         cla(handles.axes_Oscillo)
-        if isfield( handles , 'Scope' )
-            handles = rmfield( handles ,'Scope' );
-        end
+        cla(handles.axes_Position)
+        drawnow
         
         handles.RefreshPeriod = 0.020; % secondes
         
@@ -274,7 +291,6 @@ switch get(hObject,'Value')
         
         set(hObject,'BackgroundColor',handles.buttonBGcolor)
         
-        
 end
 
 guidata(hObject, handles);
@@ -290,6 +306,7 @@ global lastBlock
 global streamBuffer
 global EOGh_idx
 global EOGv_idx
+global Hd
 
 bufferSize = 1; % second
 
@@ -344,8 +361,11 @@ try
                 
                 % Fill data buffer with zeros and plot first time to
                 % get handles
-%                 streamBuffer = nan(props.channelCount, bufferSize * 1000000 / props.samplingInterval);
                 streamBuffer = nan(2, bufferSize * 1000000 / props.samplingInterval);
+                
+                d = fdesign.bandpass('Fst1,Fp1,Fp2,Fst2,Ast1,Ap,Ast2',0.5,1,15,20,60,1,80,5e3);
+                Hd = design(d,'butter'); % fvtool(Hd)
+                
                 
             case 4       % 32Bit Data block
                 % Read data and markers from message
@@ -368,6 +388,10 @@ try
                 % in this case extract last recorded second,
                 EEGData = reshape(data, props.channelCount, length(data) / props.channelCount);
                 EEGData = EEGData([EOGh_idx EOGv_idx],:); % save only the EOG channels
+                
+                if get(handles.checkbox_Filter,'Value')
+                    EEGData = filter(Hd,EEGData')';
+                end
                 
                 % Apply scaling resolution
                 EEGData(1,:) = EEGData(1,:) * props.resolutions (EOGh_idx);
