@@ -37,7 +37,7 @@ if isempty(figPtr) % Create the figure
     %% Graphic objects
     
     % Graph
-    a_osci.x = 0.03;
+    a_osci.x = 0.04;
     a_osci.w = 0.45;
     a_osci.y = 0.05 ;
     a_osci.h = 0.85;
@@ -49,7 +49,7 @@ if isempty(figPtr) % Create the figure
     
     
     % Position
-    a_pos.x = a_osci.x + a_osci.w + 0.03;
+    a_pos.x = a_osci.x + a_osci.w + 0.05;
     a_pos.w = 0.45;
     a_pos.y = a_osci.y ;
     a_pos.h = a_osci.h;
@@ -406,7 +406,7 @@ try
                 plot(handles.axes_Oscillo,time,streamBuffer(1,:),'blue',time,streamBuffer(2,:),'red')
                 set(handles.axes_Oscillo,'Xdir','reverse')
                 xlim(handles.axes_Oscillo,[0 bufferSize])
-                ylim(handles.axes_Oscillo,[-100 100]);
+                ylim(handles.axes_Oscillo,[-2000 2000]);
                 
                 % "Position"
                 xx=[streamBuffer(1,:);streamBuffer(1,:)];
@@ -416,12 +416,12 @@ try
                 grid(handles.axes_Position,'off')
                 colormap(handles.axes_Position,'jet(255)')
                 view(handles.axes_Position,0,90)
-                axis(handles.axes_Position,'equal')
-                axis(handles.axes_Position,[-100 100 -100 100])
-                hold(handles.axes_Position,'on')
-                plot(handles.axes_Position,streamBuffer(1,1),streamBuffer(2,1),'xk','markersize',50)
-                hold(handles.axes_Position,'off')
                 
+                hold(handles.axes_Position,'on')
+                plot(handles.axes_Position,[0 streamBuffer(1,1)],[0 streamBuffer(2,1)],'-k','markersize',50)
+                hold(handles.axes_Position,'off')
+                axis(handles.axes_Position,'equal')
+                axis(handles.axes_Position,[-2000 2000 -2000 2000])
                 
             case 3       % Stop message
                 disp('Stop');
