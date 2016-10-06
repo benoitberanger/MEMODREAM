@@ -263,6 +263,7 @@ switch get(hObject,'Value')
             try
                 stop( handles.TimerHandle );
                 delete( handles.TimerHandle );
+                handles = rmfield( handles , 'TimerHandle' );
             catch err %#ok<*NASGU>
                 warning('GUI:Timer','Cannot delete the timer object. delete(timerfind) can clean all timers in the memory')
             end
@@ -287,6 +288,8 @@ function DoStream(hObject,eventdata,hFigure) %#ok<*INUSL>
 global props
 global lastBlock
 global streamBuffer
+global EOGh_idx
+global EOGv_idx
 
 bufferSize = 1; % second
 
@@ -312,12 +315,37 @@ try
                 props = RDA.ReadStartMessage(handles.con, hdr);
                 disp(props);
                 
+                EOGh_idx = strcmp(props.channelNames,'EOGh'); % <========== EOG horizontal channel name here
+                EOGv_idx = strcmp(props.channelNames,'EOGv'); % <========== EOG vertical   channel name here
+                
+                if sum(EOGh_idx) == 0
+                    stop( handles.TimerHandle );
+                    delete( handles.TimerHandle );
+                    error('EOGh channel not found')
+                elseif sum(EOGh_idx) > 1
+                    stop( handles.TimerHandle );
+                    delete( handles.TimerHandle );
+                    error('several EOGh channels found')
+                elseif sum(EOGv_idx) == 0
+                    stop( handles.TimerHandle );
+                    delete( handles.TimerHandle );
+                    error('EOGv channel not found')
+                elseif sum(EOGv_idx) > 1
+                    stop( handles.TimerHandle );
+                    delete( handles.TimerHandle );
+                    error('several EOGv channels found')
+                end
+                
+                EOGh_idx = find(EOGh_idx);
+                EOGv_idx = find(EOGv_idx);
+                
                 % Reset block counter to check overflows
                 lastBlock = -1;
                 
                 % Fill data buffer with zeros and plot first time to
                 % get handles
-                streamBuffer = nan(props.channelCount, bufferSize * 1000000 / props.samplingInterval);
+%                 streamBuffer = nan(props.channelCount, bufferSize * 1000000 / props.samplingInterval);
+                streamBuffer = nan(2, bufferSize * 1000000 / props.samplingInterval);
                 
             case 4       % 32Bit Data block
                 % Read data and markers from message
@@ -339,18 +367,18 @@ try
                 % Process EEG data,
                 % in this case extract last recorded second,
                 EEGData = reshape(data, props.channelCount, length(data) / props.channelCount);
+                EEGData = EEGData([EOGh_idx EOGv_idx],:); % save only the EOG channels
                 
                 % Apply scaling resolution
-                for k = 1:props.channelCount
-                    EEGData(k,:) = EEGData (k,:) * props.resolutions (k);
-                end
+                EEGData(1,:) = EEGData(1,:) * props.resolutions (EOGh_idx);
+                EEGData(2,:) = EEGData(2,:) * props.resolutions (EOGv_idx);
                 
                 streamBuffer = circshift(streamBuffer,[0 size(EEGData,2)]);
                 streamBuffer(:,1:size(EEGData,2)) = EEGData;
                 
                 % Amplitude : µV
                 time = (1:length(streamBuffer(1,:)))*props.samplingInterval/(1000000);
-                time = fliplr(time); % for labels
+                time = fliplr(time); % for X tick labels
                 plot(handles.axes_Oscillo,time,streamBuffer(1,:),'blue',time,streamBuffer(2,:),'red')
                 set(handles.axes_Oscillo,'Xdir','reverse')
                 xlim(handles.axes_Oscillo,[0 bufferSize])
@@ -360,7 +388,6 @@ try
                 xx=[streamBuffer(1,:);streamBuffer(1,:)];
                 yy=[streamBuffer(2,:);streamBuffer(2,:)];
                 zz=[size(xx,2):-1:1;size(xx,2):-1:1];
-                
                 surf(handles.axes_Position,xx,yy,zz,zz,'EdgeColor','interp');
                 grid(handles.axes_Position,'off')
                 colormap(handles.axes_Position,'jet(255)')
