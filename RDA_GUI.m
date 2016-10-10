@@ -303,7 +303,9 @@ function DoStream(hObject,eventdata,hFigure) %#ok<*INUSL>
 
 global props
 global lastBlock
-global streamBuffer
+global unfilteredBuffer
+global tmpBuffer
+global filteredBuffer
 global EOGh_idx
 global EOGv_idx
 global Hd
@@ -361,10 +363,11 @@ try
                 
                 % Fill data buffer with zeros and plot first time to
                 % get handles
-                streamBuffer = nan(2, bufferSize * 1000000 / props.samplingInterval);
+                unfilteredBuffer = nan( bufferSize * 1000000 / props.samplingInterval, 2);
+                filteredBuffer = unfilteredBuffer;
                 
-                d = fdesign.bandpass('Fst1,Fp1,Fp2,Fst2,Ast1,Ap,Ast2',0.5,1,15,20,60,1,80,5e3);
-                Hd = design(d,'butter'); % fvtool(Hd)
+                d = fdesign.bandpass('Fst1,Fp1,Fp2,Fst2,Ast1,Ap,Ast2',0.01,0.1,15,20,60,0.1,60,5E3);
+                Hd = design(d,'IIR'); % fvtool(Hd)
                 
                 
             case 4       % 32Bit Data block
@@ -386,39 +389,43 @@ try
                 
                 % Process EEG data,
                 % in this case extract last recorded second,
-                EEGData = reshape(data, props.channelCount, length(data) / props.channelCount);
-                EEGData = EEGData([EOGh_idx EOGv_idx],:); % save only the EOG channels
-                
-                if get(handles.checkbox_Filter,'Value')
-                    EEGData = filter(Hd,EEGData')';
-                end
+                EEGData = reshape(data, props.channelCount, length(data) / props.channelCount)';
+                EEGData = EEGData(:,[EOGh_idx EOGv_idx]); % save only the EOG channels
                 
                 % Apply scaling resolution
-                EEGData(1,:) = EEGData(1,:) * props.resolutions (EOGh_idx);
-                EEGData(2,:) = EEGData(2,:) * props.resolutions (EOGv_idx);
+                EEGData(:,1) = EEGData(:,1) * props.resolutions (EOGh_idx);
+                EEGData(:,2) = EEGData(:,2) * props.resolutions (EOGv_idx);
                 
-                streamBuffer = circshift(streamBuffer,[0 size(EEGData,2)]);
-                streamBuffer(:,1:size(EEGData,2)) = EEGData;
+                if get(handles.checkbox_Filter,'Value')
+                    tmpBuffer = [unfilteredBuffer ; EEGData ; unfilteredBuffer];
+                    unfilteredBuffer = tmpBuffer(length(filteredBuffer)+1 : 2*length(filteredBuffer),:);
+                    tmpBuffer = filter(Hd,tmpBuffer);
+                    filteredBuffer = tmpBuffer(length(filteredBuffer)+1 : 2*length(filteredBuffer),:);
+                else
+                    tmpBuffer = [unfilteredBuffer ; EEGData ; unfilteredBuffer];
+                    unfilteredBuffer = tmpBuffer(length(filteredBuffer)+1 : 2*length(filteredBuffer),:);
+                    filteredBuffer = unfilteredBuffer;
+                end
                 
                 % Amplitude : µV
-                time = (1:length(streamBuffer(1,:)))*props.samplingInterval/(1000000);
+                time = (1:length(filteredBuffer(:,1)))*props.samplingInterval/(1000000);
                 time = fliplr(time); % for X tick labels
-                plot(handles.axes_Oscillo,time,streamBuffer(1,:),'blue',time,streamBuffer(2,:),'red')
+                plot(handles.axes_Oscillo,time,filteredBuffer(:,1),'blue',time,filteredBuffer(:,2),'red')
                 set(handles.axes_Oscillo,'Xdir','reverse')
                 xlim(handles.axes_Oscillo,[0 bufferSize])
                 ylim(handles.axes_Oscillo,[-2000 2000]);
                 
                 % "Position"
-                xx=[streamBuffer(1,:);streamBuffer(1,:)];
-                yy=[streamBuffer(2,:);streamBuffer(2,:)];
-                zz=[size(xx,2):-1:1;size(xx,2):-1:1];
-                surf(handles.axes_Position,xx,yy,zz,zz,'EdgeColor','interp');
-                grid(handles.axes_Position,'off')
-                colormap(handles.axes_Position,'jet(255)')
-                view(handles.axes_Position,0,90)
+                %                 xx=[filteredBuffer(:,1) filteredBuffer(:,1)];
+                %                 yy=[filteredBuffer(:,2) filteredBuffer(:,2)];
+                %                 zz=[size(xx,1):-1:1 ; size(xx,1):-1:1]';
+                %                 surf(handles.axes_Position,xx,yy,zz,zz,'EdgeColor','interp');
+                %                 grid(handles.axes_Position,'off')
+                %                 colormap(handles.axes_Position,'jet(255)')
+                %                 view(handles.axes_Position,0,90)
+                %                 hold(handles.axes_Position,'on')
                 
-                hold(handles.axes_Position,'on')
-                plot(handles.axes_Position,[0 streamBuffer(1,1)],[0 streamBuffer(2,1)],'-k','markersize',50)
+                plot(handles.axes_Position,[0 filteredBuffer(1,1)],[0 filteredBuffer(1,2)],'-k','markersize',50,'LineWidth',4)
                 hold(handles.axes_Position,'off')
                 axis(handles.axes_Position,'equal')
                 axis(handles.axes_Position,[-2000 2000 -2000 2000])
@@ -433,6 +440,7 @@ try
         end
         
         tryheader = pnet(handles.con, 'read', header_size, 'byte', 'network', 'view', 'noblock');
+        
     end
     
 catch err
