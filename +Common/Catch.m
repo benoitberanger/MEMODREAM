@@ -1,4 +1,4 @@
 sca;
-Priority( S.PTB.oldLevel );
+Priority( 0 );
 ShowCursor;
 rethrow(err);

@@ -33,8 +33,8 @@ Parameters.Video.ScreenHeightM   = 0.030; % m
 
 switch S.Task
     
-    case 'Task1'
-        Parameters.Video.ScreenBackgroundColor = [0 0 0]; % [R G B] ( from 0 to 255 )
+    case 'Learning5432'
+        Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
         
     case 'Task2'
         Parameters.Video.ScreenBackgroundColor = [0 0 0]; % [R G B] ( from 0 to 255 )
@@ -52,7 +52,7 @@ end
 %   Text   %
 %%%%%%%%%%%%
 switch S.Task
-    case 'Task1'
+    case 'Learning5432'
         Parameters.Text.Size  = 30;
     case 'Task2'
         Parameters.Text.Size  = 30;

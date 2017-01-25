@@ -12,7 +12,7 @@ try
         case 'EyelinkCalibration'
             names = {'EyelinkCalibration'};
             
-        case 'Task1'
+        case 'Learning5432'
             names = {
                 '';
                 };

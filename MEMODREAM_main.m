@@ -30,8 +30,8 @@ switch get(hObject,'Tag')
     case 'pushbutton_EyelinkCalibration'
         Task = 'EyelinkCalibration';
         
-    case 'pushbutton_Task1'
-        Task = 'Task1';
+    case 'pushbutton_Learning5432'
+        Task = 'Learning5432';
         
     case 'pushbutton_Task2'
         Task = 'Task2';
@@ -212,7 +212,7 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
         switch Task
             case 'EyelinkCalibration'
                 task = 'EC';
-            case 'Task1'
+            case 'Learning5432'
                 task = 'T1';
             case 'Task2'
                 task = 'T2';
@@ -286,8 +286,8 @@ switch Task
         TaskData.ER.Data = {};
         TaskData.IsEyelinkRreadyToRecord = 1;
         
-    case 'Task1'
-        TaskData = Task1.Task( S );
+    case 'Learning5432'
+        TaskData = Learning5432.Task( S );
         
     case 'Task2'
         TaskData = Task2.Task( S );
@@ -309,22 +309,14 @@ save([fileparts(pwd) filesep 'data' filesep 'LastDataStruct'],'S');
 
 %% Close PTB
 
-% Just to be sure that if there is a problem with PTB, we do not loose all
-% the data drue to a crash.
-try
-    
-    Screen('CloseAll'); % Close PTB window
-    
-    Priority( S.PTB.oldLevel );
-    
-catch err
-    
-end
+
+sca;
+Priority( 0 );
 
 
 %% SPM data organization
 
-[ names , onsets , durations ] = SPMnod( S ); %#ok<*NASGU,*ASGLU>
+% [ names , onsets , durations ] = SPMnod( S ); 
 
 
 %% Saving data strucure
@@ -346,10 +338,10 @@ end
 
 %% Send S and SPM nod to workspace
 
-assignin('base', 'S', S);
-assignin('base', 'names', names);
-assignin('base', 'onsets', onsets);
-assignin('base', 'durations', durations);
+% assignin('base', 'S', S);
+% assignin('base', 'names', names);
+% assignin('base', 'onsets', onsets);
+% assignin('base', 'durations', durations);
 
 
 %% End recording of Eyelink
