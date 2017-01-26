@@ -40,33 +40,9 @@ try
     Common.StartRecordingEyelink;
     
     
-    %% Load and prepare sprites
+    %% Load and prepare sprites for the hands
     
     img_path = 'img';
-    
-    % MakeTexture_specialFlags = bin2dec('0 0 0 1 1 1'); % See Screen('MakeTexture?')
-    % DrawTexture_specialFlags = 4                     ; % See Screen('DrawTexture?')
-    MakeTexture_specialFlags = []; % See Screen('MakeTexture?')
-    DrawTexture_specialFlags = []; % See Screen('DrawTexture?')
-    
-    % glsl = MakeTextureDrawShader(DataStruct.PTB.Window, 'SeparateAlphaChannel' );
-    glsl = [];
-    
-%     if exist('LeftHand.texture','var')
-%         Screen('Close',LeftHand.texture)
-%     end
-%     if exist('RightHand.texture','var')
-%         Screen('Close',RightHand.texture)
-%     end
-%     
-%     [~,~,LeftHand.alpha] = imread( [ img_path filesep 'left_hand.png' ] );
-%     LeftHand.wPx         = size(LeftHand.alpha,1);
-%     LeftHand.hPx         = size(LeftHand.alpha,2);
-%     LeftHand.color       = [0 0 255];
-%     LeftHand.foreground  = LeftHand.alpha > 10;
-%     LeftHand.alpah_image = uint8( cat( 3, LeftHand.foreground*LeftHand.color(1) , LeftHand.foreground*LeftHand.color(2) , LeftHand.foreground*LeftHand.color(3) , LeftHand.foreground*255 ) );
-%     LeftHand.texture     = Screen( 'MakeTexture' , wPtr , LeftHand.alpah_image ,[] , MakeTexture_specialFlags , [] , [] , glsl );
-    
 
     LeftHand  = Hand([ img_path filesep 'left_hand.png' ], false);
     LeftHand. MakeTexture(wPtr);
@@ -75,9 +51,9 @@ try
     RightHand.MakeTexture(wPtr);
 
     
-    %%
+    %% Prepare display of the fingers
     
-    FingersLeft = [
+    FingersLeftpos = [
         726 404 % 1
         454 74  % 2
         324 44  % 3
@@ -85,40 +61,53 @@ try
         32 294  % 5
         ];
     
-    FingersRight = [LeftHand.wPx - FingersLeft(:,1) , FingersLeft(:,2) ];
+    LeftFingers = Fingers(FingersLeftpos);
+    RightFingers = Fingers(FingersLeftpos);
     
-    scalefactor = 0.8;
-
-    LeftHand.ReScale(scalefactor);
-    RightHand.ReScale(scalefactor);
+    LeftFingers.LinkToHand(LeftHand);
+    RightFingers.LinkToHand(RightHand);
+    
+    RightFingers.FlipLR;
+    
+    LeftFingers.UpdatePos;
+    RightFingers.UpdatePos;
+    
     
     %%
     
-    res = [1024 768];
-    
-    LeftHand.MoveCenter(rand(1,2).*res);
-    RightHand.MoveCenter(rand(1,2).*res);
-    
-    FingerLeftRects = CenterRectOnPoint([0 0 100 100] , FingersLeft(:,1) , FingersLeft(:,2) )';
-    FingerRightRects = CenterRectOnPoint([0 0 100 100] , FingersRight(:,1) , FingersRight(:,2) )';
-    RingerColors = repmat([255 0 0 180], [5 1] )';
-    
-    ScaledFingerLeftRects = ScaleRect(FingerLeftRects',scalefactor,scalefactor)';
-    ScaledFingerRightRects = ScaleRect(FingerRightRects',scalefactor,scalefactor)';
-    
-    
-    Screen('DrawTexture',wPtr,LeftHand.texture,[],LeftHand.rect);
-    Screen('FillOval', wPtr , RingerColors , ScaledFingerLeftRects );
-    
-    Screen('DrawTexture',wPtr,RightHand.texture,[],RightHand.rect);
-    Screen('FillOval', wPtr , RingerColors , ScaledFingerRightRects );
-    
-    
-    Screen('Flip',wPtr);
-    
-   
-    
-    0
+    while 1
+        
+        scalefactor = 0.5;
+        
+        LeftHand.ReScale(scalefactor);
+        RightHand.ReScale(scalefactor);
+
+        res = [1024 768];
+        
+        LeftHand. MoveCenter(rand(1,2).*res);
+        RightHand.MoveCenter(rand(1,2).*res);
+        
+        
+        LeftFingers. UpdatePos;
+        RightFingers.UpdatePos;
+        
+        
+        
+        LeftHand.Draw;
+        LeftFingers.DrawAll;
+        
+        RightHand.Draw;
+        RightFingers.DrawAll;
+        
+        
+        Screen('Flip',wPtr);
+        
+        [~, keyCode, ~] = KbWait;
+        if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+            break
+        end
+        
+    end
     
     
     %% Go

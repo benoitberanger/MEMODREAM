@@ -5,25 +5,25 @@ classdef Hand < handle
     
     properties
         
-        path       = char                  % full path of the .png file
-        flipedLR   = false(0)              % has been flipped ?
+        path       = char         % full path of the .png file
+        flipedLR   = false(0)     % has been flipped ?
         
-        wPx        = zeros(0,'uint16')     % width  in Pixels
-        hPx        = zeros(0,'uint16')     % height in Pixels
+        wPx        = zeros(0)     % width  in Pixels
+        hPx        = zeros(0)     % height in Pixels
         
-        imgRaw     = zeros(0,0,'uint16')   % .png
-        imgMiddle  = zeros(0,0,'uint16')   % transformed .png
-        imgFinal   = zeros(0,0,4,'uint16') % ready for PTB MakeTexture : NxM matrix of [R G B a]
-        texture    = zeros(0,'uint16')     % PTB texture pointer
-        scale      = zeros(0,'double')     % from 0 to +Inf
-        baseRect   = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, no scale applied
-        baseCenter = zeros(0,2,'uint16')   % [ x y ] from 0 to +Inf, no scale applied
+        imgRaw     = zeros(0,0)   % .png
+        imgMiddle  = zeros(0,0)   % transformed .png
+        imgFinal   = zeros(0,0,4) % ready for PTB MakeTexture : NxM matrix of [R G B a]
+        texture    = zeros(0)     % PTB texture pointer
+        scale      = zeros(0)     % from 0 to +Inf
+        baseRect   = zeros(0,4)   % [ x y w h ] from 0 to +Inf, no scale applied
+        baseCenter = zeros(0,2)   % [ x y ] from 0 to +Inf, no scale applied
         
-        rect       = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, scale applied, centered
-        center     = zeros(0,2,'uint16')   % [ x y ] from 0 to +Inf, scale applied
+        rect       = zeros(0,4)   % [ x y w h ] from 0 to +Inf, scale applied, centered
+        center     = zeros(0,2)   % [ x y ] from 0 to +Inf, scale applied
         
-        color      = zeros(0,4,'uint8')    % [R G B] from 0 to 255
-        wPtr       = zeros(0,'uint8')      % PTB window pointer
+        color      = zeros(0,3')  % [R G B] from 0 to 255
+        wPtr       = zeros(0)     % PTB window pointer
         
     end % properties
     
