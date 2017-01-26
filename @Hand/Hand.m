@@ -22,7 +22,7 @@ classdef Hand < handle
         rect       = zeros(0,4)   % [ x y w h ] from 0 to +Inf, scale applied, centered
         center     = zeros(0,2)   % [ x y ] from 0 to +Inf, scale applied
         
-        color      = zeros(0,3')  % [R G B] from 0 to 255
+        color      = zeros(0,4)   % [R G B a] from 0 to 255
         wPtr       = zeros(0)     % PTB window pointer
         
     end % properties
@@ -35,8 +35,8 @@ classdef Hand < handle
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function obj = Hand( imgpath , needtoflip )
-            % obj = EventRecorder( imgpath = 'path/to/myImg.png' ).
+        function obj = Hand( imgpath , color ,  needtoflip )
+            % obj = EventRecorder( imgpath = 'path/to/myImg.png' , color = [R G B a] from 0 to 255 , needtoflip = false/true ).
             
             % ================ Check input argument =======================
             
@@ -46,8 +46,11 @@ classdef Hand < handle
                 % --- imgpath ----
                 assert( ischar(imgpath) , 'imgpath must be char 1xn' )
                 
+                % --- color ----
+                assert( isvector(color) && isnumeric(color) && all( uint8(color)==color ) , 'color = [R G B a] from 0 to 255' )
+                
                 % --- needtoflip ----
-                if nargin < 2
+                if nargin < 3
                     needtoflip = false;
                 else
                     assert( isscalar(needtoflip) && islogical(needtoflip) , 'needtoflip must be logical 1x1' )
@@ -64,9 +67,9 @@ classdef Hand < handle
                 if needtoflip
                     obj.imgRaw   = fliplr(obj.imgRaw);
                 end
-                obj.color        = [0 0 255];
-                obj.imgMiddle    = obj.imgRaw > 10;
-                obj.imgFinal     = uint8( cat( 3, obj.imgMiddle*obj.color(1) , obj.imgMiddle*obj.color(2) , obj.imgMiddle*obj.color(3) , obj.imgMiddle*255 ) );
+                obj.color        = color; % [R G B a] from 0 to 255
+                obj.imgMiddle    = obj.imgRaw;
+                obj.imgFinal     = uint8( cat( 3, obj.imgMiddle*obj.color(1) , obj.imgMiddle*obj.color(2) , obj.imgMiddle*obj.color(3) , obj.imgMiddle*(obj.color(4)/255) ) );
                 
                 obj.baseRect     = [0 0 obj.wPx obj.hPx];
                 obj.baseCenter   = [obj.wPx/2 obj.hPx/2];

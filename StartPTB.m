@@ -57,7 +57,7 @@ switch S.WindowedMode
 end
 
 color_depth = []; % bit, only assigna specific value for backward compatibility
-multisample = []; % samples for anti-aliasing
+multisample = 8; % samples for anti-aliasing
 
 try
     Screen('Preference', 'SkipSyncTests', 0);
@@ -84,6 +84,9 @@ Screen('BlendFunction', PTB.wPtr, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 
 % Center
 [ PTB.CenterH , PTB.CenterV ] = RectCenter( PTB.wRect );
+
+% Size
+[ PTB.Width , PTB.Height ] = RectSize( PTB.wRect );
 
 % B&W colors
 PTB.Black = BlackIndex( PTB.wPtr );

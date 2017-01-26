@@ -43,13 +43,27 @@ try
     %% Load and prepare sprites for the hands
     
     img_path = 'img';
-
-    LeftHand  = Hand([ img_path filesep 'left_hand.png' ], false);
+    img_file = [ img_path filesep 'left_hand.png' ];
+    
+    hand_color = [0 128 255 255]; % [R G B a] from 0 to 255
+    
+    LeftHand  = Hand(img_file, hand_color, false);
     LeftHand. MakeTexture(wPtr);
 
-    RightHand = Hand([ img_path filesep 'left_hand.png' ], true );
+    RightHand = Hand(img_file, hand_color, true );
     RightHand.MakeTexture(wPtr);
 
+    
+    %% Scale and shift the Hands
+    
+    sizeOfSprite = S.PTB.Width / 2;
+    
+    LeftHand.ReScale( sizeOfSprite / LeftHand.wPx );
+    RightHand.ReScale( sizeOfSprite / RightHand.wPx );
+    
+    LeftHand.MoveCenter ( [  0.05*S.PTB.Width + (1/4)*S.PTB.Width ; S.PTB.CenterV ] );
+    RightHand.MoveCenter( [ -0.05*S.PTB.Width + (3/4)*S.PTB.Width ; S.PTB.CenterV ] );
+    
     
     %% Prepare display of the fingers
     
@@ -61,8 +75,10 @@ try
         32 294  % 5
         ];
     
-    LeftFingers = Fingers(FingersLeftpos);
-    RightFingers = Fingers(FingersLeftpos);
+    fingers_color = [255 0 0 255];
+    
+    LeftFingers = Fingers(FingersLeftpos, fingers_color);
+    RightFingers = Fingers(FingersLeftpos, fingers_color);
     
     LeftFingers.LinkToHand(LeftHand);
     RightFingers.LinkToHand(RightHand);
@@ -72,43 +88,50 @@ try
     LeftFingers.UpdatePos;
     RightFingers.UpdatePos;
     
+    LeftHand.Draw;
+    RightHand.Draw;
+    
     
     %%
     
     while 1
         
-        scalefactor = 0.5;
-        
-        LeftHand.ReScale(scalefactor);
-        RightHand.ReScale(scalefactor);
-
-        res = [1024 768];
-        
-        LeftHand. MoveCenter(rand(1,2).*res);
-        RightHand.MoveCenter(rand(1,2).*res);
-        
-        
-        LeftFingers. UpdatePos;
-        RightFingers.UpdatePos;
-        
-        
-        
         LeftHand.Draw;
-        LeftFingers.DrawAll;
-        
         RightHand.Draw;
-        RightFingers.DrawAll;
+                
+        [keyIsDown, secs, keyCode] = KbCheck;
         
-        
-        Screen('Flip',wPtr);
-        
-        [~, keyCode, ~] = KbWait;
-        if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
-            break
+        if keyIsDown
+            
+            if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+                break
+                
+            elseif any(keyCode(S.Parameters.Fingers.All))
+                
+                r = find(keyCode(S.Parameters.Fingers.Right));
+                l = find(keyCode(S.Parameters.Fingers.Left));
+                
+                if ~isempty(r)
+                    RightFingers.Draw(r);
+                end
+                
+                if ~isempty(l)
+                    LeftFingers. Draw(l);
+                end
+
+            end
+            
         end
         
+        Screen('DrawingFinished',wPtr);
+        Screen('Flip',wPtr);
+
     end
     
+
+    %%
+    
+    KbWait;
     
     %% Go
     

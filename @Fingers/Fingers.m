@@ -27,8 +27,8 @@ classdef Fingers < handle
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function obj = Fingers( pos )
-            % obj = EventRecorder( imgpath = 'path/to/myImg.png' ).
+        function obj = Fingers( pos , color )
+            % obj = EventRecorder( pos = [ x1 y1 ; x2 y2 ; ... ] in Pixels , color = [R G B a] from 0 to 255 ).
             
             % ================ Check input argument =======================
             
@@ -39,10 +39,12 @@ classdef Fingers < handle
                 assert( size(pos,1)==5 && size(pos,2)==2 , 'pos must be 5x2 matrix' )
                 assert( all( round(pos(:)) == pos(:) ) && all( pos(:)>0 ) , 'all elements in pos must be positive integers' )
                 
+                % --- color ----
+                assert( isvector(color) && isnumeric(color) && all( uint8(color)==color ) , 'color = [R G B a] from 0 to 255' )
                 
                 % ================== Callback =============================
                 
-                obj.color     = repmat([255 0 0 180], [5 1] )'; % [R G B a] from 0 to 255
+                obj.color     = repmat(color, [5 1] )'; % [R G B a] from 0 to 255
                 
                 obj.scale     = 1;
                 

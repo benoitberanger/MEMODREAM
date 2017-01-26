@@ -93,12 +93,41 @@ Parameters.Keybinds.TTL_t_ASCII          = KbName('t'); % MRI trigger has to be 
 Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
 Parameters.Keybinds.Stop_Escape_ASCII    = KbName('ESCAPE');
 
-% Parameters.Keybinds.Right_Blue_b_ASCII   = KbName('b');
-% Parameters.Keybinds.Left_Yellow_y_ASCII  = KbName('y');
-
-Parameters.Keybinds.LeftArrow            = KbName('LeftArrow');
-Parameters.Keybinds.RightArrow           = KbName('RightArrow');
-
+switch S.OperationMode
+    
+    case 'Acquisition'
+        
+        Parameters.Fingers.Right(1) = 1;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Right(2) = KbName('b'); % Index finger
+        Parameters.Fingers.Right(3) = KbName('y'); % Middle finger
+        Parameters.Fingers.Right(4) = KbName('g'); % Ring finger
+        Parameters.Fingers.Right(5) = KbName('r'); % Little finger
+        
+        Parameters.Fingers.Left (1) = 2;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Left (2) = KbName('e'); % Index finger
+        Parameters.Fingers.Left (3) = KbName('z'); % Middle finger
+        Parameters.Fingers.Left (4) = KbName('n'); % Ring finger
+        Parameters.Fingers.Left (5) = KbName('d'); % Little finger
+        
+        Parameters.Fingers.All = [Parameters.Fingers.Right Parameters.Fingers.Left];
+        
+    otherwise
+        
+        Parameters.Fingers.Right(1) = 1;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Right(2) = KbName('h'); % Index finger
+        Parameters.Fingers.Right(3) = KbName('j'); % Middle finger
+        Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
+        Parameters.Fingers.Right(5) = KbName('l'); % Little finger
+        
+        Parameters.Fingers.Left (1) = 2;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Left (2) = KbName('f'); % Index finger
+        Parameters.Fingers.Left (3) = KbName('d'); % Middle finger
+        Parameters.Fingers.Left (4) = KbName('s'); % Ring finger
+        Parameters.Fingers.Left (5) = KbName('q'); % Little finger
+        
+        Parameters.Fingers.All = [Parameters.Fingers.Right Parameters.Fingers.Left];
+        
+end
 
 %% Echo in command window
 
