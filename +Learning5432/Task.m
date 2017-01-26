@@ -89,6 +89,16 @@ try
     
     scalefactor = 0.8;
 
+    LeftHand.ReScale(scalefactor);
+    RightHand.ReScale(scalefactor);
+    
+    %%
+    
+    res = [1024 768];
+    
+    LeftHand.MoveCenter(rand(1,2).*res);
+    RightHand.MoveCenter(rand(1,2).*res);
+    
     FingerLeftRects = CenterRectOnPoint([0 0 100 100] , FingersLeft(:,1) , FingersLeft(:,2) )';
     FingerRightRects = CenterRectOnPoint([0 0 100 100] , FingersRight(:,1) , FingersRight(:,2) )';
     RingerColors = repmat([255 0 0 180], [5 1] )';
@@ -97,10 +107,10 @@ try
     ScaledFingerRightRects = ScaleRect(FingerRightRects',scalefactor,scalefactor)';
     
     
-    Screen('DrawTexture',wPtr,LeftHand.texture,[],[0 0 LeftHand.wPx LeftHand.hPx]*scalefactor);
+    Screen('DrawTexture',wPtr,LeftHand.texture,[],LeftHand.rect);
     Screen('FillOval', wPtr , RingerColors , ScaledFingerLeftRects );
     
-    Screen('DrawTexture',wPtr,RightHand.texture,[],[0 0 RightHand.wPx RightHand.hPx]*scalefactor);
+    Screen('DrawTexture',wPtr,RightHand.texture,[],RightHand.rect);
     Screen('FillOval', wPtr , RingerColors , ScaledFingerRightRects );
     
     

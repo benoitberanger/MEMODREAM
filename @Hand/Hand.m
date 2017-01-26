@@ -5,23 +5,25 @@ classdef Hand < handle
     
     properties
         
-        path      = char                  % full path of the .png file
-        flipedLR  = false(0)              % has been flipped ?
+        path       = char                  % full path of the .png file
+        flipedLR   = false(0)              % has been flipped ?
         
-        wPx       = zeros(0,'uint16')     % width  in Pixels
-        hPx       = zeros(0,'uint16')     % height in Pixels
+        wPx        = zeros(0,'uint16')     % width  in Pixels
+        hPx        = zeros(0,'uint16')     % height in Pixels
         
-        imgRaw    = zeros(0,0,'uint16')   % .png
-        imgMiddle = zeros(0,0,'uint16')   % transformed .png
-        imgFinal  = zeros(0,0,4,'uint16') % ready for PTB MakeTexture : NxM matrix of [R G B a]
-        texture   = zeros(0,'uint16')     % PTB texture pointer
-        scale     = zeros(0,'double')     % from 0 to +Inf
-        baseRect  = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, no scale applied
-        center    = zeros(0,2,'uint16')   % [ x y ] from 0 to +Inf
-        rect      = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, scale applied, centered
+        imgRaw     = zeros(0,0,'uint16')   % .png
+        imgMiddle  = zeros(0,0,'uint16')   % transformed .png
+        imgFinal   = zeros(0,0,4,'uint16') % ready for PTB MakeTexture : NxM matrix of [R G B a]
+        texture    = zeros(0,'uint16')     % PTB texture pointer
+        scale      = zeros(0,'double')     % from 0 to +Inf
+        baseRect   = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, no scale applied
+        baseCenter = zeros(0,2,'uint16')   % [ x y ] from 0 to +Inf, no scale applied
         
-        color     = zeros(0,4,'uint8')    % [R G B] from 0 to 255
-        wPtr      = zeros(0,'uint8')      % PTB window pointer
+        rect       = zeros(0,4,'uint16')   % [ x y w h ] from 0 to +Inf, scale applied, centered
+        center     = zeros(0,2,'uint16')   % [ x y ] from 0 to +Inf, scale applied
+        
+        color      = zeros(0,4,'uint8')    % [R G B] from 0 to 255
+        wPtr       = zeros(0,'uint8')      % PTB window pointer
         
     end % properties
     
@@ -66,10 +68,11 @@ classdef Hand < handle
                 obj.imgMiddle    = obj.imgRaw > 10;
                 obj.imgFinal     = uint8( cat( 3, obj.imgMiddle*obj.color(1) , obj.imgMiddle*obj.color(2) , obj.imgMiddle*obj.color(3) , obj.imgMiddle*255 ) );
                 
-                obj.scale        = 1;
                 obj.baseRect     = [0 0 obj.wPx obj.hPx];
-                obj.center       = [obj.wPx/2 obj.hPx/2];
-                obj.rect         = CenterRectOnPoint(obj.baseRect,obj.center(1),obj.center(2));
+                obj.baseCenter   = [obj.wPx/2 obj.hPx/2];
+                
+                obj.scale        = 1;
+                obj.ReScale(obj.scale); % to generate center and rect for the first time
                 
             else
                 % Create empty instance
