@@ -90,7 +90,7 @@ KbName('UnifyKeyNames');
 
 
 Parameters.Keybinds.TTL_t_ASCII          = KbName('t'); % MRI trigger has to be the first defined key
-Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
+% Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
 Parameters.Keybinds.Stop_Escape_ASCII    = KbName('ESCAPE');
 
 switch S.OperationMode
@@ -113,13 +113,13 @@ switch S.OperationMode
         
     otherwise
         
-        Parameters.Fingers.Right(1) = 1;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Right(1) = KbName('b'); % Thumb, not on the response buttons, arbitrary number
         Parameters.Fingers.Right(2) = KbName('h'); % Index finger
         Parameters.Fingers.Right(3) = KbName('j'); % Middle finger
         Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
         Parameters.Fingers.Right(5) = KbName('l'); % Little finger
         
-        Parameters.Fingers.Left (1) = 2;           % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Left (1) = KbName('v'); % Thumb, not on the response buttons, arbitrary number
         Parameters.Fingers.Left (2) = KbName('f'); % Index finger
         Parameters.Fingers.Left (3) = KbName('d'); % Middle finger
         Parameters.Fingers.Left (4) = KbName('s'); % Ring finger

@@ -279,6 +279,8 @@ S.PTB = StartPTB( S );
 
 %% Task run
 
+EchoStart(Task)
+
 switch Task
     
     case 'EyelinkCalibration'
@@ -299,6 +301,8 @@ switch Task
         error('MEMODREAM:Task','Task ?')
 end
 
+EchoStop(Task)
+
 S.TaskData = TaskData;
 
 
@@ -309,14 +313,13 @@ save([fileparts(pwd) filesep 'data' filesep 'LastDataStruct'],'S');
 
 %% Close PTB
 
-
 sca;
 Priority( 0 );
 
 
 %% SPM data organization
 
-% [ names , onsets , durations ] = SPMnod( S ); 
+[ names , onsets , durations ] = SPMnod( S ); 
 
 
 %% Saving data strucure
@@ -338,10 +341,10 @@ end
 
 %% Send S and SPM nod to workspace
 
-% assignin('base', 'S', S);
-% assignin('base', 'names', names);
-% assignin('base', 'onsets', onsets);
-% assignin('base', 'durations', durations);
+assignin('base', 'S', S);
+assignin('base', 'names', names);
+assignin('base', 'onsets', onsets);
+assignin('base', 'durations', durations);
 
 
 %% End recording of Eyelink
