@@ -69,52 +69,44 @@ try
     end
     
     
-    %% Add Catch trials and Clicks
+    %% Add Clicks to SPM model input
     
-%     if ~strcmp(S.Task,'EyelinkCalibration')
-%         
-%         N = length(names);
-%         
-%         % CLICK
-%         
-%         clic_spot.R = regexp(S.TaskData.KL.KbEvents(:,1),KbName(S.Parameters.Keybinds.Right_Blue_b_ASCII));
-%         clic_spot.R = ~cellfun(@isempty,clic_spot.R);
-%         clic_spot.R = find(clic_spot.R);
-%         
-%         clic_spot.L = regexp(S.TaskData.KL.KbEvents(:,1),KbName(S.Parameters.Keybinds.Left_Yellow_y_ASCII));
-%         clic_spot.L = ~cellfun(@isempty,clic_spot.L);
-%         clic_spot.L = find(clic_spot.L);
-%         
-%         count = 0 ;
-%         Sides = {'R' ; 'L'};
-%         for side = 1:length(Sides)
-%             
-%             count = count + 1 ;
-%             
-%             switch side
-%                 case 1
-%                     names{N+count} = 'CLICK_right';
-%                 case 2
-%                     names{N+count} = 'CLICK_left';
-%             end
-%             
-%             if ~isempty(S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2})
-%                 clic_idx = cell2mat(S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}(:,2)) == 1;
-%                 clic_idx = find(clic_idx);
-%                 % the last click can be be unfinished : button down + end of stim = no button up
-%                 if isempty(S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}{clic_idx(end),3})
-%                     S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}{clic_idx(end),3} =  S.TaskData.ER.Data{end,2} - S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}{clic_idx(end),1};
-%                 end
-%                 onsets{N+count}    = cell2mat(S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}(clic_idx,1));
-%                 durations{N+count} = cell2mat(S.TaskData.KL.KbEvents{clic_spot.(Sides{side}),2}(clic_idx,3));
-%             else
-%                 onsets{N+count}    = [];
-%                 durations{N+count} = [];
-%             end
-%             
-%         end
-%         
-%     end
+    if ~strcmp(S.Task,'EyelinkCalibration')
+        
+        N = length(names);
+        
+        fingers = {'R1' 'R2' 'R3' 'R4' 'R5' 'L1' 'L2' 'L3' 'L4' 'L5'};
+        
+        for f = 1:length(fingers)
+            click_spot.(fingers{f}) = regexp(S.TaskData.KL.KbEvents(:,1),fingers{f});
+            click_spot.(fingers{f}) = ~cellfun(@isempty,click_spot.(fingers{f}));
+            click_spot.(fingers{f}) = find(click_spot.(fingers{f}));
+        end
+        
+        count = 0 ;
+        for f = 1:length(fingers)
+            
+            count = count + 1 ;
+            
+            names{N+count} = fingers{f};
+            
+            if ~isempty(S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2})
+                click_idx = cell2mat(S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}(:,2)) == 1;
+                click_idx = find(click_idx);
+                % the last clickk can be be unfinished : button down + end of stim = no button up
+                if isempty(S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}{click_idx(end),3})
+                    S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}{click_idx(end),3} =  S.TaskData.ER.Data{end,2} - S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}{click_idx(end),1};
+                end
+                onsets{N+count}    = cell2mat(S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}(click_idx,1));
+                durations{N+count} = cell2mat(S.TaskData.KL.KbEvents{click_spot.(fingers{f}),2}(click_idx,3));
+            else
+                onsets{N+count}    = [];
+                durations{N+count} = [];
+            end
+            
+        end
+        
+    end
     
     
 catch err

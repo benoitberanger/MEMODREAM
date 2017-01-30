@@ -2,6 +2,7 @@ function [ TaskData ] = Task( S )
 
 try
     %% Shortcuts
+    
     wPtr = S.PTB.wPtr;
     
     
@@ -50,13 +51,13 @@ try
     
     %% Scale and shift the Hands
     
-    sizeOfSprite = S.PTB.Width / 2;
+    sizeOfSprite = 0.9* S.PTB.Width / 2;
     
-    LeftHand. ReScale( 0.9*sizeOfSprite / LeftHand. wPx );
-    RightHand.ReScale( 0.9*sizeOfSprite / RightHand.wPx );
+    LeftHand. ReScale( sizeOfSprite / LeftHand. wPx );
+    RightHand.ReScale( sizeOfSprite / RightHand.wPx );
     
-    LeftHand.MoveCenter ( [ 0*S.PTB.Width + (1/4)*S.PTB.Width ; S.PTB.CenterV ] );
-    RightHand.MoveCenter( [ 0*S.PTB.Width + (3/4)*S.PTB.Width ; S.PTB.CenterV ] );
+    LeftHand.MoveCenter ( [ (1/4)*S.PTB.Width ; S.PTB.CenterV ] );
+    RightHand.MoveCenter( [ (3/4)*S.PTB.Width ; S.PTB.CenterV ] );
     
     
     %% Prepare display of the fingers
@@ -85,7 +86,7 @@ try
     
     %% Go
     
-    
+    % Initialize some varibles
     pp = 0;
     keyCode = zeros(1,256);
     

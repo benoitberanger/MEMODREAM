@@ -99,7 +99,7 @@ S.OperationMode = OperationMode;
 %         VideoName            = [ get(handles.edit_RecordName,'String') '.mov'];
 %         S.VideoName = VideoName;
 %     case 'radiobutton_RecordOff'
-        RecordVideo          = 'Off';
+RecordVideo          = 'Off';
 %     otherwise
 %         warning('MEMODREAM:RecordVideo','Error in Record Video')
 % end
@@ -319,7 +319,7 @@ Priority( 0 );
 
 %% SPM data organization
 
-[ names , onsets , durations ] = SPMnod( S ); 
+[ names , onsets , durations ] = SPMnod( S );
 
 
 %% Saving data strucure
@@ -374,9 +374,9 @@ set(handles.text_LastFileName,'String',DataFile(length(DataPath)+1:end))
 WaitSecs(0.100);
 pause(0.100);
 fprintf('\n')
-fprintf('------------------------- \n')
-fprintf('Ready for another session \n')
-fprintf('------------------------- \n')
+fprintf('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n')
+fprintf('  Ready for another session   \n')
+fprintf('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n')
 
 
 end % function
