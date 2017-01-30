@@ -113,20 +113,20 @@ switch S.OperationMode
         
     otherwise
         
-        Parameters.Fingers.Right(1) = KbName('b'); % Thumb, not on the response buttons, arbitrary number
-        Parameters.Fingers.Right(2) = KbName('h'); % Index finger
-        Parameters.Fingers.Right(3) = KbName('j'); % Middle finger
-        Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
-        Parameters.Fingers.Right(5) = KbName('l'); % Little finger
-        
         Parameters.Fingers.Left (1) = KbName('v'); % Thumb, not on the response buttons, arbitrary number
         Parameters.Fingers.Left (2) = KbName('f'); % Index finger
         Parameters.Fingers.Left (3) = KbName('d'); % Middle finger
         Parameters.Fingers.Left (4) = KbName('s'); % Ring finger
         Parameters.Fingers.Left (5) = KbName('q'); % Little finger
         
-        Parameters.Fingers.All = [Parameters.Fingers.Right Parameters.Fingers.Left];
+        Parameters.Fingers.Right(1) = KbName('b'); % Thumb, not on the response buttons, arbitrary number
+        Parameters.Fingers.Right(2) = KbName('h'); % Index finger
+        Parameters.Fingers.Right(3) = KbName('j'); % Middle finger
+        Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
+        Parameters.Fingers.Right(5) = KbName('l'); % Little finger
         
+        Parameters.Fingers.All      = [Parameters.Fingers.Left Parameters.Fingers.Right];
+        Parameters.Fingers.Names    = {'L5' 'L4' 'L3' 'L2' 'L1' 'R1' 'R2' 'R3' 'R4' 'R5'};
 end
 
 %% Echo in command window

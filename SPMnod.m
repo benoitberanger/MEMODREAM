@@ -75,7 +75,7 @@ try
         
         N = length(names);
         
-        fingers = {'R1' 'R2' 'R3' 'R4' 'R5' 'L1' 'L2' 'L3' 'L4' 'L5'};
+        fingers = S.Parameters.Fingers.Names;
         
         for f = 1:length(fingers)
             click_spot.(fingers{f}) = regexp(S.TaskData.KL.KbEvents(:,1),fingers{f});

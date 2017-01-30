@@ -89,6 +89,8 @@ try
     % Initialize some varibles
     pp = 0;
     keyCode = zeros(1,256);
+    secs = GetSecs;
+    reverseStr = '';
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
@@ -113,10 +115,26 @@ try
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
                 ER.AddEvent({EP.Data{evt,1} vbl-StartTime})
                 
-            case 'Free'
+                % Latter I will add something inside this Fixation event...
+                % such as the calculation of the accuracy of the sequence.
+                KL.GetQueue;
+                KL.Data
                 
-                LeftHand.Draw;
-                RightHand.Draw;
+                % The WHILELOOP below a trick so we can use ESCAPE key to quit
+                % earlier.
+                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.slack ) )
+                    [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
+                end
+                
+            otherwise
+                
+                if strcmp(EP.Data{evt,1},'Free')
+                    timeLimit = Inf;
+                else
+                    timeLimit = EP.Data{evt,3};
+                end
+                
+                Common.DrawHand
                 
                 Screen('DrawingFinished',wPtr);
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
@@ -124,16 +142,32 @@ try
                 
                 needFlip = 0;
                 
-                while ~keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack ) )
                     
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
+                    
+                    
+                    msg = sprintf([repmat('%d ',[1 10]) '\n'],...
+                        keyCode(S.Parameters.Fingers.Left (5)),...
+                        keyCode(S.Parameters.Fingers.Left (4)),...
+                        keyCode(S.Parameters.Fingers.Left (3)),...
+                        keyCode(S.Parameters.Fingers.Left (2)),...
+                        keyCode(S.Parameters.Fingers.Left (1)),...
+                        keyCode(S.Parameters.Fingers.Right(1)),...
+                        keyCode(S.Parameters.Fingers.Right(2)),...
+                        keyCode(S.Parameters.Fingers.Right(3)),...
+                        keyCode(S.Parameters.Fingers.Right(4)),...
+                        keyCode(S.Parameters.Fingers.Right(5)) ...
+                        );
+                    fprintf([reverseStr, msg]);
+                    reverseStr = repmat(sprintf('\b'), 1, length(msg));
+                    
                     
                     if keyIsDown
                         
                         if any(keyCode(S.Parameters.Fingers.All))
                             
-                            LeftHand.Draw;
-                            RightHand.Draw;
+                            Common.DrawHand
                             
                             needFlip = 2;
                             
@@ -148,28 +182,25 @@ try
                                 LeftFingers. Draw(l);
                             end
                             
+                            Screen('DrawingFinished',wPtr);
+                            Screen('Flip',wPtr);
+                            
                         end
+                        
                         
                     end
                     
-                    if needFlip == 2
+                    
+                    if needFlip == 1
+                        
+                        Common.DrawHand
                         
                         Screen('DrawingFinished',wPtr);
                         Screen('Flip',wPtr);
-                        
-                        needFlip = needFlip - 1;
-                        
-                    elseif needFlip == 1
-                        
-                        LeftHand.Draw;
-                        RightHand.Draw;
-                        
-                        Screen('DrawingFinished',wPtr);
-                        Screen('Flip',wPtr);
-                        
-                        needFlip = needFlip - 1;
                         
                     end
+                    
+                    needFlip = needFlip - 1;
                     
                 end
                 

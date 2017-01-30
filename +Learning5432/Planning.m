@@ -22,6 +22,7 @@ switch S.Environement
     case 'MRI'
         Paradigme = {
             
+        'FixationCross'  10
         'Left'           20
         'FixationCross'  10
         'Right'          20

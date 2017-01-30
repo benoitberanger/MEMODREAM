@@ -22,7 +22,7 @@ KbName('UnifyKeyNames');
 
 KL = KbLogger( ...
     [ struct2array(S.Parameters.Keybinds) S.Parameters.Fingers.All ] ,...
-    [ KbName(struct2array(S.Parameters.Keybinds)) 'R1' 'R2' 'R3' 'R4' 'R5' 'L1' 'L2' 'L3' 'L4' 'L5' ] );
+    [ KbName(struct2array(S.Parameters.Keybinds)) S.Parameters.Fingers.Names ] );
 
 % Start recording events
 KL.Start;
