@@ -371,6 +371,8 @@ set(handles.text_LastFileNameAnnouncer,'Visible','on')
 set(handles.text_LastFileName,'Visible','on')
 set(handles.text_LastFileName,'String',DataFile(length(DataPath)+1:end))
 
+printResults(S.TaskData.ER)
+
 WaitSecs(0.100);
 pause(0.100);
 fprintf('\n')

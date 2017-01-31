@@ -125,7 +125,7 @@ switch S.OperationMode
         Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
         Parameters.Fingers.Right(5) = KbName('l'); % Little finger
         
-        Parameters.Fingers.All      = [Parameters.Fingers.Left Parameters.Fingers.Right];
+        Parameters.Fingers.All      = [fliplr(Parameters.Fingers.Left) Parameters.Fingers.Right];
         Parameters.Fingers.Names    = {'L5' 'L4' 'L3' 'L2' 'L1' 'R1' 'R2' 'R3' 'R4' 'R5'};
 end
 

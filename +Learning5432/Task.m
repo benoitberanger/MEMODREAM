@@ -92,6 +92,7 @@ try
     secs = GetSecs;
     reverseStr = '';
     Exit_flag = 0;
+    from = 1;
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
@@ -114,12 +115,14 @@ try
                 
                 Screen('DrawingFinished',wPtr);
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
-                ER.AddEvent({EP.Data{evt,1} vbl-StartTime})
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
                 
-                % Latter I will add something inside this Fixation event...
-                % such as the calculation of the accuracy of the sequence.
-                KL.GetQueue;
-                %KL.Data
+                if ~strcmp(EP.Data{evt-1,1},'StartTime')
+                    KL.GetQueue;
+                    results = Common.SequenceAnalyzer('5432', EP.Data{evt-1,1}, EP.Data{evt-1,3}, from, KL.EventCount, KL);
+                    from = KL.EventCount;
+                    ER.Data{evt-1,4} = results;
+                end
                 
                 % The WHILELOOP below a trick so we can use ESCAPE key to quit
                 % earlier.
@@ -142,7 +145,7 @@ try
                 
                 Screen('DrawingFinished',wPtr);
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
-                ER.AddEvent({EP.Data{evt,1} vbl-StartTime})
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
                 
                 needFlip = 0;
                 

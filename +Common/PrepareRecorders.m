@@ -1,7 +1,7 @@
 %% Prepare event record
 
 % Create
-ER = EventRecorder( { 'event_name' , 'onset(s)' } , size(EP.Data,1) );
+ER = EventRecorder( { 'event_name' , 'onset(s)' , 'durations(s)' , 'results' } , size(EP.Data,1) );
 
 % Prepare
 ER.AddStartTime( 'StartTime' , 0 );
