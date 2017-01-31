@@ -27,9 +27,13 @@ switch S.Environement
         'FixationCross'  10
         'Right'          20
         'FixationCross'  10
+        'Left'           20
+        'FixationCross'  10
+        'Right'          20
+        'FixationCross'  10
         
         };
-        
+    
 end
 
 

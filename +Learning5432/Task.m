@@ -91,6 +91,7 @@ try
     keyCode = zeros(1,256);
     secs = GetSecs;
     reverseStr = '';
+    Exit_flag = 0;
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
@@ -118,13 +119,16 @@ try
                 % Latter I will add something inside this Fixation event...
                 % such as the calculation of the accuracy of the sequence.
                 KL.GetQueue;
-                KL.Data
+                %KL.Data
                 
                 % The WHILELOOP below a trick so we can use ESCAPE key to quit
                 % earlier.
                 while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.slack ) )
-                    [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
+                    [~, secs, keyCode] = KbCheck;
                 end
+                
+                Common.Interrupt
+                
                 
             otherwise
                 
@@ -142,7 +146,11 @@ try
                 
                 needFlip = 0;
                 
-                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack ) )
+                % Here we stop 3 frames before the expected next onset
+                % because the while loop will make 2 flips, wich will
+                % introduce a delay
+                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + timeLimit - S.PTB.ifi*3 ) )
+                    
                     
                     [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
                     
@@ -187,11 +195,12 @@ try
                             
                         end
                         
+                        Common.Interrupt
                         
                     end
                     
                     
-                    if needFlip == 1
+                    if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
                         
                         Common.DrawHand
                         
@@ -202,12 +211,13 @@ try
                     
                     needFlip = needFlip - 1;
                     
-                end
-                
+                end % while
                 
         end % switch
         
-        
+        if Exit_flag
+            break %#ok<*UNRCH>
+        end
         
     end % for
     

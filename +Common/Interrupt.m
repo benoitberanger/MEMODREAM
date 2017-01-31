@@ -1,5 +1,5 @@
-% Escape ?
-[ ~ , secs , keyCode ] = KbCheck;
+% % Escape ?
+% [ ~ , secs , keyCode ] = KbCheck;
 
 if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
     
