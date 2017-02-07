@@ -4,6 +4,7 @@ function [ EP , Speed ] = Planning( S )
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     
+    S.Task         = 'DualTask_Complex';
     S.Environement = 'MRI';
     
 end
@@ -11,28 +12,34 @@ end
 switch S.Environement
     
     case 'Training'
-        Paradigme = {
-            
-        'FixationCross' 1
-        'Free'          5 % arbitrary number
-        'FixationCross' 1
+        NrBlocks      = 1;
         
-        };
-    
     case 'MRI'
-        Paradigme = {
-            
-        'FixationCross'  10
-        'Left'           20
-        'FixationCross'  10
-        'Right'          20
-        'FixationCross'  10
-        'Left'           20
-        'FixationCross'  10
-        'Right'          20
-        'FixationCross'  10
+        NrBlocks      = 4;
         
-        };
+end
+
+BLockDuration = 30; % seconds
+NrHighLow     = BLockDuration/3/2;
+RestDuration  = 15;
+
+switch S.Task
+    
+    case 'DualTask_Complex'
+        SequenceFingers = '4 2 5 3 5 2 4 3';
+        
+    case 'DualTask_Simple'
+        SequenceFingers = '5 4 3 2';
+        
+end
+
+Paradigme = { 'Rest' RestDuration [] [] }; % initilaise the container
+
+for n = 1:NrBlocks
+    
+    SequenceHighLow = DualTask.RandomizeHighLow(NrHighLow);
+    
+    Paradigme  = [ Paradigme ; { 'Sequence' BLockDuration SequenceFingers SequenceHighLow } ; { 'Rest' RestDuration [] [] } ]; %#ok<AGROW>
     
 end
 
@@ -41,7 +48,7 @@ end
 
 
 % Create and prepare
-header = { 'event_name' , 'onset(s)' , 'duration(s)' };
+header = { 'event_name' , 'onset(s)' , 'duration(s)' 'SequenceFingers(vect)' 'SequenceHighLow(vect)'};
 EP     = EventPlanning(header);
 
 % NextOnset = PreviousOnset + PreviousDuration
@@ -50,19 +57,19 @@ NextOnset = @(EP) EP.Data{end,2} + EP.Data{end,3};
 
 % --- Start ---------------------------------------------------------------
 
-EP.AddPlanning({ 'StartTime' 0  0 });
+EP.AddPlanning({ 'StartTime' 0  0 [] [] });
 
 % --- Stim ----------------------------------------------------------------
 
 for p = 1 : size(Paradigme,1)
     
-    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} });
+    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} Paradigme{p,3} Paradigme{p,4}});
     
 end
 
 % --- Stop ----------------------------------------------------------------
 
-EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 });
+EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 [] [] });
 
 
 %% Acceleration

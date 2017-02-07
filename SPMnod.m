@@ -20,12 +20,12 @@ try
                 'Right'
                 };
             
-        case 'Task2'
+        case 'DualTask_Complex'
             names = {
                 '';
                 };
             
-        case 'Task3'
+        case 'DualTask_Simple'
             names = {
                 ''
                 };
@@ -48,12 +48,15 @@ try
             
             case 'FixationCross'
                 onsets{1} = [onsets{1} ; EventData{event,2}];
+                
             case 'Free'
                 onsets{2} = [onsets{2} ; EventData{event,2}];
+                
             case 'Left'
-                onsets{3} = [onsets{3} ; EventData{event,2}];
+                onsets{2} = [onsets{2} ; EventData{event,2}];
             case 'Right'
-                onsets{4} = [onsets{4} ; EventData{event,2}];
+                onsets{3} = [onsets{3} ; EventData{event,2}];
+                
         end
         
     end
@@ -68,12 +71,14 @@ try
             
             case 'FixationCross'
                 durations{1} = [ durations{1} ; EventData{event+1,2}-EventData{event,2}] ;
+                
             case 'Free'
                 durations{2} = [ durations{2} ; EventData{event+1,2}-EventData{event,2}] ;
+                
             case 'Left'
-                durations{3} = [ durations{3} ; EventData{event+1,2}-EventData{event,2}] ;
+                durations{2} = [ durations{2} ; EventData{event+1,2}-EventData{event,2}] ;
             case 'Right'
-                durations{4} = [ durations{4} ; EventData{event+1,2}-EventData{event,2}] ;
+                durations{3} = [ durations{3} ; EventData{event+1,2}-EventData{event,2}] ;
         end
         
     end
@@ -122,7 +127,7 @@ try
 catch err
     
     sca
-    rethrow(err)
+    warning(err.message)
     
 end
 

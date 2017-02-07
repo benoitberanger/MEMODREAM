@@ -33,11 +33,11 @@ switch get(hObject,'Tag')
     case 'pushbutton_Learning5432'
         Task = 'Learning5432';
         
-    case 'pushbutton_Task2'
-        Task = 'Task2';
+    case 'pushbutton_DualTask_Complex'
+        Task = 'DualTask_Complex';
         
-    case 'pushbutton_Task3'
-        Task = 'Task3';
+    case 'pushbutton_DualTask_Simple'
+        Task = 'DualTask_Simple';
         
     otherwise
         error('MEMODREAM:TaskSelection','Error in Task selection')
@@ -213,11 +213,11 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
             case 'EyelinkCalibration'
                 task = 'EC';
             case 'Learning5432'
-                task = 'T1';
-            case 'Task2'
-                task = 'T2';
-            case 'Task3'
-                task = 'T3';
+                task = 'LE';
+            case 'DualTask_Complex'
+                task = 'D1';
+            case 'DualTask_Simple'
+                task = 'D2';
             otherwise
                 error('MEMODREAM:Task','Task ?')
         end
@@ -291,11 +291,11 @@ switch Task
     case 'Learning5432'
         TaskData = Learning5432.Task( S );
         
-    case 'Task2'
-        TaskData = Task2.Task( S );
+    case 'DualTask_Complex'
+        TaskData = DualTask.Task( S );
         
-    case 'Task3'
-        TaskData = Task3.Task( S );
+    case 'DualTask_Simple'
+        TaskData = DualTask.Task( S );
         
     otherwise
         error('MEMODREAM:Task','Task ?')

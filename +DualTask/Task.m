@@ -13,7 +13,7 @@ try
     
     %% Tunning of the task
     
-    [ EP , Speed ] = Learning5432.Planning( S );
+    [ EP , Speed ] = DualTask.Planning( S );
     
     % End of preparations
     EP.BuildGraph;
@@ -97,7 +97,7 @@ try
                     timeLimit = EP.Data{evt,3};
                 end
                 
-                Learning5432.DrawHand
+                Common.DrawHand
                 
                 Screen('DrawingFinished',wPtr);
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
@@ -134,7 +134,7 @@ try
                         
                         if any(keyCode(S.Parameters.Fingers.All))
                             
-                            Learning5432.DrawHand
+                            Common.DrawHand
                             
                             needFlip = 2;
                             
@@ -161,7 +161,7 @@ try
                     
                     if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
                         
-                        Learning5432.DrawHand
+                        Common.DrawHand
                         
                         Screen('DrawingFinished',wPtr);
                         Screen('Flip',wPtr);

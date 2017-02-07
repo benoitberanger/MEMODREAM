@@ -467,18 +467,18 @@ if isempty(figPtr) % Create the figure
     % Pushbutton : Eyelink Calibration
     
     p_el_dw.countO = p_el_dw.countO + 1;
-    b_cal.x   = p_el_dw.xposO(p_el_dw.countO);
-    b_cal.y   = p_el_dw.y ;
-    b_cal.w   = p_el_dw.Ow;
-    b_cal.h   = p_el_dw.h;
-    b_cal.tag = 'pushbutton_EyelinkCalibration';
-    handles.(b_cal.tag) = uicontrol(handles.uipanel_EyelinkMode,...
+    b_lear.x   = p_el_dw.xposO(p_el_dw.countO);
+    b_lear.y   = p_el_dw.y ;
+    b_lear.w   = p_el_dw.Ow;
+    b_lear.h   = p_el_dw.h;
+    b_lear.tag = 'pushbutton_EyelinkCalibration';
+    handles.(b_lear.tag) = uicontrol(handles.uipanel_EyelinkMode,...
         'Style','pushbutton',...
         'Units', 'Normalized',...
-        'Position',[b_cal.x b_cal.y b_cal.w b_cal.h],...
+        'Position',[b_lear.x b_lear.y b_lear.w b_lear.h],...
         'String','Calibration',...
         'BackgroundColor',buttonBGcolor,...
-        'Tag',b_cal.tag,...
+        'Tag',b_lear.tag,...
         'Callback',@MEMODREAM_main);
     
     
@@ -513,68 +513,68 @@ if isempty(figPtr) % Create the figure
         'Position',[p_tk.x p_tk.y p_tk.w p_tk.h],...
         'BackgroundColor',figureBGcolor);
     
-    p_tk.nbO    = 4; % Number of objects
+    p_tk.nbO    = 2; % Number of objects
     p_tk.Ow     = 1/(p_tk.nbO + 1); % Object width
     p_tk.countO = 0; % Object counter
     p_tk.xposO  = @(countO) p_tk.Ow/(p_tk.nbO+1)*countO + (countO-1)*p_tk.Ow;
     
-    buttun_y = 0.20;
-    buttun_h = 0.60;
+    buttun_y = 0.10;
+    buttun_h = 0.80;
+    
     
     % ---------------------------------------------------------------------
     % Pushbutton : Learning5432
     
     p_tk.countO  = p_tk.countO + 1;
-    b_cal.x   = p_tk.xposO(p_tk.countO);
-    b_cal.y   = buttun_y;
-    b_cal.w   = p_tk.Ow;
-    b_cal.h   = buttun_h;
-    b_cal.tag = 'pushbutton_Learning5432';
-    handles.(b_cal.tag) = uicontrol(handles.uipanel_Task,...
+    b_lear.x   = p_tk.xposO(p_tk.countO);
+    b_lear.y   = buttun_y;
+    b_lear.w   = p_tk.Ow;
+    b_lear.h   = buttun_h;
+    b_lear.tag = 'pushbutton_Learning5432';
+    handles.(b_lear.tag) = uicontrol(handles.uipanel_Task,...
         'Style','pushbutton',...
         'Units', 'Normalized',...
-        'Position',[b_cal.x b_cal.y b_cal.w b_cal.h],...
+        'Position',[b_lear.x b_lear.y b_lear.w b_lear.h],...
         'String','Learning5432',...
         'BackgroundColor',buttonBGcolor,...
-        'Tag',b_cal.tag,...
+        'Tag',b_lear.tag,...
         'Callback',@MEMODREAM_main);
     
     
     % ---------------------------------------------------------------------
-    % Pushbutton : Task2
+    % Pushbutton : DualTask_Complex
     
     p_tk.countO = p_tk.countO + 1;
-    b_inst.x   = p_tk.xposO(p_tk.countO);
-    b_inst.y   = buttun_y;
-    b_inst.w   = p_tk.Ow;
-    b_inst.h   = buttun_h;
-    b_inst.tag = 'pushbutton_Task2';
-    handles.(b_inst.tag) = uicontrol(handles.uipanel_Task,...
+    b_dtC.x   = p_tk.xposO(p_tk.countO);
+    b_dtC.y   = buttun_y + buttun_h/2 * 1.05;
+    b_dtC.w   = p_tk.Ow;
+    b_dtC.h   = buttun_h/2 * 0.95;
+    b_dtC.tag = 'pushbutton_DualTask_Complex';
+    handles.(b_dtC.tag) = uicontrol(handles.uipanel_Task,...
         'Style','pushbutton',...
         'Units', 'Normalized',...
-        'Position',[b_inst.x b_inst.y b_inst.w b_inst.h],...
-        'String','Task2',...
+        'Position',[b_dtC.x b_dtC.y b_dtC.w b_dtC.h],...
+        'String','DualTask Complex',...
         'BackgroundColor',buttonBGcolor,...
-        'Tag',b_inst.tag,...
+        'Tag',b_dtC.tag,...
         'Callback',@MEMODREAM_main);
     
     
     % ---------------------------------------------------------------------
-    % Pushbutton : Task3
+    % Pushbutton : DualTask_Simple
     
-    p_tk.countO = p_tk.countO + 1;
-    b_sess.x = p_tk.xposO(p_tk.countO);
-    b_sess.y = buttun_y;
-    b_sess.w = p_tk.Ow*2;
-    b_sess.h = buttun_h;
-    b_sess.tag = 'pushbutton_Task3';
-    handles.(b_sess.tag) = uicontrol(handles.uipanel_Task,...
+    b_dtS.x   = p_tk.xposO(p_tk.countO);
+    b_dtS.y   = buttun_y;
+    b_dtS.w   = p_tk.Ow;
+    b_dtS.h   = buttun_h/2 * 0.95;
+    b_dtS.tag = 'pushbutton_DualTask_Simple';
+    handles.(b_dtS.tag) = uicontrol(handles.uipanel_Task,...
         'Style','pushbutton',...
         'Units', 'Normalized',...
-        'Position',[b_sess.x b_sess.y b_sess.w b_sess.h],...
-        'String','Task3',...
+        'Position',[b_dtS.x b_dtS.y b_dtS.w b_dtS.h],...
+        'String','DualTask Simple',...
         'BackgroundColor',buttonBGcolor,...
-        'Tag',b_sess.tag,...
+        'Tag',b_dtS.tag,...
         'Callback',@MEMODREAM_main);
     
     
@@ -807,14 +807,14 @@ end % function
 
 % % -------------------------------------------------------------------------
 % function edit_SessionNumber_Callback(hObject, ~)
-% 
+%
 % block = str2double(get(hObject,'String'));
-% 
+%
 % if block ~= round(block) || block < 1 || block > 4
 %     set(hObject,'String','1');
 %     error('Session number must be from 1 to 4')
 % end
-% 
+%
 % end % function
 
 
