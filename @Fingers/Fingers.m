@@ -28,7 +28,7 @@ classdef Fingers < handle
         %                           Constructor
         % -----------------------------------------------------------------
         function obj = Fingers( pos , color )
-            % obj = EventRecorder( pos = [ x1 y1 ; x2 y2 ; ... ] in Pixels , color = [R G B a] from 0 to 255 ).
+            % obj = Fingers( pos = [ x1 y1 ; x2 y2 ; ... ] in Pixels , color = [R G B a] from 0 to 255 ).
             
             % ================ Check input argument =======================
             

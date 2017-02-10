@@ -36,7 +36,7 @@ classdef Hand < handle
         %                           Constructor
         % -----------------------------------------------------------------
         function obj = Hand( imgpath , color ,  needtoflip )
-            % obj = EventRecorder( imgpath = 'path/to/myImg.png' , color = [R G B a] from 0 to 255 , needtoflip = false/true ).
+            % obj = Hand( imgpath = 'path/to/myImg.png' , color = [R G B a] from 0 to 255 , needtoflip = false/true ).
             
             % ================ Check input argument =======================
             

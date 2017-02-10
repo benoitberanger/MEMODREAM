@@ -35,9 +35,10 @@ try
     Common.StartRecordingEyelink;
     
     
-    %% Hands sprites and fingers patchs
+    %% Hands sprites and fingers patchs, fixation cross
     
     Common.PrepareHandsFingers
+    Common.PrepareFixationCross
     
     
     %% Go
@@ -67,7 +68,7 @@ try
                 
             case 'FixationCross'
                 
-                Common.DrawFixation
+                WhiteCross.Draw
                 
                 Screen('DrawingFinished',wPtr);
                 vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);

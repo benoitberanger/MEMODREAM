@@ -36,7 +36,7 @@ classdef Bip < handle
         %                           Constructor
         % -----------------------------------------------------------------
         function obj = Bip( fs , f0 ,  duration , ratio )
-            % obj = EventRecorder( fs=44100 Hz , f0=440 Hz ,  duration=300 ms , ratio=0.25 )
+            % obj = Bip( fs=44100 Hz , f0=440 Hz ,  duration=300 ms , ratio=0.25 )
             
             % ================ Check input argument =======================
             
