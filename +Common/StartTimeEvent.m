@@ -6,7 +6,7 @@ switch S.OperationMode
     otherwise
 end
 
-Common.DrawFixation;
+WhiteCross.Draw;
 
 % Flip video
 Screen( 'Flip' , S.PTB.wPtr );
