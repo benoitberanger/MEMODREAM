@@ -24,6 +24,7 @@ EchoStart(mfilename)
 %%%%%%%%%%%%%%
 %   Screen   %
 %%%%%%%%%%%%%%
+
 Parameters.Video.ScreenWidthPx   = 1024;  % Number of horizontal pixel in MRI video system @ CENIR
 Parameters.Video.ScreenHeightPx  = 768;   % Number of vertical pixel in MRI video system @ CENIR
 Parameters.Video.ScreenFrequency = 60;    % Refresh rate (in Hertz)
@@ -36,11 +37,10 @@ switch S.Task
     case 'Learning5432'
         Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
         
-    case 'Task2'
-        Parameters.Video.ScreenBackgroundColor = [0 0 0]; % [R G B] ( from 0 to 255 )
-        
-    case 'Task3'
-        Parameters.Video.ScreenBackgroundColor = [0 0 0]; % [R G B] ( from 0 to 255 )
+    case 'DualTask_Complex'
+        Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
+    case 'DualTask_Simple'
+        Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
         
     case 'EyelinkCalibration'
         Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
@@ -51,16 +51,8 @@ end
 %%%%%%%%%%%%
 %   Text   %
 %%%%%%%%%%%%
-switch S.Task
-    case 'Learning5432'
-        Parameters.Text.Size  = 30;
-    case 'Task2'
-        Parameters.Text.Size  = 30;
-    case 'Task3'
-        Parameters.Text.Size  = 60;
-    case 'EyelinkCalibration'
-        Parameters.Text.Size  = 30;
-end
+
+Parameters.Text.Size  = 30;
 Parameters.Text.Font  = 'Courier New';
 Parameters.Text.Color = [255 255 255]; % [R G B] ( from 0 to 255 )
 
@@ -109,8 +101,6 @@ switch S.OperationMode
         Parameters.Fingers.Left (4) = KbName('n'); % Ring finger
         Parameters.Fingers.Left (5) = KbName('d'); % Little finger
         
-        Parameters.Fingers.All = [Parameters.Fingers.Right Parameters.Fingers.Left];
-        
     otherwise
         
         Parameters.Fingers.Left (1) = KbName('v'); % Thumb, not on the response buttons, arbitrary number
@@ -125,9 +115,11 @@ switch S.OperationMode
         Parameters.Fingers.Right(4) = KbName('k'); % Ring finger
         Parameters.Fingers.Right(5) = KbName('l'); % Little finger
         
-        Parameters.Fingers.All      = [fliplr(Parameters.Fingers.Left) Parameters.Fingers.Right];
-        Parameters.Fingers.Names    = {'L5' 'L4' 'L3' 'L2' 'L1' 'R1' 'R2' 'R3' 'R4' 'R5'};
 end
+
+Parameters.Fingers.All      = [fliplr(Parameters.Fingers.Left) Parameters.Fingers.Right];
+Parameters.Fingers.Names    = {'L5' 'L4' 'L3' 'L2' 'L1' 'R1' 'R2' 'R3' 'R4' 'R5'};
+
 
 %% Echo in command window
 

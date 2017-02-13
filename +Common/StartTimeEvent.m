@@ -1,3 +1,6 @@
+global reverseStr
+reverseStr = '';
+
 switch S.OperationMode
     case 'Acquisition'
         HideCursor;
@@ -6,7 +9,16 @@ switch S.OperationMode
     otherwise
 end
 
-WhiteCross.Draw;
+switch S.Task
+    
+    case 'Learning5432'
+        WhiteCross.Draw;
+        
+    case 'DualTask'
+        Common.FillBackGround
+        
+end
+
 
 % Flip video
 Screen( 'Flip' , S.PTB.wPtr );

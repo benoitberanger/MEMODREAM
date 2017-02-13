@@ -47,7 +47,6 @@ try
     pp = 0;
     keyCode = zeros(1,256);
     secs = GetSecs;
-    reverseStr = '';
     Exit_flag = 0;
     from = 1;
     
@@ -70,24 +69,9 @@ try
                 
                 WhiteCross.Draw
                 
-                Screen('DrawingFinished',wPtr);
-                vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
-                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
-                
-                if ~strcmp(EP.Data{evt-1,1},'StartTime')
-                    KL.GetQueue;
-                    results = Common.SequenceAnalyzer('5432', EP.Data{evt-1,1}, EP.Data{evt-1,3}, from, KL.EventCount, KL);
-                    from = KL.EventCount;
-                    ER.Data{evt-1,4} = results;
-                end
-                
-                % The WHILELOOP below a trick so we can use ESCAPE key to quit
-                % earlier.
-                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.slack ) )
-                    [~, secs, keyCode] = KbCheck;
-                end
-                
-                Common.Interrupt
+                % Wrapper for the control condition. It's a script itself,
+                % used across several tasks
+                Common.ControlConditionScript
                 
                 
             otherwise
@@ -106,16 +90,16 @@ try
                 
                 needFlip = 0;
                 
+                revreset = 1;
+                
                 % Here we stop 3 frames before the expected next onset
                 % because the while loop will make 2 flips, wich will
                 % introduce a delay
                 while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + timeLimit - S.PTB.ifi*3 ) )
                     
-                    
                     [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
                     
-                    
-                    msg = sprintf([repmat('%d ',[1 10]) '\n'],...
+                    msg = sprintf([repmat('%d ',[1 5]) '| ' repmat('%d ',[1 5]) '\n'],...
                         keyCode(S.Parameters.Fingers.Left (5)),...
                         keyCode(S.Parameters.Fingers.Left (4)),...
                         keyCode(S.Parameters.Fingers.Left (3)),...
@@ -127,9 +111,8 @@ try
                         keyCode(S.Parameters.Fingers.Right(4)),...
                         keyCode(S.Parameters.Fingers.Right(5)) ...
                         );
-                    fprintf([reverseStr, msg]);
-                    reverseStr = repmat(sprintf('\b'), 1, length(msg));
-                    
+                    revfprintf(msg,revreset)
+                    revreset = 0;
                     
                     if keyIsDown
                         

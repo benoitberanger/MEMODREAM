@@ -41,7 +41,7 @@ end
 
 
 % Create and prepare
-header = { 'event_name' , 'onset(s)' , 'duration(s)' };
+header = { 'event_name' , 'onset(s)' , 'duration(s)' 'SequenceFingers(vect)' };
 EP     = EventPlanning(header);
 
 % NextOnset = PreviousOnset + PreviousDuration
@@ -50,19 +50,19 @@ NextOnset = @(EP) EP.Data{end,2} + EP.Data{end,3};
 
 % --- Start ---------------------------------------------------------------
 
-EP.AddPlanning({ 'StartTime' 0  0 });
+EP.AddPlanning({ 'StartTime' 0  0 [] });
 
 % --- Stim ----------------------------------------------------------------
 
 for p = 1 : size(Paradigme,1)
     
-    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} });
+    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} '5432' });
     
 end
 
 % --- Stop ----------------------------------------------------------------
 
-EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 });
+EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 [] });
 
 
 %% Acceleration
