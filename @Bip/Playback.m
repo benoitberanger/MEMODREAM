@@ -1,5 +1,9 @@
 function [ startTime ] = Playback( obj, when )
 
+if nargin < 2
+   when = 0; 
+end
+
 PsychPortAudio('FillBuffer', obj.pahandle, obj.signal );
 
 repetitions = 1; % play 1 time the sound
