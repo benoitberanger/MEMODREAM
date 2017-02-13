@@ -4,7 +4,7 @@ StopTime = WaitSecs('UntilTime', StartTime + ER.Data{ER.EventCount,2} + EP.Data{
 
 % Record StopTime
 ER.AddStopTime( 'StopTime' , StopTime - StartTime );
-RR.AddEvent( { 'StopTime' , StopTime - StartTime , 0 } );
+RR.AddEvent( { 'StopTime' , StopTime - StartTime , 0 , [] } );
 
 ShowCursor;
 Priority( 0 );

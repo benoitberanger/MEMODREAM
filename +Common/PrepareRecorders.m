@@ -10,10 +10,10 @@ ER.AddStartTime( 'StartTime' , 0 );
 %% Response recorder
 
 % Create
-RR = EventRecorder( { 'event_name' , 'onset(s)' , 'duration(s)' } , 50000 ); % high arbitrary value : preallocation of memory
+RR = EventRecorder( { 'event_name' , 'onset(s)' , 'duration(s)' , 'content' } , 50000 ); % high arbitrary value : preallocation of memory
 
 % Prepare
-RR.AddEvent( { 'StartTime' , 0 , 0 } );
+RR.AddEvent( { 'StartTime' , 0 , 0 , [] } );
 
 
 %% Prepare the logger of MRI triggers
