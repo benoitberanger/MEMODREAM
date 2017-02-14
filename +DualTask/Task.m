@@ -3,8 +3,9 @@ function [ TaskData ] = Task( S )
 try
     %% Shortcuts
     
-    wPtr = S.PTB.wPtr;              % window pointer
-    aPtr = S.PTB.Playback_pahandle; % audio pointer
+    wPtr    = S.PTB.wPtr;              % window pointer
+    playPAh = S.PTB.Playback_pahandle; % playback audio pointer
+    recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     
     
     %% Parallel port
@@ -39,7 +40,7 @@ try
     %% Hands sprites and fingers patchs, fixation cross
     
     Common.PrepareHandsFingers
-%     Common.PrepareFixationCross
+    %     Common.PrepareFixationCross
     
     
     %% Prepare High bip and Low bip
@@ -83,6 +84,25 @@ try
                 
             case 'Sequence'
                 
+                bipseq = EP.Data{evt,5};
+                v = linspace(0, EP.Data{evt,3},length(bipseq)+1);
+                v_onset = v(1:end-1);
+                
+                for b = 1 : length(bipseq)
+                    
+                    switch bipseq(b)
+                        case 1 % high bip
+                            last_onset = HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                        case 0 % low bip
+                            last_onset = LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                    end
+                    
+                    if b == 1
+                        ER.AddEvent({EP.Data{evt,1} last_onset-StartTime [] []})
+                    end
+                    
+                end
+                
                 
         end % switch
         
@@ -94,7 +114,6 @@ try
     
     
     %% End of stimulation
-    
     
     Common.EndOfStimulationScript;
     

@@ -167,7 +167,6 @@ try
     
     %% End of stimulation
     
-    
     Common.EndOfStimulationScript;
     
     Common.Movie.FinalizeMovie;

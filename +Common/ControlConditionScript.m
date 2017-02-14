@@ -4,7 +4,7 @@ ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
     KL.GetQueue;
-    results = Common.SequenceAnalyzer(EP.Data{evt,4}, EP.Data{evt-1,1}, EP.Data{evt-1,3}, from, KL.EventCount, KL);
+    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, EP.Data{evt-1,1}, EP.Data{evt-1,3}, from, KL.EventCount, KL);
     from = KL.EventCount;
     ER.Data{evt-1,4} = results;
 end

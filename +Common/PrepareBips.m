@@ -11,9 +11,9 @@ InOutFadeRation = 0.25;
 %% Create objects
 
 LowBip  = Bip( S.Parameters.Audio.SamplingRate , LowFreq  ,  BipDuration , InOutFadeRation );
-LowBip. LinkToPAhandle(aPtr);
+LowBip. LinkToPAhandle(playPAh);
 LowBip.AssertReadyForPlayback; % just to check
 
 HighBip = Bip( S.Parameters.Audio.SamplingRate , HighFreq ,  BipDuration , InOutFadeRation );
-HighBip.LinkToPAhandle(aPtr);
+HighBip.LinkToPAhandle(playPAh);
 LowBip.AssertReadyForPlayback; % just to check
