@@ -9,19 +9,23 @@ switch S.OperationMode
     otherwise
 end
 
-switch S.Task
+% ### Video ### %
+if S.Parameters.Type.Video
     
-    case 'Learning5432'
-        WhiteCross.Draw;
+    switch S.Task
         
-    case 'DualTask'
-        Common.FillBackGround
-        
+        case 'Learning5432'
+            WhiteCross.Draw;
+            
+        case 'DualTask'
+            Common.FillBackGround
+            
+    end
+    
+    % Flip video
+    Screen( 'Flip' , S.PTB.wPtr );
+    
 end
-
-
-% Flip video
-Screen( 'Flip' , S.PTB.wPtr );
 
 % Synchronization
 StartTime = WaitForTTL( S );

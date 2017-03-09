@@ -3,10 +3,12 @@ function [ TaskData ] = Task( S )
 try
     %% Shortcuts
     
-    wPtr    = S.PTB.wPtr;              % window pointer
-    playPAh = S.PTB.Playback_pahandle; % playback audio pointer
-    recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
-    
+    % ### Video ### %
+    if S.Parameters.Type.Video
+        wPtr    = S.PTB.wPtr;              % window pointer
+        playPAh = S.PTB.Playback_pahandle; % playback audio pointer
+        recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
+    end
     
     %% Parallel port
     
@@ -39,9 +41,11 @@ try
     
     %% Hands sprites and fingers patchs, fixation cross
     
-    Common.PrepareHandsFingers
-    %     Common.PrepareFixationCross
-    
+    % ### Video ### %
+    if S.Parameters.Type.Video
+        Common.PrepareHandsFingers
+        %     Common.PrepareFixationCross
+    end
     
     %% Prepare High bip and Low bip
     
@@ -106,6 +110,7 @@ try
                 
         end % switch
         
+        % This flag comes from Common.Interrupt, if ESCAPE is pressed
         if Exit_flag
             break %#ok<*UNRCH>
         end

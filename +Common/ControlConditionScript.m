@@ -1,5 +1,11 @@
-Screen('DrawingFinished',wPtr);
-vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
+% ### Video ### %
+if S.Parameters.Type.Video
+    Screen('DrawingFinished',wPtr);
+    vbl = Screen('Flip',wPtr,  StartTime + EP.Data{evt,2} - S.PTB.slack);
+else
+    vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+end
+
 ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
@@ -11,7 +17,15 @@ end
 
 % The WHILELOOP below a trick so we can use ESCAPE key to quit
 % earlier.
-while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.slack ) )
+
+% ### Video ### %
+if S.Parameters.Type.Video
+    PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.slack;
+else
+    PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.anticipation;
+end
+
+while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > PTBtimeLimit ) )
     [~, secs, keyCode] = KbCheck;
 end
 

@@ -1,13 +1,25 @@
 function varargout = MEMODREAM_GUI
+% MEMODREAM_GUI is the function that creates (or bring to focus) MEMODREAM GUI.
+% Then, MEMODREAM_main is always called to start each task. It is the
+% "main" program.
 
-% global handles
 
-%% Open a singleton figure
+%% Open a singleton figure, or gring the actual into focus.
 
 % Is the GUI already open ?
 figPtr = findall(0,'Tag',mfilename);
 
-if isempty(figPtr) % Create the figure
+if ~isempty(figPtr) % Figure exists so brings it to the focus
+    
+    figure(figPtr);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % close(figPtr);
+    % MEMODREAM_GUI;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    
+else % Create the figure
     
     clc
     
@@ -763,17 +775,13 @@ if isempty(figPtr) % Create the figure
     % guidata(figHandle,handles) . It allows smart retrive like
     % handles=guidata(hObject)
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % assignin('base','handles',handles)
     % disp(handles)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     figPtr = figHandle;
     
-else % Figure exists so brings it to the focus
-    
-    figure(figPtr);
-    
-    % close(figPtr);
-    % MEMODREAM_GUI;
     
 end
 

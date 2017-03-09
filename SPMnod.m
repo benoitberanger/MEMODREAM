@@ -14,7 +14,7 @@ try
             
         case 'Learning5432'
             names = {
-                'FixationCross'
+                'Rest'
                 'Free'
                 'Left'
                 'Right'
@@ -69,7 +69,7 @@ try
         
         switch EventData{event,1}
             
-            case 'FixationCross'
+            case 'Rest'
                 durations{1} = [ durations{1} ; EventData{event+1,2}-EventData{event,2}] ;
                 
             case 'Free'

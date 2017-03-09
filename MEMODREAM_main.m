@@ -4,9 +4,9 @@ if nargin == 0
     
     MEMODREAM_GUI;
     
-    fprintf('\n')
-    fprintf('Use %s to start the GUI.','MEMODREAM_GUI.m');
-    fprintf('\n')
+    %     fprintf('\n')
+    %     fprintf('Use %s to start the GUI.','MEMODREAM_GUI.m');
+    %     fprintf('\n')
     
     return
     

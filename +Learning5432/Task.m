@@ -3,7 +3,10 @@ function [ TaskData ] = Task( S )
 try
     %% Shortcuts
     
-    wPtr = S.PTB.wPtr;
+    % ### Video ### %
+    if S.Parameters.Type.Video
+        wPtr = S.PTB.wPtr;
+    end
     
     
     %% Parallel port
@@ -37,8 +40,11 @@ try
     
     %% Hands sprites and fingers patchs, fixation cross
     
-    Common.PrepareHandsFingers
-    Common.PrepareFixationCross
+    % ### Video ### %
+    if S.Parameters.Type.Video
+        Common.PrepareHandsFingers
+        Common.PrepareFixationCross
+    end
     
     
     %% Go
@@ -65,9 +71,12 @@ try
                 
                 Common.StopTimeEvent;
                 
-            case 'FixationCross'
+            case 'Rest'
                 
-                WhiteCross.Draw
+                % ### Video ### %
+                if S.Parameters.Type.Video
+                    WhiteCross.Draw
+                end
                 
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
@@ -82,22 +91,37 @@ try
                     timeLimit = EP.Data{evt,3};
                 end
                 
-                Learning5432.DrawHand
+                % ### Video ### %
+                if S.Parameters.Type.Video
+                    
+                    Learning5432.DrawHand
+                    
+                    Screen('DrawingFinished',wPtr);
+                    vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
+                    
+                else
+                    vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+                end
                 
-                Screen('DrawingFinished',wPtr);
-                vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
                 ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
                 
                 needFlip = 0;
                 
                 revreset = 1;
                 
-                % Here we stop 3 frames before the expected next onset
-                % because the while loop will make 2 flips, wich will
-                % introduce a delay
-                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > StartTime + EP.Data{evt,2} + timeLimit - S.PTB.ifi*3 ) )
+                % ### Video ### %
+                if S.Parameters.Type.Video
+                    % Here we stop 3 frames before the expected next onset
+                    % because the while loop will make 2 flips, wich will
+                    % introduce a delay
+                    PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.ifi*3;
+                else
+                    PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.anticipation;
+                end
+                
+                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > PTBtimeLimit ) )
                     
-                    [keyIsDown, secs, keyCode, deltasecs] = KbCheck;
+                    [keyIsDown, secs, keyCode] = KbCheck;
                     
                     msg = sprintf([repmat('%d ',[1 5]) '| ' repmat('%d ',[1 5]) '\n'],...
                         keyCode(S.Parameters.Fingers.Left (5)),...
@@ -118,23 +142,28 @@ try
                         
                         if any(keyCode(S.Parameters.Fingers.All))
                             
-                            Learning5432.DrawHand
-                            
-                            needFlip = 2;
-                            
-                            r = find(keyCode(S.Parameters.Fingers.Right));
-                            l = find(keyCode(S.Parameters.Fingers.Left));
-                            
-                            if ~isempty(r)
-                                RightFingers.Draw(r);
+                            % ### Video ### %
+                            if S.Parameters.Type.Video
+                                
+                                Learning5432.DrawHand
+                                
+                                needFlip = 2;
+                                
+                                r = find(keyCode(S.Parameters.Fingers.Right));
+                                l = find(keyCode(S.Parameters.Fingers.Left));
+                                
+                                if ~isempty(r)
+                                    RightFingers.Draw(r);
+                                end
+                                
+                                if ~isempty(l)
+                                    LeftFingers. Draw(l);
+                                end
+                                
+                                Screen('DrawingFinished',wPtr);
+                                Screen('Flip',wPtr);
+                                
                             end
-                            
-                            if ~isempty(l)
-                                LeftFingers. Draw(l);
-                            end
-                            
-                            Screen('DrawingFinished',wPtr);
-                            Screen('Flip',wPtr);
                             
                         end
                         
@@ -142,22 +171,27 @@ try
                         
                     end
                     
-                    
-                    if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
+                    % ### Video ### %
+                    if S.Parameters.Type.Video
                         
-                        Learning5432.DrawHand
+                        if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
+                            
+                            Learning5432.DrawHand
+                            
+                            Screen('DrawingFinished',wPtr);
+                            Screen('Flip',wPtr);
+                            
+                        end
                         
-                        Screen('DrawingFinished',wPtr);
-                        Screen('Flip',wPtr);
+                        needFlip = needFlip - 1;
                         
                     end
-                    
-                    needFlip = needFlip - 1;
                     
                 end % while
                 
         end % switch
         
+        % This flag comes from Common.Interrupt, if ESCAPE is pressed
         if Exit_flag
             break %#ok<*UNRCH>
         end

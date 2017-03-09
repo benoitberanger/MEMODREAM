@@ -13,24 +13,24 @@ switch S.Environement
     case 'Training'
         Paradigme = {
             
-        'FixationCross' 1
-        'Free'          5 % arbitrary number
-        'FixationCross' 1
+        'Rest' 1
+        'Free' 5 % arbitrary number
+        'Rest' 1
         
         };
     
     case 'MRI'
         Paradigme = {
             
-        'FixationCross'  10
-        'Left'           20
-        'FixationCross'  10
-        'Right'          20
-        'FixationCross'  10
-        'Left'           20
-        'FixationCross'  10
-        'Right'          20
-        'FixationCross'  10
+        'Rest'  10
+        'Left'  20
+        'Rest'  10
+        'Right' 20
+        'Rest'  10
+        'Left'  20
+        'Rest'  10
+        'Right' 20
+        'Rest'  10
         
         };
     
