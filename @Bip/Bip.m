@@ -1,4 +1,4 @@
-classdef Bip < handle
+classdef Bip < AudioPTB
     %BIP Generate a bip signal and get it ready for playback via PTB
     
     %% Properties
@@ -6,24 +6,14 @@ classdef Bip < handle
     properties
         
         % Parameters
-        
-        fs       = zeros(0)   % Sampling frequency (Hertz)
         f0       = zeros(0)   % Base frequency of the sound (Hertz)
         duration = zeros(0)   % Duration of the bip (milliseconds)
         ratio    = zeros(0)   % ratio between the 1 part and the 0 part of the tukey window
         
         % Internal variables
-        
         sinusoid = zeros(1,0) % raw sinusoid : f0 sampled by fs
         window   = zeros(1,0) % tukey window
-        signal   = zeros(1,0) % signal ready to be played
-        
-        time     = zeros(1,0) % used to generate the vectors and for plot
         phase    = zeros(0)   % phase of the sinusoid
-        
-        % Link with PTB
-        
-        pahandle = zeros(0)   % PsychPortAudio handle == pointer
         
     end % properties
     
