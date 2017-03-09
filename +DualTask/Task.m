@@ -6,9 +6,10 @@ try
     % ### Video ### %
     if S.Parameters.Type.Video
         wPtr    = S.PTB.wPtr;              % window pointer
-        playPAh = S.PTB.Playback_pahandle; % playback audio pointer
-        recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     end
+    playPAh = S.PTB.Playback_pahandle; % playback audio pointer
+    recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
+    
     
     %% Parallel port
     
@@ -58,7 +59,6 @@ try
     pp = 0;
     keyCode = zeros(1,256);
     secs = GetSecs;
-    reverseStr = '';
     Exit_flag = 0;
     from = 1;
     
@@ -79,8 +79,11 @@ try
                 
             case 'Rest'
                 
-                Common.FillBackGround
-                
+                % ### Video ### %
+                if S.Parameters.Type.Video
+                    Common.FillBackGround
+                end
+    
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
                 Common.ControlConditionScript
