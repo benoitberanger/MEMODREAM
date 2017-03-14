@@ -13,10 +13,15 @@ fprintf('\n')
 EchoStart(mfilename)
 
 
+%% Scanner synchronization
+
+Parameters.Sync.DiscardVolume = 3;
+
+
 %% Paths
 
-% Parameters.Path.wav = ['wav' filesep];
-% Parameters.Path.img = ['img' filesep];
+Parameters.Path.wav = ['wav' filesep];
+Parameters.Path.img = ['img' filesep];
 
 
 %% Stimulation type switch

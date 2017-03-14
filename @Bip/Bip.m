@@ -7,7 +7,6 @@ classdef Bip < AudioPTB
         
         % Parameters
         f0       = zeros(0)   % Base frequency of the sound (Hertz)
-        duration = zeros(0)   % Duration of the bip (milliseconds)
         ratio    = zeros(0)   % ratio between the 1 part and the 0 part of the tukey window
         
         % Internal variables
@@ -26,7 +25,7 @@ classdef Bip < AudioPTB
         %                           Constructor
         % -----------------------------------------------------------------
         function obj = Bip( fs , f0 ,  duration , ratio )
-            % obj = Bip( fs=44100 Hz , f0=440 Hz ,  duration=300 ms , ratio=0.25 )
+            % obj = Bip( fs=44100 Hz , f0=440 Hz ,  duration=0.300 s , ratio=0.25 )
             
             % ================ Check input argument =======================
             
@@ -40,7 +39,7 @@ classdef Bip < AudioPTB
                 assert( isscalar(f0) && isnumeric(f0) && f0>0 && f0==round(f0) , 'f0 is the base frequency of the sound (Hertz)' )
                 
                 % --- duration ---
-                assert( isscalar(duration) && isnumeric(duration) && duration>0 && duration==round(duration) , 'uration is the length of the bip (milliseconds)' )
+                assert( isscalar(duration) && isnumeric(duration) && duration>0 , 'duration is the length of the bip (seconds)' )
                 
                 % --- ratio ---
                 assert( isscalar(ratio) && isnumeric(ratio) && ratio>0 , 'ratio between the 1 part and the 0 part of the tukey window' )

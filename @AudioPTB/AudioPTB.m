@@ -10,6 +10,7 @@ classdef AudioPTB < handle
         
         % Internal variables
         signal   = zeros(1,0) % signal ready to be played
+        duration = zeros(0)   % duration of the signal (Seconds)
         time     = zeros(1,0) % used to generate the vectors and for plot
         
         % Link with PTB

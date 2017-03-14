@@ -18,7 +18,7 @@ try
     
     %% Tunning of the task
     
-    [ EP , Speed ] = DualTask.Planning( S );
+    [ EP ] = DualTask.Planning( S );
     
     % End of preparations
     EP.BuildGraph;
@@ -51,6 +51,7 @@ try
     %% Prepare High bip and Low bip
     
     Common.PrepareBips
+    Common.PrepareGoStop
     
     
     %% Go
@@ -83,11 +84,10 @@ try
                 if S.Parameters.Type.Video
                     Common.FillBackGround
                 end
-    
+                
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
                 Common.ControlConditionScript
-                
                 
             case 'Sequence'
                 

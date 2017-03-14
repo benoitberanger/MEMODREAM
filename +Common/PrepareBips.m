@@ -3,7 +3,7 @@
 LowFreq  = 440;       % Hz
 HighFreq = 2*LowFreq; % Hz
 
-BipDuration = 300; % ms
+BipDuration = 1; % second
 
 InOutFadeRation = 0.25;
 

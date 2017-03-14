@@ -5,8 +5,10 @@ try
     
     % ### Video ### %
     if S.Parameters.Type.Video
-        wPtr = S.PTB.wPtr;
+        wPtr    = S.PTB.wPtr;              % window pointer
     end
+    playPAh = S.PTB.Playback_pahandle; % playback audio pointer
+    recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     
     
     %% Parallel port
@@ -46,6 +48,7 @@ try
         Common.PrepareFixationCross
     end
     
+    Common.PrepareGoStop
     
     %% Go
     

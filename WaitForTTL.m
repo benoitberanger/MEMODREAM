@@ -18,59 +18,65 @@ if strcmp(S.OperationMode,'Acquisition')
         
     end
     
-    % Just to be sure the user is not pushing a button before
-    WaitSecs(0.2); % secondes
-    
-    % Waiting for TTL signal
-    while 1
+    for d = 1:S.Parameters.Sync.DiscardVolume
         
-        [ keyIsDown , TriggerTime, keyCode ] = KbCheck;
+        fprintf('Discard volume %d/%d \n',d,S.Parameters.Sync.DiscardVolume)
         
-        if keyIsDown
+        % Just to be sure the user is not pushing a button before
+        WaitSecs(0.200); % secondes
+        
+        % Waiting for TTL signal
+        while 1
             
-            switch S.Environement
+            [ keyIsDown , TriggerTime, keyCode ] = KbCheck;
+            
+            if keyIsDown
                 
-                case 'MRI'
+                switch S.Environement
                     
-                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
-                        break
+                    case 'MRI'
                         
-                    elseif keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
-                        
-                        % Eyelink mode 'On' ?
-                        if strcmp(S.EyelinkMode,'On')
-                            Eyelink.STOP % Stop wrapper
+                        if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
+                            break
+                            
+                        elseif keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+                            
+                            % Eyelink mode 'On' ?
+                            if strcmp(S.EyelinkMode,'On')
+                                Eyelink.STOP % Stop wrapper
+                            end
+                            
+                            sca
+                            stack = dbstack;
+                            error('WaitingForTTL:Abort','\n ESCAPE key : %s aborted \n',stack.file)
+                            
                         end
                         
-                        sca
-                        stack = dbstack;
-                        error('WaitingForTTL:Abort','\n ESCAPE key : %s aborted \n',stack.file)
+                    case 'Training'
                         
-                    end
-                    
-                case 'Training'
-                    
-                    if keyCode(S.Parameters.Keybinds.Right_Blue_b_ASCII) || keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
-                        break
-                        
-                    elseif keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
-                        
-                        % Eyelink mode 'On' ?
-                        if strcmp(S.EyelinkMode,'On')
-                            Eyelink.STOP % Stop wrapper
+                        if keyCode(S.Parameters.Keybinds.Right_Blue_b_ASCII) || keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
+                            break
+                            
+                        elseif keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
+                            
+                            % Eyelink mode 'On' ?
+                            if strcmp(S.EyelinkMode,'On')
+                                Eyelink.STOP % Stop wrapper
+                            end
+                            
+                            sca
+                            stack = dbstack;
+                            error('WitingForTTL:Abort','\n ESCAPE key : %s aborted \n',stack.file)
+                            
                         end
                         
-                        sca
-                        stack = dbstack;
-                        error('WitingForTTL:Abort','\n ESCAPE key : %s aborted \n',stack.file)
-                        
-                    end
-                    
+                end % switch
+                
             end
             
-        end
+        end % while
         
-    end
+    end % for
     
     
 else % in DebugMod

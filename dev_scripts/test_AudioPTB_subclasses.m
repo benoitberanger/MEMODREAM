@@ -12,7 +12,7 @@ fs = 44100;
 
 %%
 
-bip = Bip( fs , 440 ,  1000 , 0.25 );
+bip = Bip( fs , 440 , 1 , 0.25 );
 bip.Plot
 % bip.PlayInMatlab
 

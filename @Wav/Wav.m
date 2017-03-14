@@ -19,7 +19,7 @@ classdef Wav < AudioPTB
         %                           Constructor
         % -----------------------------------------------------------------
         function obj = Wav( filename )
-            % obj = Wav( filename='/wav/myWaveFile.wav' )
+            % obj = Wav( filename = '/wav/myWaveFile.wav' )
             
             % ================ Check input argument =======================
             

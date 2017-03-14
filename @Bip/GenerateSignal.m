@@ -1,6 +1,6 @@
 function GenerateSignal( obj )
 
-obj.time = (0:1:(obj.duration/1000*obj.fs))/obj.fs;
+obj.time = (0:1:(obj.duration*obj.fs))/obj.fs;
 
 obj.phase = 0; % radian
 

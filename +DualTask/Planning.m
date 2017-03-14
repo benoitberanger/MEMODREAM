@@ -1,36 +1,38 @@
-function [ EP , Speed ] = Planning( S )
+function [ EP ] = Planning( S )
 
 %% Paradigme
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    
-    S.Task         = 'DualTask_Complex';
-    S.Environement = 'MRI';
-    
+    S.Task          = 'DualTask_Complex';
+    S.Environement  = 'MRI';
+    S.OperationMode = 'Acquisition';
 end
 
 switch S.Environement
-    
     case 'Training'
-        NrBlocks      = 1;
-        
+        NrBlocks = 1;
     case 'MRI'
-        NrBlocks      = 4;
-        
+        NrBlocks = 4;
 end
 
 BLockDuration = 30; % seconds
-NrHighLow     = BLockDuration/3/2;
+NrHighLow     = 10;
 RestDuration  = 15;
+switch S.OperationMode
+    case 'Acquisition'
+    case 'FastDebug'
+        NrBlocks      = 2;
+        BLockDuration = 5; % seconds
+        NrHighLow     = 1;
+        RestDuration  = 5;
+    case 'RealisticDebug'
+end
 
 switch S.Task
-    
     case 'DualTask_Complex'
         SequenceFingers = '4 2 5 3 5 2 4 3';
-        
     case 'DualTask_Simple'
         SequenceFingers = '5 4 3 2';
-        
 end
 
 Paradigme = { 'Rest' RestDuration [] [] }; % initilaise the container
@@ -70,38 +72,6 @@ end
 % --- Stop ----------------------------------------------------------------
 
 EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 [] [] });
-
-
-%% Acceleration
-
-if nargout > 0
-    
-    switch S.OperationMode
-        
-        case 'Acquisition'
-            
-            Speed = 1;
-            
-        case 'FastDebug'
-            
-            Speed = 5;
-            
-            new_onsets = cellfun( @(x) {x/Speed} , EP.Data(:,2) );
-            EP.Data(:,2) = new_onsets;
-            
-            new_durations = cellfun( @(x) {x/Speed} , EP.Data(:,3) );
-            EP.Data(:,3) = new_durations;
-            
-        case 'RealisticDebug'
-            
-            Speed = 1;
-            
-        otherwise
-            error( 'S.OperationMode = %s' , S.OperationMode )
-            
-    end
-    
-end
 
 
 %% Display
