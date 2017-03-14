@@ -103,11 +103,9 @@ if S.Parameters.Type.Video
     Screen('TextFont' , PTB.wPtr, S.Parameters.Text.Font);
     Screen('TextColor', PTB.wPtr, S.Parameters.Text.Color);
     
-else
-    
-    PTB.anticipation = 0.001; % in secondes
-    
 end
+
+PTB.anticipation = 0.001; % in secondes
 
 
 %% Priority

@@ -45,7 +45,7 @@ try
     % ### Video ### %
     if S.Parameters.Type.Video
         Common.PrepareHandsFingers
-        %     Common.PrepareFixationCross
+        Common.PrepareFixationCross
     end
     
     %% Prepare High bip and Low bip
@@ -82,7 +82,7 @@ try
                 
                 % ### Video ### %
                 if S.Parameters.Type.Video
-                    Common.FillBackGround
+                    WhiteCross.Draw
                 end
                 
                 % Wrapper for the control condition. It's a script itself,
@@ -92,8 +92,25 @@ try
             case 'Sequence'
                 
                 bipseq = EP.Data{evt,5};
-                v = linspace(0, EP.Data{evt,3},length(bipseq)+1);
+                v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+0.5;
                 v_onset = v(1:end-1);
+                
+                needFlip = 0;
+                revreset = 1;
+                
+                % ### Video ### %
+                if S.Parameters.Type.Video
+                    
+                    Common.DrawHand
+                    
+                    Screen('DrawingFinished',wPtr);
+                    vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
+                    
+                else
+                    vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+                end
+                
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
                 
                 for b = 1 : length(bipseq)
                     
@@ -104,12 +121,22 @@ try
                             last_onset = LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
                     end
                     
-                    if b == 1
-                        ER.AddEvent({EP.Data{evt,1} last_onset-StartTime [] []})
+                    % ### Video ### %
+                    if S.Parameters.Type.Video
+                        % Here we stop 3 frames before the expected next onset
+                        % because the while loop will make 2 flips, wich will
+                        % introduce a delay
+                        PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.ifi*3;
+                    else
+                        if b ~= length(bipseq)
+                            PTBtimeLimit = StartTime + EP.Data{evt,2} + v_onset(b+1)   - S.PTB.anticipation;
+                        else
+                            PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.anticipation*16;
+                        end
                     end
+                    Common.DisplayInputsInCommandWindow
                     
-                end
-                
+                end % for
                 
         end % switch
         

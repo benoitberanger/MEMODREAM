@@ -18,7 +18,7 @@ try
     
     %% Tunning of the task
     
-    [ EP , Speed ] = Learning5432.Planning( S );
+    [ EP ] = Learning5432.Planning( S );
     
     % End of preparations
     EP.BuildGraph;
@@ -49,6 +49,7 @@ try
     end
     
     Common.PrepareGoStop
+    
     
     %% Go
     
@@ -97,7 +98,7 @@ try
                 % ### Video ### %
                 if S.Parameters.Type.Video
                     
-                    Learning5432.DrawHand
+                    Common.DrawHand
                     
                     Screen('DrawingFinished',wPtr);
                     vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
@@ -119,78 +120,9 @@ try
                     % introduce a delay
                     PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.ifi*3;
                 else
-                    PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.anticipation;
+                    PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.anticipation*16;
                 end
-                
-                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > PTBtimeLimit ) )
-                    
-                    [keyIsDown, secs, keyCode] = KbCheck;
-                    
-                    msg = sprintf([repmat('%d ',[1 5]) '| ' repmat('%d ',[1 5]) '\n'],...
-                        keyCode(S.Parameters.Fingers.Left (5)),...
-                        keyCode(S.Parameters.Fingers.Left (4)),...
-                        keyCode(S.Parameters.Fingers.Left (3)),...
-                        keyCode(S.Parameters.Fingers.Left (2)),...
-                        keyCode(S.Parameters.Fingers.Left (1)),...
-                        keyCode(S.Parameters.Fingers.Right(1)),...
-                        keyCode(S.Parameters.Fingers.Right(2)),...
-                        keyCode(S.Parameters.Fingers.Right(3)),...
-                        keyCode(S.Parameters.Fingers.Right(4)),...
-                        keyCode(S.Parameters.Fingers.Right(5)) ...
-                        );
-                    revfprintf(msg,revreset)
-                    revreset = 0;
-                    
-                    if keyIsDown
-                        
-                        if any(keyCode(S.Parameters.Fingers.All))
-                            
-                            % ### Video ### %
-                            if S.Parameters.Type.Video
-                                
-                                Learning5432.DrawHand
-                                
-                                needFlip = 2;
-                                
-                                r = find(keyCode(S.Parameters.Fingers.Right));
-                                l = find(keyCode(S.Parameters.Fingers.Left));
-                                
-                                if ~isempty(r)
-                                    RightFingers.Draw(r);
-                                end
-                                
-                                if ~isempty(l)
-                                    LeftFingers. Draw(l);
-                                end
-                                
-                                Screen('DrawingFinished',wPtr);
-                                Screen('Flip',wPtr);
-                                
-                            end
-                            
-                        end
-                        
-                        Common.Interrupt
-                        
-                    end
-                    
-                    % ### Video ### %
-                    if S.Parameters.Type.Video
-                        
-                        if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
-                            
-                            Learning5432.DrawHand
-                            
-                            Screen('DrawingFinished',wPtr);
-                            Screen('Flip',wPtr);
-                            
-                        end
-                        
-                        needFlip = needFlip - 1;
-                        
-                    end
-                    
-                end % while
+                Common.DisplayInputsInCommandWindow
                 
         end % switch
         

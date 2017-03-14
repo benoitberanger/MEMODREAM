@@ -6,5 +6,7 @@ switch EP.Data{evt,1}
         RightHand.Draw;
     case 'Left'
         LeftHand.Draw;
+    case 'Sequence'
+        LeftHand.Draw;
     otherwise
 end

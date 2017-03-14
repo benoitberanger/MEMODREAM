@@ -1,38 +1,37 @@
-function [ EP , Speed ] = Planning( S )
+function [ EP ] = Planning( S )
 
 %% Paradigme
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     
-    S.Environement = 'MRI';
+    S.Environement  = 'MRI';
+    S.OperationMode = 'Acquisition';
     
 end
 
 switch S.Environement
-    
     case 'Training'
-        Paradigme = {
-            
-        'Rest' 1
-        'Free' 5 % arbitrary number
-        'Rest' 1
-        
-        };
-    
+        NrBlocks = 1;
     case 'MRI'
-        Paradigme = {
-            
-        'Rest'  10
-        'Left'  20
-        'Rest'  10
-        'Right' 20
-        'Rest'  10
-        'Left'  20
-        'Rest'  10
-        'Right' 20
-        'Rest'  10
-        
-        };
+        NrBlocks = 4;
+end
+
+BLockDuration = 20; % seconds
+RestDuration  = 10;
+switch S.OperationMode
+    case 'Acquisition'
+    case 'FastDebug'
+        NrBlocks      = 2;
+        BLockDuration = 5; % seconds
+        RestDuration  = 5;
+    case 'RealisticDebug'
+end
+
+Paradigme = { 'Rest' RestDuration }; % initilaise the container
+
+for n = 1:NrBlocks
+    
+    Paradigme  = [ Paradigme ; { 'Left' BLockDuration } ; { 'Rest' RestDuration } ]; %#ok<AGROW>
     
 end
 
@@ -63,38 +62,6 @@ end
 % --- Stop ----------------------------------------------------------------
 
 EP.AddPlanning({ 'StopTime' NextOnset(EP) 0 [] });
-
-
-%% Acceleration
-
-if nargout > 0
-    
-    switch S.OperationMode
-        
-        case 'Acquisition'
-            
-            Speed = 1;
-            
-        case 'FastDebug'
-            
-            Speed = 5;
-            
-            new_onsets = cellfun( @(x) {x/Speed} , EP.Data(:,2) );
-            EP.Data(:,2) = new_onsets;
-            
-            new_durations = cellfun( @(x) {x/Speed} , EP.Data(:,3) );
-            EP.Data(:,3) = new_durations;
-            
-        case 'RealisticDebug'
-            
-            Speed = 1;
-            
-        otherwise
-            error( 'S.OperationMode = %s' , S.OperationMode )
-            
-    end
-    
-end
 
 
 %% Display

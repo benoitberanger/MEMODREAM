@@ -30,9 +30,9 @@ end
 
 switch S.Task
     case 'DualTask_Complex'
-        SequenceFingers = '4 2 5 3 5 2 4 3';
+        SequenceFingers = '42535243';
     case 'DualTask_Simple'
-        SequenceFingers = '5 4 3 2';
+        SequenceFingers = '5432';
 end
 
 Paradigme = { 'Rest' RestDuration [] [] }; % initilaise the container
