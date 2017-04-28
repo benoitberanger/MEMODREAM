@@ -21,7 +21,7 @@ DataPath = [ fileparts(fileparts(pwd)) filesep 'data' filesep Subject filesep];
 
 KbName('UnifyKeyNames');
 
-keys = {'space' 'escape' 't' 'b' 'y' 'g' 'r'};
+keys = {'space' 'escape' 't' 'b' 'y' 'g' 'r' 'd' 'e' 'n' 'z' };
 esc = KbName('escape');
 
 KL = KbLogger(KbName(keys) , keys);
