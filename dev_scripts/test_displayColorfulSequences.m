@@ -52,6 +52,8 @@ KbVect_diff = zeros(size(Left));
 
 fprintf('Sequence to perform : %s \n',seq_spaced)
 
+block = [];
+
 while ~keyCode(esc)
     
     [keyIsDown, secs, keyCode] = KbCheck;
@@ -71,6 +73,8 @@ while ~keyCode(esc)
         else
             fprintf('%d <-\n',new_input)
         end
+        
+        block = [block num2str(new_input)];
         
         %         msg = sprintf([repmat('%d ',[1 4]) '\n'],...
         %             keyCode(Left (5)),...
@@ -104,3 +108,6 @@ while ~keyCode(esc)
 end % while
 
 fprintf('\n')
+
+disp(block)
+N = length(regexp(block,seq))
