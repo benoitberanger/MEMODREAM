@@ -18,7 +18,7 @@ obj = Bip( fs , 440 ,  1 , 0.25 );
 
 InitializePsychSound(1);
 
-pahandle = PsychPortAudio('Open', [], [], 0, fs, 1 );
+pahandle = PsychPortAudio('Open', [], [], 0, fs, 2 );
 
 %%
 
