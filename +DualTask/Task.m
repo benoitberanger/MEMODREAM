@@ -72,6 +72,11 @@ try
             
             case 'StartTime'
                 
+                % Start audio capture immediately and wait for the capture to start.
+                % We set the number of 'repetitions' to zero,
+                % i.e. record until recording is manually stopped.
+                PsychPortAudio('Start', recPAh, 0, 0, 1);
+                WaitSecs(0.100);
                 Common.StartTimeEvent;
                 
             case 'StopTime'
@@ -110,16 +115,19 @@ try
                     vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
                 end
                 
-                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
                 
                 for b = 1 : length(bipseq)
                     
                     switch bipseq(b)
                         case 1 % high bip
                             last_onset = HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'HighBip'})
                         case 0 % low bip
                             last_onset = LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'LowBip'})
                     end
+                    
                     
                     % ### Video ### %
                     if S.Parameters.Type.Video
@@ -139,6 +147,13 @@ try
                 end % for
                 
         end % switch
+        
+        % Perform a fetch operation to get all data from the capture engine:
+        audiodata = PsychPortAudio('GetAudioData', recPAh);
+        % Sore audio data
+        if evt > 1
+            ER.Data{evt,5} = audiodata;
+        end
         
         % This flag comes from Common.Interrupt, if ESCAPE is pressed
         if Exit_flag

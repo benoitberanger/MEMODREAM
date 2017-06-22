@@ -365,6 +365,60 @@ if strcmp(S.EyelinkMode,'On')
 end
 
 
+%% Plot a summpup of everything that happened
+
+% Do a normal plotStim
+plotStim(S.TaskData.EP,S.TaskData.ER,S.TaskData.KL)
+
+% Plot the audio recordings
+switch Task
+    
+    case {'DualTask_Complex','DualTask_Simple'}
+        
+        fullAudioSamples = [];
+        for evt = 1:length(S.TaskData.ER.Data)
+            fullAudioSamples = [fullAudioSamples S.TaskData.ER.Data{evt,5}]; %#ok<AGROW>
+        end
+        fullAudioSamples = fullAudioSamples/max(abs(fullAudioSamples)) + 0.5; % normalize
+        timeAudioSamples = (1:1:(length(fullAudioSamples)))/S.Parameters.Audio.SamplingRate;
+        
+        plot(timeAudioSamples,fullAudioSamples);
+        
+end
+
+
+% % Do a normal plotStim
+% plotStim(S.TaskData.EP,S.TaskData.ER,S.TaskData.KL)
+% 
+% % Copy plotStim figure into another subplot, then close the original
+% stim_fig = gcf;
+% figure; % new figure
+% stim_ax = subplot(2,1,1);
+% copyobj(allchild(get(stim_fig,'CurrentAxes')), stim_ax)
+% close(stim_fig);
+% ScaleAxisLimits(stim_ax)
+% 
+% 
+% % Plot the audio recordings
+% specific_ax = subplot(2,1,2);
+% switch Task
+%     
+%     case {'DualTask_Complex','DualTask_Simple'}
+%         
+%         fullAudioSamples = [];
+%         for evt = 1:length(S.TaskData.ER.Data)
+%             fullAudioSamples = [fullAudioSamples S.TaskData.ER.Data{evt,5}]; %#ok<AGROW>
+%         end
+%         timeAudioSamples = (1:1:(length(fullAudioSamples)))/S.Parameters.Audio.SamplingRate;
+%         
+%         plot(specific_ax,...
+%             timeAudioSamples,fullAudioSamples);
+%         
+% end
+% 
+% linkaxes([stim_ax specific_ax],'x')
+
+
 %% Ready for another run
 
 set(handles.text_LastFileNameAnnouncer,'Visible','on')

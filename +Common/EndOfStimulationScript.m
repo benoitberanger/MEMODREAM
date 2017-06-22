@@ -11,7 +11,8 @@ TaskData.ER = ER;
 
 % Response Recorder
 RR.ClearEmptyEvents;
-RR.MakeBlocks;
+RR.ComputeDurations;
+% RR.MakeBlocks;
 RR.BuildGraph;
 TaskData.RR = RR;
 

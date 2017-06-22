@@ -1,7 +1,7 @@
 %% Prepare event record
 
 % Create
-ER = EventRecorder( { 'event_name' , 'onset(s)' , 'durations(s)' , 'results' } , size(EP.Data,1) );
+ER = EventRecorder( { 'event_name' , 'onset(s)' , 'durations(s)' , 'sequence_results' , 'voice_data' } , size(EP.Data,1) );
 
 % Prepare
 ER.AddStartTime( 'StartTime' , 0 );
@@ -10,7 +10,7 @@ ER.AddStartTime( 'StartTime' , 0 );
 %% Response recorder
 
 % Create
-RR = EventRecorder( { 'event_name' , 'onset(s)' , 'duration(s)' , 'content' } , 50000 ); % high arbitrary value : preallocation of memory
+RR = EventRecorder( { 'event_name' , 'onset(s)' , 'duration(s)' , 'content' } , 5000 ); % high arbitrary value : preallocation of memory
 
 % Prepare
 RR.AddEvent( { 'StartTime' , 0 , 0 , [] } );

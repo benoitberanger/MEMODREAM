@@ -7,7 +7,7 @@ if S.Parameters.Type.Video
 end
 % vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
-ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
+ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
     KL.GetQueue;
