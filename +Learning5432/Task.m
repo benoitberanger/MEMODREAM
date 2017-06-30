@@ -1,11 +1,14 @@
-function [ TaskData ] = Task( S )
+function [ TaskData ] = Task
+global S
 
 try
     %% Shortcuts
     
     % ### Video ### %
     if S.Parameters.Type.Video
-        wPtr    = S.PTB.wPtr;              % window pointer
+        wPtr = S.PTB.wPtr;              % window pointer
+    else
+        wPtr = [];
     end
     playPAh = S.PTB.Playback_pahandle; % playback audio pointer
     recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
@@ -13,12 +16,12 @@ try
     
     %% Parallel port
     
-    Common.PrepareParPort;
+    TaskData.ParPortMessages = Common.PrepareParPort;
     
     
     %% Tunning of the task
     
-    [ EP ] = Learning5432.Planning( S );
+    [ EP ] = Learning5432.Planning;
     
     % End of preparations
     EP.BuildGraph;
@@ -27,12 +30,12 @@ try
     
     %% Prepare event record and keybinf logger
     
-    Common.PrepareRecorders;
+    [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
     %% Record movie
     
-    Common.Movie.CreateMovie;
+    moviePtr = Common.Movie.CreateMovie;
     
     
     %% Start recording eye motions
@@ -44,36 +47,37 @@ try
     
     % ### Video ### %
     if S.Parameters.Type.Video
-        Common.PrepareHandsFingers
-        Common.PrepareFixationCross
+        [ LeftHand, RightHand ] = Common.PrepareHandsFingers ;
+        [ WhiteCross          ] = Common.PrepareFixationCross;
+    else
+        LeftHand   = [];
+        RightHand  = [];
+        WhiteCross = [];
     end
     
-    Common.PrepareGoStop
+    [ GoGo, StopStop ] = Common.PrepareGoStop;
     
     
     %% Go
     
     % Initialize some varibles
-    pp = 0;
-    keyCode = zeros(1,256);
-    secs = GetSecs;
     Exit_flag = 0;
     from = 1;
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
         
-        Common.CommandWindowDisplay;
+        Common.CommandWindowDisplay( EP, evt ) ;
         
         switch EP.Data{evt,1}
             
             case 'StartTime'
                 
-                Common.StartTimeEvent;
+                StartTime = Common.StartTimeEvent( WhiteCross );
                 
             case 'StopTime'
                 
-                Common.StopTimeEvent;
+                [ ER, RR, StopTime ] = Common.StopTimeEvent( EP, ER, RR, StartTime, evt );
                 
             case 'Rest'
                 
@@ -84,7 +88,7 @@ try
                 
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
-                Common.ControlConditionScript
+                [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, GoGo, StopStop, evt );
                 
                 
             otherwise
@@ -98,7 +102,7 @@ try
                 % ### Video ### %
                 if S.Parameters.Type.Video
                     
-                    Common.DrawHand
+                    Common.DrawHand( EP, LeftHand, RightHand )
                     
                     Screen('DrawingFinished',wPtr);
                     vbl = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
@@ -107,7 +111,7 @@ try
                     vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
                 end
                 
-                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] []})
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
                 
                 needFlip = 0;
                 
@@ -122,13 +126,16 @@ try
                 else
                     PTBtimeLimit = StartTime + EP.Data{evt,2} + timeLimit - S.PTB.anticipation*16;
                 end
-                Common.DisplayInputsInCommandWindow
+                [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, PTBtimeLimit, evt, StartTime );
+                if Exit_flag
+                    break
+                end
                 
         end % switch
         
         % This flag comes from Common.Interrupt, if ESCAPE is pressed
         if Exit_flag
-            break %#ok<*UNRCH>
+            break
         end
         
     end % for
@@ -136,15 +143,15 @@ try
     
     %% End of stimulation
     
-    Common.EndOfStimulationScript;
+    TaskData = Common.EndOfStimulation( TaskData, EP, ER, RR, KL, StartTime, StopTime );
     
-    Common.Movie.FinalizeMovie;
+    Common.Movie.FinalizeMovie( moviePtr );
     
     
 catch err %#ok<*NASGU>
     
-    Common.Catch;
+    Common.Catch( err );
     
 end
 
-end
+end % function

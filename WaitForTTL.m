@@ -1,4 +1,5 @@
-function [ TriggerTime ] = WaitForTTL( S )
+function [ TriggerTime ] = WaitForTTL
+global S
 
 if strcmp(S.OperationMode,'Acquisition')
     

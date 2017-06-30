@@ -1,3 +1,6 @@
+function FinalizeMovie( moviePtr )
+global S
+
 switch S.RecordVideo
     case 'On'
         Screen('FinalizeMovie', moviePtr);
@@ -5,3 +8,5 @@ switch S.RecordVideo
     otherwise
         error('S.RecordVideo ?')
 end
+
+end % function

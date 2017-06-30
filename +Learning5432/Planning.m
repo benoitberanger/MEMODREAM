@@ -1,4 +1,5 @@
-function [ EP ] = Planning( S )
+function [ EP ] = Planning
+global S
 
 %% Paradigme
 
@@ -78,3 +79,5 @@ if nargout < 1
     EP.Plot
     
 end
+
+end % function

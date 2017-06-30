@@ -9,4 +9,4 @@ function [ Pixels ] = va2pix( VisualAngle , SubjectDistance , ScreenWidthM , Scr
 
 Pixels = SubjectDistance * tan(VisualAngle*pi/180) / (ScreenWidthM/ScreenWidthPx);
 
-end
+end % function

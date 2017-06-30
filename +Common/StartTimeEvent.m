@@ -1,4 +1,6 @@
-global reverseStr
+function StartTime = StartTimeEvent(  WhiteCross )
+
+global S  reverseStr
 reverseStr = '';
 
 switch S.OperationMode
@@ -28,4 +30,6 @@ if S.Parameters.Type.Video
 end
 
 % Synchronization
-StartTime = WaitForTTL( S );
+StartTime = WaitForTTL;
+
+end % function

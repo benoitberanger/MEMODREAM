@@ -1,3 +1,5 @@
+function DrawHand( EP, LeftHand, RightHand )
+
 switch EP.Data{evt,1}
     case 'Free'
         LeftHand.Draw;
@@ -10,3 +12,5 @@ switch EP.Data{evt,1}
         LeftHand.Draw;
     otherwise
 end
+
+end % function

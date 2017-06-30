@@ -1,13 +1,16 @@
-vbl = StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+function [ ER, from, Exit_flag, StopTime ] = ControlCondition( EP, ER, RR, KL, StartTime, from, GoGo, StopStop, evt )
+global S
+
+stopOnset = StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
 % ### Video ### %
 if S.Parameters.Type.Video
-    Screen('DrawingFinished',wPtr);
-    Screen('Flip',wPtr,  StartTime + EP.Data{evt,2} - S.PTB.slack);
+    Screen('DrawingFinished', S.PTB.wPtr);
+    Screen('Flip', S.PTB.wPtr,  StartTime + EP.Data{evt,2} - S.PTB.slack);
 end
 % vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
-ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
+ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
     KL.GetQueue;
@@ -35,12 +38,19 @@ end
 
 % The WHILELOOP below is a trick so we can use ESCAPE key to quit
 % earlier.
+keyCode = zeros(1,256);
+secs = stopOnset;
 while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > PTBtimeLimit ) )
     [~, secs, keyCode] = KbCheck;
 end
 
-Common.Interrupt
+[ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+if Exit_flag
+    return
+end
 
 if ~strcmp(EP.Data{evt+1,1},'StopTime')
     GoGo.Playback(StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation);
 end
+
+end % function

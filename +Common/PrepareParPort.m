@@ -1,3 +1,6 @@
+function ParPortMessages = PrepareParPort
+global S
+
 switch S.ParPort
     
     case 'On'
@@ -22,4 +25,4 @@ msg.wav         = 2^4; % 16
 % Pulse duration
 msg.duration             = 0.005; % seconds
 
-TaskData.ParPortMessages = msg;
+ParPortMessages = msg;

@@ -1,3 +1,5 @@
+function SendParPortMessage( S, EP )
+
 if strcmp( S.ParPort , 'On' )
     
     pp = msg.(EP.Data{evt,1});
@@ -8,3 +10,5 @@ if strcmp( S.ParPort , 'On' )
     WriteParPort( 0 );
     
 end
+
+end % function

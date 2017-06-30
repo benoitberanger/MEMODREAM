@@ -1,6 +1,6 @@
-function [ PTB ] = StartPTB( S )
+function [ PTB ] = StartPTB
 % STARTPTB starts audio and video systems of PTB
-
+global S
 
 %% Echo in command window
 

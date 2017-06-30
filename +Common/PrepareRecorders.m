@@ -1,3 +1,6 @@
+function [ ER, RR, KL ] = PrepareRecorders( EP )
+global S
+
 %% Prepare event record
 
 % Create
@@ -26,3 +29,5 @@ KL = KbLogger( ...
 
 % Start recording events
 KL.Start;
+
+end % function

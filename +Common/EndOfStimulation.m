@@ -1,3 +1,6 @@
+function TaskData = EndOfStimulation( TaskData, EP, ER, RR, KL, StartTime, StopTime )
+global S
+
 %% End of stimulation
 
 % EventRecorder
@@ -66,7 +69,7 @@ switch S.ParPort
     
     case 'On'
         CloseParPort;
-
+        
     case 'Off'
         
 end

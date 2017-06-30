@@ -1,4 +1,6 @@
-function [ names , onsets , durations ] = SPMnod( S )
+function [ names , onsets , durations ] = SPMnod
+global S
+
 %SPMNOD Build 'names', 'onsets', 'durations' for SPM
 
 EchoStart(mfilename)

@@ -1,3 +1,6 @@
+function [ Exit_flag, StopTime ] = DisplayInputsInCommandWindow( EP, ER, RR, PTBtimeLimit, evt, StartTime )
+global S
+
 % 1 : display like "0 1 0 0 0 | 0 0 0 0 0 ", single ligne refreshed
 % 2 : (multiline display)
 %
@@ -9,6 +12,9 @@
 % 3 <-
 % 4 <-
 % 5
+
+Exit_flag = 0;
+StopTime = [];
 
 dislpayKind = 2;
 
@@ -23,11 +29,12 @@ switch dislpayKind
         Left = S.Parameters.Fingers.Left; % shortcut
         
         KbVect_prev = zeros(size(Left));
-        KbVect_curr = zeros(size(Left));
-        KbVect_diff = zeros(size(Left));
+        % KbVect_curr = zeros(size(Left));
+        % KbVect_diff = zeros(size(Left));
         
 end
 
+secs = GetSecs;
 while secs < PTBtimeLimit
     
     [keyIsDown, secs, keyCode] = KbCheck;
@@ -95,14 +102,17 @@ while secs < PTBtimeLimit
                     LeftFingers. Draw(l);
                 end
                 
-                Screen('DrawingFinished',wPtr);
-                Screen('Flip',wPtr);
+                Screen('DrawingFinished',S.PTB.wPtr);
+                Screen('Flip'           ,S.PTB.wPtr);
                 
             end
             
         end
         
-        Common.Interrupt
+        [ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+        if Exit_flag
+            return
+        end
         
     end
     
@@ -113,8 +123,8 @@ while secs < PTBtimeLimit
             
             Common.DrawHand
             
-            Screen('DrawingFinished',wPtr);
-            Screen('Flip',wPtr);
+            Screen('DrawingFinished',S.PTB.wPtr);
+            Screen('Flip'           ,S.PTB.wPtr);
             
         end
         
@@ -123,3 +133,5 @@ while secs < PTBtimeLimit
     end
     
 end % while
+
+end % function

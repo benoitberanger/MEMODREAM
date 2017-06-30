@@ -29,4 +29,4 @@ results.speed = length(seq)/duration; % clicks per seconds
 completSeq = regexp(seq,sequence);
 results.completSeq = length(completSeq);
 
-end
+end % function

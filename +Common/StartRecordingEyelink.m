@@ -1,3 +1,6 @@
+function StartRecordingEyelink
+global S
+
 % Eyelink mode 'On' ?
 switch S.EyelinkMode
     case 'On'
@@ -16,3 +19,5 @@ switch S.EyelinkMode
     case 'Off'
     otherwise
 end
+
+end % function

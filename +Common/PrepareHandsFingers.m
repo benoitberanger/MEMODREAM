@@ -1,3 +1,6 @@
+function [ LeftHand, RightHand ] = PrepareHandsFingers
+global S
+
 %% Load and prepare sprites for the hands
 
 img_path = 'img';
@@ -6,10 +9,10 @@ img_file = [ img_path filesep 'left_hand.png' ];
 hand_color = [0 128 255 255]; % [R G B a] from 0 to 255
 
 LeftHand  = Hand(img_file, hand_color, false);
-LeftHand. MakeTexture(wPtr);
+LeftHand. MakeTexture( S.PTB.wPtr );
 
 RightHand = Hand(img_file, hand_color, true );
-RightHand.MakeTexture(wPtr);
+RightHand.MakeTexture( S.PTB.wPtr );
 
 
 %% Scale and shift the Hands
@@ -45,3 +48,5 @@ RightFingers.FlipLR;
 
 LeftFingers.UpdatePos;
 RightFingers.UpdatePos;
+
+end % function
