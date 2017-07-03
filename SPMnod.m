@@ -32,6 +32,10 @@ try
                 ''
                 };
             
+        case 'SpeedTest'
+            names = {
+                ''
+                };
     end
     
     % 'onsets' & 'durations' for SPM
@@ -135,4 +139,4 @@ end
 
 EchoStop(mfilename)
 
-end
+end % function

@@ -1,12 +1,13 @@
 function MEMODREAM_main(hObject, ~)
+% MEMODREAM_main is the main program, calling the different tasks and
+% routines, accoding to the paramterts defined in the GUI
+
+
+%% GUI : open a new one or retrive data from the current one
 
 if nargin == 0
     
     MEMODREAM_GUI;
-    
-    %     fprintf('\n')
-    %     fprintf('Use %s to start the GUI.','MEMODREAM_GUI.m');
-    %     fprintf('\n')
     
     return
     
@@ -14,14 +15,19 @@ end
 
 handles = guidata(hObject); % retrieve GUI data
 
+
+%% Clean the environment
+
 clc
 sca
 
-% Initialize the main structure
+
+%% Initialize the main structure
+
 global S
 S               = struct; % S is the main structure, containing everything usefull, and used everywhere
 S.TimeStamp     = datestr(now, 'yyyy-mm-dd HH:MM'); % readable
-S.TimeStampFile = datestr(now, 30); % to sort automatically by time of creation
+S.TimeStampFile = datestr(now, 30                ); % to sort automatically by time of creation
 
 
 %% Task selection
@@ -39,6 +45,9 @@ switch get(hObject,'Tag')
         
     case 'pushbutton_DualTask_Simple'
         Task = 'DualTask_Simple';
+        
+    case 'pushbutton_SpeedTest'
+        Task = 'SpeedTest';
         
     otherwise
         error('MEMODREAM:TaskSelection','Error in Task selection')
@@ -249,7 +258,7 @@ end
 
 %% Get stimulation parameters
 
-S.Parameters = GetParameters( S );
+S.Parameters = GetParameters;
 
 % Screen mode selection
 AvalableDisplays = get(handles.listbox_Screens,'String');
@@ -297,6 +306,9 @@ switch Task
         
     case 'DualTask_Simple'
         TaskData = DualTask.Task;
+        
+    case 'SpeedTest'
+        TaskData = SpeedTest.Task;
         
     otherwise
         error('MEMODREAM:Task','Task ?')

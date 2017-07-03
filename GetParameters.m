@@ -1,5 +1,6 @@
-function [ Parameters ] = GetParameters( S )
+function [ Parameters ] = GetParameters
 % GETPARAMETERS Prepare common parameters
+global S
 
 fprintf('\n')
 fprintf('Response buttuns (fORRP 932) : \n')
@@ -7,6 +8,7 @@ fprintf('USB \n')
 fprintf('HHSC - 2x4 - CYL \n')
 fprintf('HID NAR BYGRT \n')
 fprintf('\n')
+
 
 %% Echo in command window
 

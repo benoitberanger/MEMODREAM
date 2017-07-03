@@ -10,13 +10,12 @@ try
     else
         wPtr = [];
     end
-    playPAh = S.PTB.Playback_pahandle; % playback audio pointer
     recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     
     
     %% Parallel port
     
-    ParPortMessages = Common.PrepareParPort;
+    TaskData.ParPortMessages = Common.PrepareParPort;
     
     
     %% Tunning of the task
@@ -105,8 +104,6 @@ try
                 v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+0.5;
                 v_onset = v(1:end-1);
                 
-                needFlip = 0;
-                revreset = 1;
                 
                 % ### Video ### %
                 if S.Parameters.Type.Video
@@ -178,7 +175,7 @@ try
     Common.Movie.FinalizeMovie( moviePtr );
     
     
-catch err %#ok<*NASGU>
+catch err
     
     Common.Catch( err );
     

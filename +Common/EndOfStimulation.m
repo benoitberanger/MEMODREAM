@@ -4,13 +4,20 @@ global S
 %% End of stimulation
 
 % EventRecorder
-if size(EP.Data,2)>3
-    EP.Data(:,4:end) = [];
-end
+% if size(EP.Data,2)>3
+%     EP.Data(:,4:end) = [];
+% end
 ER.ClearEmptyEvents;
 ER.ComputeDurations;
 ER.BuildGraph;
 TaskData.ER = ER;
+
+switch S.Task
+    case 'SpeedTest'
+        EP.Data(:,1:3) = ER.Data(:,1:3);
+        EP.BuildGraph;
+        TaskData.EP = EP;
+end
 
 % Response Recorder
 RR.ClearEmptyEvents;
@@ -88,3 +95,5 @@ switch S.OperationMode
         plotDelay
         
 end
+
+end % function

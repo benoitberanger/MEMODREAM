@@ -21,6 +21,8 @@ if ~strcmp(EP.Data{evt-1,1},'StartTime')
             Side = 'L';
         case 'Learning5432'
             Side = EP.Data{evt-1,1};
+        case 'SpeedTest'
+            Side = 'L';
     end
     results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, Side, EP.Data{evt-1,3}, from, KL.EventCount, KL);
     from = KL.EventCount;
@@ -31,9 +33,9 @@ end
 
 % ### Video ### %
 if S.Parameters.Type.Video
-    PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - StopStop.duration - S.PTB.slack;
+    PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.slack;
 else
-    PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - StopStop.duration - S.PTB.anticipation;
+    PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation;
 end
 
 % The WHILELOOP below is a trick so we can use ESCAPE key to quit
@@ -50,7 +52,7 @@ if Exit_flag
 end
 
 if ~strcmp(EP.Data{evt+1,1},'StopTime')
-    GoGo.Playback(StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation);
+    GoGo.Playback(PTBtimeLimit);
 end
 
 end % function
