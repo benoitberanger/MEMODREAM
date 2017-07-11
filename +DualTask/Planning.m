@@ -11,14 +11,16 @@ end
 
 switch S.Environement
     case 'Training'
-        NrBlocks = 1;
+        NrBlocks      = 1;
+        RestDuration  = 5; % seconds
     case 'MRI'
-        NrBlocks = 4;
+        NrBlocks      = 4;
+        RestDuration  = 15; % seconds
 end
 
 BLockDuration = 30; % seconds
-NrHighLow     = 10;
-RestDuration  = 15;
+NrHighLow     = 7;
+
 switch S.OperationMode
     case 'Acquisition'
     case 'FastDebug'
@@ -31,7 +33,7 @@ end
 
 switch S.Task
     case 'DualTask_Complex'
-        SequenceFingers = '42535243';
+        SequenceFingers = S.Sequence;
     case 'DualTask_Simple'
         SequenceFingers = '5432';
 end

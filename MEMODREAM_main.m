@@ -100,22 +100,31 @@ end
 S.OperationMode = OperationMode;
 
 
-%% Record video ?
-% Disabled in the GUI for the moment
+%% Name modulation selection
 
-% switch get(get(handles.uipanel_RecordVideo,'SelectedObject'),'Tag')
-%     case 'radiobutton_RecordOn'
-%         RecordVideo          = 'On';
-%         VideoName            = [ get(handles.edit_RecordName,'String') '.mov'];
-%         S.VideoName = VideoName;
-%     case 'radiobutton_RecordOff'
-RecordVideo          = 'Off';
-%     otherwise
-%         warning('MEMODREAM:RecordVideo','Error in Record Video')
-% end
+switch get(get(handles.uipanel_NameModulation,'SelectedObject'),'Tag')
+    case 'radiobutton_Start'
+        NameModulation = 'Start';
+    case 'radiobutton_Pre'
+        NameModulation = 'Pre';
+    case 'radiobutton_Post'
+        NameModulation = 'Post';
+    case 'radiobutton_Stop'
+        NameModulation = 'Stop';
+    otherwise
+        warning('MEMODREAM:NameModulation','Error in Name Modulation')
+end
 
-S.RecordVideo = RecordVideo;
+S.NameModulation = NameModulation;
 
+
+%% Sequence
+
+Sequence = get(handles.edit_Sequence,'String');
+if isempty(Sequence)
+    error('Sequence is empty')
+end
+S.Sequence = Sequence;
 
 %% Subject ID & Run number
 
@@ -127,7 +136,7 @@ end
 
 % Prepare path
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
-DataPathNoRun = sprintf('%s_%s_%s_', SubjectID, Task, Environement);
+DataPathNoRun = sprintf('%s_%s_%s_%s_', SubjectID, Task, Environement, NameModulation);
 
 % Fetch content of the directory
 dirContent = dir(DataPath);
@@ -150,7 +159,7 @@ if isempty(LastRunNumber)
 end
 RunNumber = num2str(LastRunNumber + 1);
 
-DataFile = sprintf('%s%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, RunNumber );
+DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, RunNumber );
 
 S.SubjectID = SubjectID;
 S.RunNumber = RunNumber;
@@ -190,58 +199,6 @@ end
 
 handles.ParPort    = ParPort;
 S.ParPort = ParPort;
-
-
-%% Check if Eyelink toolbox is available
-
-switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
-    
-    case 'radiobutton_EyelinkOff'
-        
-        EyelinkMode = 'Off';
-        
-    case 'radiobutton_EyelinkOn'
-        
-        EyelinkMode = 'On';
-        
-        % 'Eyelink.m' exists ?
-        status = which('Eyelink.m');
-        if isempty(status)
-            error('MEMODREAM:EyelinkToolbox','no ''Eyelink.m'' detected in the path')
-        end
-        
-        % Save mode ?
-        if strcmp(S.SaveMode,'NoSave')
-            error('MEMODREAM:SaveModeForEyelink',' \n ---> Save mode should be turned on when using Eyelink <--- \n ')
-        end
-        
-        % Eyelink connected ?
-        Eyelink.IsConnected
-        
-        % File name for the eyelink : 8 char maximum
-        switch Task
-            case 'EyelinkCalibration'
-                task = 'EC';
-            case 'Learning5432'
-                task = 'LE';
-            case 'DualTask_Complex'
-                task = 'D1';
-            case 'DualTask_Simple'
-                task = 'D2';
-            otherwise
-                error('MEMODREAM:Task','Task ?')
-        end
-        EyelinkFile = [ SubjectID task sprintf('%.2d',str2double(RunNumber)) ];
-        
-        S.EyelinkFile = EyelinkFile;
-        
-    otherwise
-        
-        warning('MEMODREAM:EyelinkMode','Error in Eyelink mode')
-        
-end
-
-S.EyelinkMode = EyelinkMode;
 
 
 %% Security : NEVER overwrite a file
@@ -293,11 +250,6 @@ EchoStart(Task)
 
 switch Task
     
-    case 'EyelinkCalibration'
-        Eyelink.Calibration( S.PTB.wPtr );
-        TaskData.ER.Data = {};
-        TaskData.IsEyelinkRreadyToRecord = 1;
-        
     case 'Learning5432'
         TaskData = Learning5432.Task;
         
@@ -360,24 +312,6 @@ assignin('base', 'onsets', onsets);
 assignin('base', 'durations', durations);
 
 
-%% End recording of Eyelink
-
-% Eyelink mode 'On' ?
-if strcmp(S.EyelinkMode,'On')
-    
-    % Stop recording and retrieve the file
-    Eyelink.StopRecording( S.EyelinkFile , S.DataPath )
-    
-    if ~strcmp(S.Task,'EyelinkCalibration')
-        
-        % Rename the file
-        movefile([S.DataPath filesep EyelinkFile '.edf'], [S.DataFile '.edf'])
-        
-    end
-    
-end
-
-
 %% Plot a summpup of everything that happened
 
 % Do a normal plotStim
@@ -392,7 +326,7 @@ switch Task
         for evt = 1:size(S.TaskData.ER.Data,1)
             fullAudioSamples = [fullAudioSamples S.TaskData.ER.Data{evt,5}]; %#ok<AGROW>
         end
-        fullAudioSamples = fullAudioSamples/max(abs(fullAudioSamples)) + 0.5; % normalize
+        fullAudioSamples = fullAudioSamples/max(abs(fullAudioSamples)) + 0.5; % normalize + shift : for display
         timeAudioSamples = (1:1:(length(fullAudioSamples)))/S.Parameters.Audio.SamplingRate;
         
         plot(timeAudioSamples,fullAudioSamples);
@@ -403,7 +337,7 @@ end
 %% Ready for another run
 
 set(handles.text_LastFileNameAnnouncer,'Visible','on')
-set(handles.text_LastFileName,'Visible','on')
+set(handles.text_LastFileName,         'Visible','on')
 set(handles.text_LastFileName,'String',DataFile(length(DataPath)+1:end))
 
 printResults(S.TaskData.ER)

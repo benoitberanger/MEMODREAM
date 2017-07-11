@@ -32,16 +32,6 @@ try
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
-    %% Record movie
-    
-    moviePtr = Common.Movie.CreateMovie;
-    
-    
-    %% Start recording eye motions
-    
-    Common.StartRecordingEyelink;
-    
-    
     %% Hands sprites and fingers patchs, fixation cross
     
     % ### Video ### %
@@ -171,8 +161,6 @@ try
     %% End of stimulation
     
     TaskData = Common.EndOfStimulation( TaskData, EP, ER, RR, KL, StartTime, StopTime );
-    
-    Common.Movie.FinalizeMovie( moviePtr );
     
     
 catch err

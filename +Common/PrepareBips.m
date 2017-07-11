@@ -6,7 +6,7 @@ global S
 LowFreq  = 440;       % Hz
 HighFreq = 2*LowFreq; % Hz
 
-BipDuration = 1; % second
+BipDuration = 0.5; % second
 
 InOutFadeRation = 0.25;
 

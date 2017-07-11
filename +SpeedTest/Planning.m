@@ -33,13 +33,11 @@ switch S.OperationMode
         RestDuration  = 5 ; % in seconds
 end
 
-SequenceFingers = '42535243';
-
 Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
 for n = 1:NrBlocks
     
-    Paradigme  = [ Paradigme ; { 'Sequence' BLockDuration SequenceFingers } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+    Paradigme  = [ Paradigme ; { 'Sequence' BLockDuration S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     
 end
 

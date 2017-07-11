@@ -31,7 +31,7 @@ else % Create the figure
         'Name'            , mfilename                , ...
         'NumberTitle'     , 'off'                    , ...
         'Units'           , 'Pixels'                 , ...
-        'Position'        , [20, 20, 600, 700] , ...
+        'Position'        , [20, 20, 600, 800] , ...
         'Tag'             , mfilename                );
     
     figureBGcolor = [0.9 0.9 0.9]; set(figHandle,'Color',figureBGcolor);
@@ -39,7 +39,7 @@ else % Create the figure
     editBGcolor   = [1.0 1.0 1.0];
     
     % Create GUI handles : pointers to access the graphic objects
-    handles = guihandles(figHandle);
+    H = guihandles(figHandle);
     
     
     %% Panel proportions
@@ -48,7 +48,7 @@ else % Create the figure
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 1 2 2 1 1 2]; % relative proportions of each panel, from bottom to top
+        [1 1 2 2 1 1 1 2]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -165,6 +165,45 @@ else % Create the figure
         'String','',...
         'BackgroundColor',figureBGcolor,...
         'Visible','Off');
+    
+    
+    %% Panel : Sequence
+    
+    p_seq.x = panelProp.xposP;
+    p_seq.w = panelProp.wP;
+    
+    panelProp.countP = panelProp.countP - 1;
+    p_seq.y = panelProp.yposP(panelProp.countP);
+    p_seq.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    
+    handles.uipanel_Sequence = uibuttongroup(handles.(mfilename),...
+        'Title','Sequence',...
+        'Units', 'Normalized',...
+        'Position',[p_seq.x p_seq.y p_seq.w p_seq.h],...
+        'BackgroundColor',figureBGcolor);
+    
+    p_seq.nbO    = 1; % Number of objects
+    p_seq.Ow     = 1/(p_seq.nbO + 1); % Object width
+    p_seq.countO = 0; % Object counter
+    p_seq.xposO  = @(countO) p_seq.Ow/(p_seq.nbO+1)*countO + (countO-1)*p_seq.Ow;
+    
+    
+    % ---------------------------------------------------------------------
+    % Edit : Sequence
+    
+    p_seq.countO = p_seq.countO + 1;
+    e_seq.x   = p_seq.xposO(p_seq.countO);
+    e_seq.y   = 0.1;
+    e_seq.w   = p_seq.Ow;
+    e_seq.h   = 0.8;
+    e_seq.tag = 'edit_Sequence';
+    handles.(e_seq.tag) = uicontrol(handles.uipanel_Sequence,...
+        'Style','edit',...
+        'Units', 'Normalized',...
+        'Position',[e_seq.x e_seq.y e_seq.w e_seq.h],...
+        'BackgroundColor',editBGcolor,...
+        'String','',...
+        'Callback',@edit_Seqeunce_Callback);
     
     
     %% Panel : Save mode
@@ -389,7 +428,8 @@ else % Create the figure
         'String','On',...
         'HorizontalAlignment','Center',...
         'Tag',r_elon.tag,...
-        'BackgroundColor',figureBGcolor);
+        'BackgroundColor',figureBGcolor,...
+        'Visible','off');
     
     
     % ---------------------------------------------------------------------
@@ -610,100 +650,102 @@ else % Create the figure
         'Callback',@MEMODREAM_main);
     
     
-    %% Panel : Record video
+    %% Panel : Name modulation
     
-    p_rv.x = panelProp.xposP;
-    p_rv.w = panelProp.wP;
+    p_nm.x = panelProp.xposP;
+    p_nm.w = panelProp.wP;
     
     panelProp.countP = panelProp.countP - 1;
-    p_rv.y = panelProp.yposP(panelProp.countP);
-    p_rv.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    p_nm.y = panelProp.yposP(panelProp.countP);
+    p_nm.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
     
-    handles.uipanel_RecordVideo = uibuttongroup(handles.(mfilename),...
-        'Title','Record mode',...
+    handles.uipanel_NameModulation = uibuttongroup(handles.(mfilename),...
+        'Title','Name modulation',...
         'Units', 'Normalized',...
-        'Position',[p_rv.x p_rv.y p_rv.w p_rv.h],...
+        'Position',[p_nm.x p_nm.y p_nm.w p_nm.h],...
         'BackgroundColor',figureBGcolor,...
-        'SelectionChangeFcn',@uipanel_RecordVideo_SelectionChangeFcn,...
-        'Visible','Off');
+        'Visible','on');
     
-    p_rv.nbO    = 3; % Number of objects
-    p_rv.Ow     = 1/(p_rv.nbO + 1); % Object width
-    p_rv.countO = 0; % Object counter
-    p_rv.xposO  = @(countO) p_rv.Ow/(p_rv.nbO+1)*countO + (countO-1)*p_rv.Ow;
+    p_nm.nbO    = 4; % Number of objects
+    p_nm.Ow     = 1/(p_nm.nbO + 1); % Object width
+    p_nm.countO = 0; % Object counter
+    p_nm.xposO  = @(countO) p_nm.Ow/(p_nm.nbO+1)*countO + (countO-1)*p_nm.Ow;
     
     
     % ---------------------------------------------------------------------
-    % RadioButton : Record video OFF
+    % RadioButton : Start
     
-    p_rv.countO = p_rv.countO + 1;
-    r_rvoff.x   = p_rv.xposO(p_rv.countO);
-    r_rvoff.y   = 0.1 ;
-    r_rvoff.w   = p_rv.Ow;
-    r_rvoff.h   = 0.8;
-    r_rvoff.tag = 'radiobutton_RecordOff';
-    handles.(r_rvoff.tag) = uicontrol(handles.uipanel_RecordVideo,...
+    p_nm.countO = p_nm.countO + 1;
+    r_start.x   = p_nm.xposO(p_nm.countO);
+    r_start.y   = 0.1 ;
+    r_start.w   = p_nm.Ow;
+    r_start.h   = 0.8;
+    r_start.tag = 'radiobutton_Start';
+    handles.(r_start.tag) = uicontrol(handles.uipanel_NameModulation,...
         'Style','radiobutton',...
         'Units', 'Normalized',...
-        'Position',[r_rvoff.x r_rvoff.y r_rvoff.w r_rvoff.h],...
-        'String','Off',...
+        'Position',[r_start.x r_start.y r_start.w r_start.h],...
+        'String','Start',...
         'HorizontalAlignment','Center',...
-        'Tag',r_rvoff.tag,...
+        'Tag',r_start.tag,...
         'BackgroundColor',figureBGcolor);
     
     
     % ---------------------------------------------------------------------
-    % RadioButton : Record video ON
+    % RadioButton : Pre
     
-    p_rv.countO = p_rv.countO + 1;
-    r_rvon.x   = p_rv.xposO(p_rv.countO);
-    r_rvon.y   = 0.1 ;
-    r_rvon.w   = p_rv.Ow;
-    r_rvon.h   = 0.8;
-    r_rvon.tag = 'radiobutton_RecordOn';
-    handles.(r_rvon.tag) = uicontrol(handles.uipanel_RecordVideo,...
+    p_nm.countO = p_nm.countO + 1;
+    r_pre.x   = p_nm.xposO(p_nm.countO);
+    r_pre.y   = 0.1 ;
+    r_pre.w   = p_nm.Ow;
+    r_pre.h   = 0.8;
+    r_pre.tag = 'radiobutton_Pre';
+    handles.(r_pre.tag) = uicontrol(handles.uipanel_NameModulation,...
         'Style','radiobutton',...
         'Units', 'Normalized',...
-        'Position',[r_rvon.x r_rvon.y r_rvon.w r_rvon.h],...
-        'String','On',...
+        'Position',[r_pre.x r_pre.y r_pre.w r_pre.h],...
+        'String','Pre',...
         'HorizontalAlignment','Center',...
-        'Tag',r_rvon.tag,...
+        'Tag',r_pre.tag,...
         'BackgroundColor',figureBGcolor);
     
     
     % ---------------------------------------------------------------------
-    % Text : File name
+    % RadioButton : Post
     
-    t_fn.x = p_rv.xposO(p_rv.countO) + p_rv.Ow/2;
-    t_fn.y = 0.2 ;
-    t_fn.w = p_rv.Ow;
-    t_fn.h = 0.4;
-    handles.text_RecordName = uicontrol(handles.uipanel_RecordVideo,...
-        'Style','text',...
+    p_nm.countO = p_nm.countO + 1;
+    r_post.x   = p_nm.xposO(p_nm.countO);
+    r_post.y   = 0.1 ;
+    r_post.w   = p_nm.Ow;
+    r_post.h   = 0.8;
+    r_post.tag = 'radiobutton_Post';
+    handles.(r_post.tag) = uicontrol(handles.uipanel_NameModulation,...
+        'Style','radiobutton',...
         'Units', 'Normalized',...
-        'Position',[t_fn.x t_fn.y t_fn.w t_fn.h],...
-        'String','File name : ',...
+        'Position',[r_post.x r_post.y r_post.w r_post.h],...
+        'String','Post',...
         'HorizontalAlignment','Center',...
-        'Visible','Off',...
+        'Tag',r_post.tag,...
         'BackgroundColor',figureBGcolor);
     
     
     % ---------------------------------------------------------------------
-    % Edit : File name
+    % RadioButton : Stop
     
-    p_rv.countO = p_rv.countO + 1;
-    e_fn.x = p_rv.xposO(p_rv.countO);
-    e_fn.y = 0.1 ;
-    e_fn.w = p_rv.Ow;
-    e_fn.h = 0.8;
-    handles.edit_RecordName = uicontrol(handles.uipanel_RecordVideo,...
-        'Style','edit',...
+    p_nm.countO = p_nm.countO + 1;
+    r_stop.x   = p_nm.xposO(p_nm.countO);
+    r_stop.y   = 0.1 ;
+    r_stop.w   = p_nm.Ow;
+    r_stop.h   = 0.8;
+    r_stop.tag = 'radiobutton_Stop';
+    handles.(r_stop.tag) = uicontrol(handles.uipanel_NameModulation,...
+        'Style','radiobutton',...
         'Units', 'Normalized',...
-        'Position',[e_fn.x e_fn.y e_fn.w e_fn.h],...
-        'String','',...
-        'Visible','Off',...
-        'BackgroundColor',editBGcolor,...
-        'HorizontalAlignment','Center');
+        'Position',[r_stop.x r_stop.y r_stop.w r_stop.h],...
+        'String','Stop',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_stop.tag,...
+        'BackgroundColor',figureBGcolor);
     
     
     %% Panel : Operation mode
@@ -803,6 +845,15 @@ else % Create the figure
     figPtr = figHandle;
     
     
+    %% Post opening routines
+    
+    % Set Eyelink OFF
+    targetObject = handles.(r_eloff.tag);
+    set(handles.uipanel_EyelinkMode,'SelectedObject',targetObject)
+    evtData.NewValue = targetObject;
+    uipanel_EyelinkMode_SelectionChangeFcn(targetObject, evtData)
+    
+    
 end
 
 if nargout > 0
@@ -818,33 +869,30 @@ end % function
 %% GUI Functions
 
 % -------------------------------------------------------------------------
-function uipanel_RecordVideo_SelectionChangeFcn(hObject, eventdata)
-handles = guidata(hObject);
+function edit_Seqeunce_Callback(hObject, ~)
 
-switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
-    case 'radiobutton_RecordOn'
-        set(handles.text_RecordName,'Visible','On')
-        set(handles.edit_RecordName,'Visible','On')
-    case 'radiobutton_RecordOff'
-        set(handles.text_RecordName,'Visible','off')
-        set(handles.edit_RecordName,'Visible','off')
+sequence_str = get(hObject,'String');
+
+if length(sequence_str) ~= 5
+    set(hObject,'String','')
+    error('Sequence must be 5 non consecutive numbers')
 end
 
+sequence_vect = (  cellstr(sequence_str')' );
+sequence_vect = cellfun(@str2double,sequence_vect);
+if any(sequence_vect > 5  |  sequence_vect < 2  |  round(sequence_vect) ~= sequence_vect)
+    set(hObject,'String','')
+    error('Sequence must be numbers from 2 to 5 (positive integers)')
+end
+
+if any( diff(sequence_vect) == 0 )
+    set(hObject,'String','')
+    error('Sequence not have two identical consecutive numbers')
+end
+
+fprintf('Sequence OK : %s \n', sequence_str)
+
 end % function
-
-
-% % -------------------------------------------------------------------------
-% function edit_SessionNumber_Callback(hObject, ~)
-%
-% block = str2double(get(hObject,'String'));
-%
-% if block ~= round(block) || block < 1 || block > 4
-%     set(hObject,'String','1');
-%     error('Session number must be from 1 to 4')
-% end
-%
-% end % function
-
 
 % -------------------------------------------------------------------------
 function uipanel_EyelinkMode_SelectionChangeFcn(hObject, eventdata)
