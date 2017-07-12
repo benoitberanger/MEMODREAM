@@ -21,12 +21,6 @@ try
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
-    %% Hands sprites and fingers patchs, fixation cross
-    
-    % Just in case, for leagcy purpose
-    WhiteCross = [];
-    
-    
     %% Prepare High bip and Low bip
     
     [ GoGo  , StopStop ] = Common.PrepareGoStop;
@@ -47,15 +41,15 @@ try
         
         switch EP.Data{evt,1}
             
-            case 'StartTime'
+            case 'StartTime' % --------------------------------------------
                 
-                StartTime = Common.StartTimeEvent( WhiteCross );
+                StartTime = Common.StartTimeEvent;
                 
-            case 'StopTime'
+            case 'StopTime' % ---------------------------------------------
                 
                 [ ER, RR, StopTime ] = Common.StopTimeEvent( EP, ER, RR, StartTime, evt );
                 
-            case 'Rest'
+            case 'Rest' % -------------------------------------------------
                 
                 stopOnset = StopStop.Playback();
                 
@@ -90,7 +84,7 @@ try
                 end
                 
                 
-            case 'Sequence'
+            case 'Sequence' % ---------------------------------------------
                 
                 ER.AddEvent({EP.Data{evt,1} GetSecs-StartTime [] [] []})
                 

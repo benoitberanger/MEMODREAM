@@ -19,7 +19,7 @@ if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
     ShowCursor;
     Priority( S.PTB.oldLevel );
     
-    fprintf( 'ESCAPE key pressed\n')
+    fprintf( 'ESCAPE key pressed \n')
     
 else
     

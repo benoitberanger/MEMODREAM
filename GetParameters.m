@@ -15,83 +15,28 @@ fprintf('\n')
 EchoStart(mfilename)
 
 
-%% Scanner synchronization
-
-Parameters.Sync.DiscardVolume = 3;
-
-
 %% Paths
 
 Parameters.Path.wav = ['wav' filesep];
-Parameters.Path.img = ['img' filesep];
-
-
-%% Stimulation type switch
-
-Parameters.Type.Audio = 1;
-Parameters.Type.Video = 0;
 
 
 %% Set parameters
 
-if Parameters.Type.Video
-    
-    %%%%%%%%%%%%%%
-    %   Screen   %
-    %%%%%%%%%%%%%%
-    
-    Parameters.Video.ScreenWidthPx   = 1024;  % Number of horizontal pixel in MRI video system @ CENIR
-    Parameters.Video.ScreenHeightPx  = 768;   % Number of vertical pixel in MRI video system @ CENIR
-    Parameters.Video.ScreenFrequency = 60;    % Refresh rate (in Hertz)
-    Parameters.Video.SubjectDistance = 0.120; % m
-    Parameters.Video.ScreenWidthM    = 0.040; % m
-    Parameters.Video.ScreenHeightM   = 0.030; % m
-    
-    switch S.Task
-        
-        case 'Learning5432'
-            Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
-            
-        case 'DualTask_Complex'
-            Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
-        case 'DualTask_Simple'
-            Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
-            
-        case 'EyelinkCalibration'
-            Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
-            
-    end
-    
-    
-    %%%%%%%%%%%%
-    %   Text   %
-    %%%%%%%%%%%%
-    
-    Parameters.Text.Size  = 30;
-    Parameters.Text.Font  = 'Courier New';
-    Parameters.Text.Color = [255 255 255]; % [R G B] ( from 0 to 255 )
-    
-end
+%%%%%%%%%%%
+%  Audio  %
+%%%%%%%%%%%
 
-if Parameters.Type.Audio
-    
-    %%%%%%%%%%%
-    %  Audio  %
-    %%%%%%%%%%%
-    
-    Parameters.Audio.SamplingRate            = 44100; % Hz
-    
-    Parameters.Audio.Playback_Mode           = 1; % 1 = playback, 2 = record
-    Parameters.Audio.Playback_LowLatencyMode = 1; % {0,1,2,3,4}
-    Parameters.Audio.Playback_freq           = Parameters.Audio.SamplingRate ;
-    Parameters.Audio.Playback_Channels       = 2; % 1 = mono, 2 = stereo
-    
-    Parameters.Audio.Record_Mode             = 2; % 1 = playback, 2 = record
-    Parameters.Audio.Record_LowLatencyMode   = 1; % {0,1,2,3,4}
-    Parameters.Audio.Record_freq             = Parameters.Audio.SamplingRate;
-    Parameters.Audio.Record_Channels         = 1; % 1 = mono, 2 = stereo
-    
-end
+Parameters.Audio.SamplingRate            = 44100; % Hz
+
+Parameters.Audio.Playback_Mode           = 1; % 1 = playback, 2 = record
+Parameters.Audio.Playback_LowLatencyMode = 1; % {0,1,2,3,4}
+Parameters.Audio.Playback_freq           = Parameters.Audio.SamplingRate ;
+Parameters.Audio.Playback_Channels       = 2; % 1 = mono, 2 = stereo
+
+Parameters.Audio.Record_Mode             = 2; % 1 = playback, 2 = record
+Parameters.Audio.Record_LowLatencyMode   = 1; % {0,1,2,3,4}
+Parameters.Audio.Record_freq             = Parameters.Audio.SamplingRate;
+Parameters.Audio.Record_Channels         = 1; % 1 = mono, 2 = stereo
 
 
 %%%%%%%%%%%%%%

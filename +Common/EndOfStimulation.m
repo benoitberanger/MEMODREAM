@@ -61,10 +61,7 @@ assignin('base','KL',KL)
 assignin('base','TaskData',TaskData)
 
 
-%% Close all movies / textures / audio devices
-
-% Close all textures
-Screen('Close');
+%% Close all audio devices
 
 % Close the audio device
 PsychPortAudio('Close');

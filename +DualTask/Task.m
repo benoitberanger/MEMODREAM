@@ -4,12 +4,6 @@ global S
 try
     %% Shortcuts
     
-    % ### Video ### %
-    if S.Parameters.Type.Video
-        wPtr    = S.PTB.wPtr;              % window pointer
-    else
-        wPtr = [];
-    end
     recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     
     
@@ -32,19 +26,6 @@ try
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
-    %% Hands sprites and fingers patchs, fixation cross
-    
-    % ### Video ### %
-    if S.Parameters.Type.Video
-        [ LeftHand, RightHand ] = Common.PrepareHandsFingers ;
-        [ WhiteCross          ] = Common.PrepareFixationCross;
-    else
-        LeftHand   = [];
-        RightHand  = [];
-        WhiteCross = [];
-    end
-    
-    
     %% Prepare High bip and Low bip
     
     [ LowBip, HighBip  ] = Common.PrepareBips  ;
@@ -64,48 +45,32 @@ try
         
         switch EP.Data{evt,1}
             
-            case 'StartTime'
+            case 'StartTime' % --------------------------------------------
                 
                 % Start audio capture immediately and wait for the capture to start.
                 % We set the number of 'repetitions' to zero,
                 % i.e. record until recording is manually stopped.
                 PsychPortAudio('Start', recPAh, 0, 0, 1);
                 WaitSecs(0.100);
-                StartTime = Common.StartTimeEvent( WhiteCross );
+                StartTime = Common.StartTimeEvent;
                 
-            case 'StopTime'
+            case 'StopTime' % ---------------------------------------------
                 
                 [ ER, RR, StopTime ] = Common.StopTimeEvent( EP, ER, RR, StartTime, evt );
                 
-            case 'Rest'
-                
-                % ### Video ### %
-                if S.Parameters.Type.Video
-                    WhiteCross.Draw
-                end
-                
+            case 'Rest' % -------------------------------------------------
+               
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
                 [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, GoGo, StopStop, evt );
                 
-            case 'Sequence'
+            case 'Sequence' % ---------------------------------------------
                 
                 bipseq = EP.Data{evt,5};
                 v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+0.5;
                 v_onset = v(1:end-1);
                 
-                
-                % ### Video ### %
-                if S.Parameters.Type.Video
-                    
-                    Common.DrawHand( EP, LeftHand, RightHand );
-                    
-                    Screen('DrawingFinished',wPtr);
-                    onset = Screen('Flip',wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
-                    
-                else
-                    onset = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
-                end
+                onset = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
                 
                 ER.AddEvent({EP.Data{evt,1} onset-StartTime [] [] []})
                 
@@ -121,19 +86,12 @@ try
                     end
                     
                     
-                    % ### Video ### %
-                    if S.Parameters.Type.Video
-                        % Here we stop 3 frames before the expected next onset
-                        % because the while loop will make 2 flips, wich will
-                        % introduce a delay
-                        PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.ifi*3;
+                    if b ~= length(bipseq)
+                        PTBtimeLimit = StartTime + EP.Data{evt,2} + v_onset(b+1)   - S.PTB.anticipation;
                     else
-                        if b ~= length(bipseq)
-                            PTBtimeLimit = StartTime + EP.Data{evt,2} + v_onset(b+1)   - S.PTB.anticipation;
-                        else
-                            PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.anticipation*16;
-                        end
+                        PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.anticipation*16;
                     end
+                    
                     [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, PTBtimeLimit, evt, StartTime );
                     if Exit_flag
                         break

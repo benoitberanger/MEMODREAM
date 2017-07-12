@@ -217,27 +217,6 @@ end
 
 S.Parameters = GetParameters;
 
-% Screen mode selection
-AvalableDisplays = get(handles.listbox_Screens,'String');
-SelectedDisplay  = get(handles.listbox_Screens,'Value'  );
-S.Parameters.Video.ScreenMode = str2double( AvalableDisplays(SelectedDisplay) );
-
-
-%% Windowed screen ?
-
-switch get(handles.checkbox_WindowedScreen,'Value')
-    
-    case 1
-        WindowedMode = 'On';
-    case 0
-        WindowedMode = 'Off';
-    otherwise
-        warning('MEMODREAM:WindowedScreen','Error in WindowedScreen')
-        
-end
-
-S.WindowedMode = WindowedMode;
-
 
 %% Open PTB window & sound
 

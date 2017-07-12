@@ -82,53 +82,10 @@ while secs < PTBtimeLimit
     
     if keyIsDown
         
-        if any(keyCode(S.Parameters.Fingers.All))
-            
-            % ### Video ### %
-            if S.Parameters.Type.Video
-                
-                Common.DrawHand
-                
-                needFlip = 2;
-                
-                r = find(keyCode(S.Parameters.Fingers.Right));
-                l = find(keyCode(S.Parameters.Fingers.Left));
-                
-                if ~isempty(r)
-                    RightFingers.Draw(r);
-                end
-                
-                if ~isempty(l)
-                    LeftFingers. Draw(l);
-                end
-                
-                Screen('DrawingFinished',S.PTB.wPtr);
-                Screen('Flip'           ,S.PTB.wPtr);
-                
-            end
-            
-        end
-        
         [ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
         if Exit_flag
             return
         end
-        
-    end
-    
-    % ### Video ### %
-    if S.Parameters.Type.Video
-        
-        if needFlip == 1 % && ( secs < StartTime + EP.Data{evt,2} + timeLimit - S.PTB.slack*2 )
-            
-            Common.DrawHand
-            
-            Screen('DrawingFinished',S.PTB.wPtr);
-            Screen('Flip'           ,S.PTB.wPtr);
-            
-        end
-        
-        needFlip = needFlip - 1;
         
     end
     

@@ -3,11 +3,6 @@ global S
 
 stopOnset = StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
-% ### Video ### %
-if S.Parameters.Type.Video
-    Screen('DrawingFinished', S.PTB.wPtr);
-    Screen('Flip', S.PTB.wPtr,  StartTime + EP.Data{evt,2} - S.PTB.slack);
-end
 % vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
 ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
@@ -30,13 +25,7 @@ if ~strcmp(EP.Data{evt-1,1},'StartTime')
     disp(results)
 end
 
-
-% ### Video ### %
-if S.Parameters.Type.Video
-    PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.slack;
-else
-    PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation;
-end
+PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation;
 
 % The WHILELOOP below is a trick so we can use ESCAPE key to quit
 % earlier.
