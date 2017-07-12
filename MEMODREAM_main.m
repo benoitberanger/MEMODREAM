@@ -34,11 +34,14 @@ S.TimeStampFile = datestr(now, 30                ); % to sort automatically by t
 
 switch get(hObject,'Tag')
     
-    case 'pushbutton_EyelinkCalibration'
-        Task = 'EyelinkCalibration';
+    case 'pushbutton_Familiarization'
+        Task = 'Familiarization';
         
-    case 'pushbutton_Learning5432'
-        Task = 'Learning5432';
+    case 'pushbutton_Training'
+        Task = 'Training';
+        
+    case 'pushbutton_SpeedTest'
+        Task = 'SpeedTest';
         
     case 'pushbutton_DualTask_Complex'
         Task = 'DualTask_Complex';
@@ -46,8 +49,6 @@ switch get(hObject,'Tag')
     case 'pushbutton_DualTask_Simple'
         Task = 'DualTask_Simple';
         
-    case 'pushbutton_SpeedTest'
-        Task = 'SpeedTest';
         
     otherwise
         error('MEMODREAM:TaskSelection','Error in Task selection')
@@ -229,17 +230,20 @@ EchoStart(Task)
 
 switch Task
     
-    case 'Learning5432'
-        TaskData = Learning5432.Task;
+    case 'Familiarization'
+        TaskData = Familiarization.Task;
+        
+    case 'Training'
+        TaskData = Training.Task;
+        
+    case 'SpeedTest'
+        TaskData = SpeedTest.Task;
         
     case 'DualTask_Complex'
         TaskData = DualTask.Task;
         
     case 'DualTask_Simple'
         TaskData = DualTask.Task;
-        
-    case 'SpeedTest'
-        TaskData = SpeedTest.Task;
         
     otherwise
         error('MEMODREAM:Task','Task ?')
@@ -276,9 +280,6 @@ if strcmp(SaveMode,'SaveData') && strcmp(OperationMode,'Acquisition')
     
     save(DataFile, 'S', 'names', 'onsets', 'durations');
     save([DataFile '_SPM'], 'names', 'onsets', 'durations');
-    
-    % BrainVoyager data organization
-    % spm2bv( names , onsets , durations , S.DataFile )
     
 end
 

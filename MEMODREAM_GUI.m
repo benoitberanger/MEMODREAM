@@ -48,7 +48,7 @@ else % Create the figure
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 1 2 1 1 1 1 2]; % relative proportions of each panel, from bottom to top
+        [1 1 2 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -57,7 +57,7 @@ else % Create the figure
     panelProp.interWidth    = panelProp.unitWidth/panelProp.vectLength;
     
     panelProp.countP = panelProp.vectLength + 1;
-    panelProp.yposP  = @(countP) panelProp.unitWidth*sum(panelProp.vect(1:countP-1)) + 1*countP*panelProp.interWidth;
+    panelProp.yposP  = @(countP) panelProp.unitWidth*sum(panelProp.vect(1:countP-1)) + 0.8*countP*panelProp.interWidth;
     
     
     %% Panel : Subject & Run
@@ -328,8 +328,8 @@ else % Create the figure
         'BackgroundColor',figureBGcolor);
     
     
-    %% Parallel port
-
+    %% Panel : Parallel port
+    
     p_pp.x = panelProp.xposP;
     p_pp.w = panelProp.wP;
     
@@ -367,7 +367,7 @@ else % Create the figure
         'Value',1,...
         'Callback',@GUI.Checkbox_ParPort_Callback,...
         'CreateFcn',@GUI.Checkbox_ParPort_Callback);
-
+    
     
     %% Panel : Task
     
@@ -384,33 +384,60 @@ else % Create the figure
         'Position',[p_tk.x p_tk.y p_tk.w p_tk.h],...
         'BackgroundColor',figureBGcolor);
     
-    p_tk.nbO    = 3; % Number of objects
-    p_tk.Ow     = 1/(p_tk.nbO + 1); % Object width
-    p_tk.countO = 0; % Object counter
-    p_tk.xposO  = @(countO) p_tk.Ow/(p_tk.nbO+1)*countO + (countO-1)*p_tk.Ow;
+    p_tk.vect          = [ 2 0.5 3 3 ]; % Object relative widthn from left to right
+    p_tk.vectLength    = length(p_tk.vect);
+    p_tk.vectTotal     = sum(p_tk.vect);
+    p_tk.adjustedTotal = p_tk.vectTotal + 1;
+    p_tk.unitWidth     = 1/p_tk.adjustedTotal;
+    p_tk.interWidth    = p_tk.unitWidth/p_tk.vectLength;
+    
+    p_tk.countO = p_tk.vectLength + 1;
+    p_tk.xposO  = @(countP) p_tk.unitWidth*sum(p_tk.vect(1:countP-1)) + 0.8*countP*p_tk.interWidth;
+    
+    p_tk.countO = 0;
     
     buttun_y = 0.10;
     buttun_h = 0.80;
     
     
     % ---------------------------------------------------------------------
-    % Pushbutton : Learning5432
+    % Pushbutton : Familiarization
     
     p_tk.countO  = p_tk.countO + 1;
-    b_lear.x   = p_tk.xposO(p_tk.countO);
-    b_lear.y   = buttun_y;
-    b_lear.w   = p_tk.Ow;
-    b_lear.h   = buttun_h;
-    b_lear.tag = 'pushbutton_Learning5432';
-    handles.(b_lear.tag) = uicontrol(handles.uipanel_Task,...
+    b_fam.x   = p_tk.xposO(p_tk.countO);
+    b_fam.y   = buttun_y + buttun_h/2 * 1.05;
+    b_fam.w   = p_tk.unitWidth*p_tk.vect(p_tk.countO);
+    b_fam.h   = buttun_h/2 * 0.95;
+    b_fam.tag = 'pushbutton_Familiarization';
+    handles.(b_fam.tag) = uicontrol(handles.uipanel_Task,...
         'Style','pushbutton',...
         'Units', 'Normalized',...
-        'Position',[b_lear.x b_lear.y b_lear.w b_lear.h],...
-        'String','Learning5432',...
+        'Position',[b_fam.x b_fam.y b_fam.w b_fam.h],...
+        'String','Familiarization',...
         'BackgroundColor',buttonBGcolor,...
-        'Tag',b_lear.tag,...
+        'Tag',b_fam.tag,...
         'Callback',@MEMODREAM_main);
     
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Training
+    
+    b_train.x   = p_tk.xposO(p_tk.countO);
+    b_train.y   = buttun_y;
+    b_train.w   = p_tk.unitWidth*p_tk.vect(p_tk.countO);
+    b_train.h   = buttun_h/2 * 0.95;
+    b_train.tag = 'pushbutton_Training';
+    handles.(b_train.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_train.x b_train.y b_train.w b_train.h],...
+        'String','Training',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_train.tag,...
+        'Callback',@MEMODREAM_main);
+    
+    % To add space
+    p_tk.countO  = p_tk.countO + 1;
     
     % ---------------------------------------------------------------------
     % Pushbutton : SpeedTest
@@ -418,7 +445,7 @@ else % Create the figure
     p_tk.countO  = p_tk.countO + 1;
     b_speed.x   = p_tk.xposO(p_tk.countO);
     b_speed.y   = buttun_y;
-    b_speed.w   = p_tk.Ow;
+    b_speed.w   = p_tk.unitWidth*p_tk.vect(p_tk.countO);
     b_speed.h   = buttun_h;
     b_speed.tag = 'pushbutton_SpeedTest';
     handles.(b_speed.tag) = uicontrol(handles.uipanel_Task,...
@@ -438,7 +465,7 @@ else % Create the figure
     p_tk.countO = p_tk.countO + 1;
     b_dtC.x   = p_tk.xposO(p_tk.countO);
     b_dtC.y   = buttun_y + buttun_h/2 * 1.05;
-    b_dtC.w   = p_tk.Ow;
+    b_dtC.w   = p_tk.unitWidth*p_tk.vect(p_tk.countO);
     b_dtC.h   = buttun_h/2 * 0.95;
     b_dtC.tag = 'pushbutton_DualTask_Complex';
     handles.(b_dtC.tag) = uicontrol(handles.uipanel_Task,...
@@ -456,7 +483,7 @@ else % Create the figure
     
     b_dtS.x   = p_tk.xposO(p_tk.countO);
     b_dtS.y   = buttun_y;
-    b_dtS.w   = p_tk.Ow;
+    b_dtS.w   = p_tk.unitWidth*p_tk.vect(p_tk.countO);
     b_dtS.h   = buttun_h/2 * 0.95;
     b_dtS.tag = 'pushbutton_DualTask_Simple';
     handles.(b_dtS.tag) = uicontrol(handles.uipanel_Task,...
