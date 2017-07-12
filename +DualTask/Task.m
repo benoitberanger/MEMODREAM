@@ -26,11 +26,18 @@ try
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
-    %% Prepare High bip and Low bip
+   
+    %% Prepare audio objects
     
-    [ LowBip, HighBip  ] = Common.PrepareBips  ;
-    [ GoGo  , StopStop ] = Common.PrepareGoStop;
-    
+    [ LowBip       , HighBip        ] = Common.Audio.PrepareBips         ;
+    [ GoGo         , StopStop       ] = Common.Audio.PrepareGoStop       ;
+    [ SimpleSimple , ComplexComplex ] = Common.Audio.PrepareSimpleComplex;
+    audioObj.LowBip         = LowBip;
+    audioObj.HighBip        = HighBip;
+    audioObj.GoGo           = GoGo;
+    audioObj.StopStop       = StopStop;
+    audioObj.SimpleSimple   = SimpleSimple;
+    audioObj.ComplexComplex = ComplexComplex;
     
     %% Go
     
@@ -62,7 +69,7 @@ try
                
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
-                [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, GoGo, StopStop, evt );
+                [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, audioObj, evt, 'time' );
                 
             case 'Sequence' % ---------------------------------------------
                 
@@ -78,10 +85,10 @@ try
                     
                     switch bipseq(b)
                         case 1 % high bip
-                            last_onset = HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            last_onset = audioObj.HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
                             RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'HighBip'})
                         case 0 % low bip
-                            last_onset = LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            last_onset = audioObj.LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
                             RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'LowBip'})
                     end
                     

@@ -1,7 +1,12 @@
-function [ ER, from, Exit_flag, StopTime ] = ControlCondition( EP, ER, RR, KL, StartTime, from, GoGo, StopStop, evt )
+function [ ER, from, Exit_flag, StopTime ] = ControlCondition( EP, ER, RR, KL, StartTime, from, audioObj, evt, limitType )
 global S
 
-stopOnset = StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+switch limitType
+    case 'tap'
+        stopOnset = audioObj.StopStop.Playback();
+    case 'time'
+        stopOnset = audioObj.StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+end
 
 % vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 
@@ -9,23 +14,23 @@ ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
     KL.GetQueue;
-    switch S.Task
-        case 'DualTask_Complex'
-            Side = 'L';
-        case 'DualTask_Simple'
-            Side = 'L';
-        case 'Learning5432'
-            Side = EP.Data{evt-1,1};
-        case 'SpeedTest'
-            Side = 'L';
-    end
-    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, Side, EP.Data{evt-1,3}, from, KL.EventCount, KL);
+    %     switch S.Task
+    %         case 'DualTask_Complex'
+    %             Side = 'L';
+    %         case 'DualTask_Simple'
+    %             Side = 'L';
+    %         case 'Learning5432'
+    %             Side = EP.Data{evt-1,1};
+    %         case 'SpeedTest'
+    %             Side = 'L';
+    %     end
+    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, 'L', EP.Data{evt-1,3}, from, KL.EventCount, KL);
     from = KL.EventCount;
     ER.Data{evt-1,4} = results;
     disp(results)
 end
 
-PTBtimeLimit = StartTime + EP.Data{evt+1,2} - GoGo.duration - S.PTB.anticipation;
+PTBtimeLimit = stopOnset + EP.Data{evt,3} - audioObj.GoGo.duration - S.PTB.anticipation;
 
 % The WHILELOOP below is a trick so we can use ESCAPE key to quit
 % earlier.
@@ -41,7 +46,16 @@ if Exit_flag
 end
 
 if ~strcmp(EP.Data{evt+1,1},'StopTime')
-    GoGo.Playback(PTBtimeLimit);
+    
+    switch EP.Data{evt+1,1}
+        case 'Simple'
+            audioObj.SimpleSimple.Playback(PTBtimeLimit);
+        case 'Complex'
+            audioObj.ComplexComplex.Playback(PTBtimeLimit);
+        otherwise
+            error('')
+    end
+    
 end
 
 end % function

@@ -9,7 +9,17 @@ try
     
     %% Tunning of the task
     
-    [ EP ] = SpeedTest.Planning;
+    switch S.Task
+    
+    case 'Training'
+        [ EP ] = Training.Planning;
+        
+    case 'SpeedTest'
+        [ EP ] = SpeedTest.Planning;
+        
+    otherwise
+        error('MEMODREAM:SpeedTest','Task error...')
+    end
     
     % End of preparations
     EP.BuildGraph;
@@ -21,9 +31,14 @@ try
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
     
-    %% Prepare High bip and Low bip
+    %% Prepare audio objects
     
-    [ GoGo  , StopStop ] = Common.PrepareGoStop;
+    [ GoGo         , StopStop       ] = Common.Audio.PrepareGoStop       ;
+    [ SimpleSimple , ComplexComplex ] = Common.Audio.PrepareSimpleComplex;
+    audioObj.GoGo           = GoGo;
+    audioObj.StopStop       = StopStop;
+    audioObj.SimpleSimple   = SimpleSimple;
+    audioObj.ComplexComplex = ComplexComplex;
     
     
     %% Go
@@ -31,8 +46,6 @@ try
     % Initialize some varibles
     Exit_flag = 0;
     from      = 1;
-    
-    Left = S.Parameters.Fingers.Left; % shortcut
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
@@ -51,129 +64,17 @@ try
                 
             case 'Rest' % -------------------------------------------------
                 
-                stopOnset = StopStop.Playback();
+                % Wrapper for the control condition. It's a script itself,
+                % used across several tasks
+                [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, audioObj, evt, 'tap' );
                 
-                ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
+            otherwise % ---------------------------------------------------
                 
-                if ~strcmp(EP.Data{evt-1,1},'StartTime')
-                    KL.GetQueue;
-                    
-                    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, 'L', EP.Data{evt-1,3}, from, KL.EventCount, KL);
-                    from = KL.EventCount;
-                    ER.Data{evt-1,4} = results;
-                    disp(results)
-                end
+                vbl = WaitSecs('UntilTime',StartTime + ER.Data{evt-1,2} + EP.Data{evt-1,3} - S.PTB.anticipation);
                 
-                PTBtimeLimit = stopOnset + EP.Data{evt,3} - GoGo.duration - S.PTB.anticipation;
+                ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
                 
-                % The WHILELOOP below is a trick so we can use ESCAPE key to quit
-                % earlier.
-                keyCode = zeros(1,256);
-                secs = stopOnset;
-                while ~( keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII) || ( secs > PTBtimeLimit ) )
-                    [~, secs, keyCode] = KbCheck;
-                end
-                
-                [ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                if Exit_flag
-                    return
-                end
-                
-                if ~strcmp(EP.Data{evt+1,1},'StopTime')
-                    GoGo.Playback(PTBtimeLimit);
-                end
-                
-                
-            case 'Sequence' % ---------------------------------------------
-                
-                ER.AddEvent({EP.Data{evt,1} GetSecs-StartTime [] [] []})
-                
-                % 1 : display like "0 1 0 0 0 | 0 0 0 0 0 ", single ligne refreshed
-                % 2 : (multiline display)
-                %
-                % 5
-                % 4
-                % 3
-                % 2
-                % 2 <-
-                % 3 <-
-                % 4 <-
-                % 5
-                
-                dislpayKind = 2;
-                
-                switch dislpayKind
-                    
-                    case 2
-                        
-                        seq_num = EP.Data{evt,4}; % sequence
-                        
-                        next_input = seq_num(1); % initilization
-                        
-                        KbVect_prev = zeros(size(Left));
-                        % KbVect_curr = zeros(size(Left));
-                        % KbVect_diff = zeros(size(Left));
-                        
-                end
-                
-                tap = 0;
-                while tap < EP.Data{evt,3}
-                    
-                    [keyIsDown, ~, keyCode] = KbCheck;
-                    
-                    switch dislpayKind
-                        
-                        case 2
-                            
-                            KbVect_curr = keyCode(Left);
-                            KbVect_diff = KbVect_curr - KbVect_prev;
-                            KbVect_prev = KbVect_curr;
-                            
-                            new_input = find(KbVect_diff==1);
-                            
-                            if ~isempty(new_input) && isscalar(new_input)
-                                
-                                if new_input == str2double(next_input)
-                                    fprintf('%d\n',new_input)
-                                    seq_num = circshift(seq_num,[0 -1]);
-                                    next_input = seq_num(1);
-                                else
-                                    fprintf('%d <-\n',new_input)
-                                end
-                                tap = tap+1;
-                                
-                            end
-                            
-                        case 1
-                            
-                            msg = sprintf([repmat('%d ',[1 5]) '| ' repmat('%d ',[1 5]) '\n'],...
-                                keyCode(S.Parameters.Fingers.Left (5)),...
-                                keyCode(S.Parameters.Fingers.Left (4)),...
-                                keyCode(S.Parameters.Fingers.Left (3)),...
-                                keyCode(S.Parameters.Fingers.Left (2)),...
-                                keyCode(S.Parameters.Fingers.Left (1)),...
-                                keyCode(S.Parameters.Fingers.Right(1)),...
-                                keyCode(S.Parameters.Fingers.Right(2)),...
-                                keyCode(S.Parameters.Fingers.Right(3)),...
-                                keyCode(S.Parameters.Fingers.Right(4)),...
-                                keyCode(S.Parameters.Fingers.Right(5)) ...
-                                );
-                            revfprintf(msg,revreset)
-                            revreset = 0;
-                            
-                    end
-                    
-                    if keyIsDown
-                        
-                        [ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                        if Exit_flag
-                            return
-                        end
-                        
-                    end
-                    
-                end % while
-                
+                [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, 'tap', EP.Data{evt,3} );
                 if Exit_flag
                     break
                 end

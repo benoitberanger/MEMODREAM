@@ -4,9 +4,9 @@ global S
 %% Paradigme
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    S.Task          = 'SpeedTest';
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
+    S.Sequence      = '';
 end
 
 switch S.Environement
@@ -37,7 +37,7 @@ Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
 for n = 1:NrBlocks
     
-    Paradigme  = [ Paradigme ; { 'Sequence' BLockDuration S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+    Paradigme  = [ Paradigme ; { 'Complex' BLockDuration S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     
 end
 

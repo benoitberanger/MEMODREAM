@@ -5,6 +5,7 @@ reverseStr = '';
 
 switch S.OperationMode
     case 'Acquisition'
+        HideCursor;
     case 'FastDebug'
     case 'RealisticDebug'
     otherwise

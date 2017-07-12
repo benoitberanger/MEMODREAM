@@ -11,15 +11,23 @@ try
     % 'names' for SPM
     switch S.Task
         
-        case 'EyelinkCalibration'
-            names = {'EyelinkCalibration'};
+        case 'Familiarization'
+            names = {
+                ''
+                };
             
-        case 'Learning5432'
+        case 'Training'
             names = {
                 'Rest'
-                'Free'
-                'Left'
-                'Right'
+                'Simple'
+                'Complex'
+                };
+            
+        case 'SpeedTest'
+            names = {
+                'Rest'
+                'Simple'
+                'Complex'
                 };
             
         case 'DualTask_Complex'
@@ -32,10 +40,6 @@ try
                 ''
                 };
             
-        case 'SpeedTest'
-            names = {
-                ''
-                };
     end
     
     % 'onsets' & 'durations' for SPM
@@ -52,15 +56,12 @@ try
         
         switch EventData{event,1}
             
-            case 'FixationCross'
+            case 'Rest'
                 onsets{1} = [onsets{1} ; EventData{event,2}];
                 
-            case 'Free'
+            case 'Simple'
                 onsets{2} = [onsets{2} ; EventData{event,2}];
-                
-            case 'Left'
-                onsets{2} = [onsets{2} ; EventData{event,2}];
-            case 'Right'
+            case 'Complex'
                 onsets{3} = [onsets{3} ; EventData{event,2}];
                 
         end
@@ -78,12 +79,9 @@ try
             case 'Rest'
                 durations{1} = [ durations{1} ; EventData{event+1,2}-EventData{event,2}] ;
                 
-            case 'Free'
+            case 'Simple'
                 durations{2} = [ durations{2} ; EventData{event+1,2}-EventData{event,2}] ;
-                
-            case 'Left'
-                durations{2} = [ durations{2} ; EventData{event+1,2}-EventData{event,2}] ;
-            case 'Right'
+            case 'Complex'
                 durations{3} = [ durations{3} ; EventData{event+1,2}-EventData{event,2}] ;
         end
         

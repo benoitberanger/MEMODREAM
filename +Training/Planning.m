@@ -4,35 +4,52 @@ global S
 %% Paradigme
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
-    
+    S.Sequence      = '';
 end
 
 switch S.Environement
     case 'Training'
-        NrBlocks = 1;
+        NrBlocksSimple  = 2;
+        NrBlocksComplex = 2;
+        NrTaps          = 60;
     case 'MRI'
-        NrBlocks = 4;
+        NrBlocksSimple  = 14;
+        NrBlocksComplex = 14;
+        NrTaps          = 60;
 end
 
-BLockDuration = 20; % seconds
-RestDuration  = 10;
+BLockDuration = NrTaps; % in Taps, no secondes
+RestDuration  = 10    ; % in seconds
+
 switch S.OperationMode
     case 'Acquisition'
     case 'FastDebug'
-        NrBlocks      = 2;
-        BLockDuration = 5; % seconds
-        RestDuration  = 5;
+        NrBlocksSimple  = 1;
+        NrBlocksComplex = 1;
+        BLockDuration   = 5;  % in Taps, no secondes
+        RestDuration    = 3;  % in seconds
     case 'RealisticDebug'
+        NrBlocksSimple  = 2;
+        NrBlocksComplex = 2;
+        BLockDuration   = 10;  % in Taps, no secondes
+        RestDuration    = 5;  % in seconds
 end
 
-Paradigme = { 'Rest' RestDuration }; % initilaise the container
+Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
-for n = 1:NrBlocks
+blocksOrder = Common.Randomize01( NrBlocksSimple, NrBlocksComplex );
+
+for b = 1:length(blocksOrder)
     
-    Paradigme  = [ Paradigme ; { 'Left' BLockDuration } ; { 'Rest' RestDuration } ]; %#ok<AGROW>
+    switch blocksOrder(b)
+        
+        case 0
+            Paradigme  = [ Paradigme ; { 'Simple'  BLockDuration '5432'     } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+        case 1
+            Paradigme  = [ Paradigme ; { 'Complex' BLockDuration S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+    end
     
 end
 
@@ -56,7 +73,7 @@ EP.AddPlanning({ 'StartTime' 0  0 [] });
 
 for p = 1 : size(Paradigme,1)
     
-    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} '5432' });
+    EP.AddPlanning({ Paradigme{p,1} NextOnset(EP) Paradigme{p,2} Paradigme{p,3} });
     
 end
 

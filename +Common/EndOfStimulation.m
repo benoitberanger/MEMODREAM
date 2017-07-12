@@ -13,7 +13,8 @@ ER.BuildGraph;
 TaskData.ER = ER;
 
 switch S.Task
-    case 'SpeedTest'
+    case {'Training', 'SpeedTest'}
+        EP.Data = {};
         EP.Data(:,1:3) = ER.Data(:,1:3);
         EP.BuildGraph;
         TaskData.EP = EP;

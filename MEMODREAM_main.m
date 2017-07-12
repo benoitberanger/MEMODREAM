@@ -20,6 +20,8 @@ handles = guidata(hObject); % retrieve GUI data
 
 clc
 sca
+rng('default')
+rng('shuffle')
 
 
 %% Initialize the main structure
@@ -234,7 +236,7 @@ switch Task
         TaskData = Familiarization.Task;
         
     case 'Training'
-        TaskData = Training.Task;
+        TaskData = SpeedTest.Task;
         
     case 'SpeedTest'
         TaskData = SpeedTest.Task;

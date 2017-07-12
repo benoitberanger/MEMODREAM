@@ -22,6 +22,8 @@ if ~isempty(figPtr) % Figure exists so brings it to the focus
 else % Create the figure
     
     clc
+    rng('default')
+    rng('shuffle')
     
     % Create a figure
     figHandle = figure( ...
