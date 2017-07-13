@@ -1,13 +1,14 @@
 function [ EP ] = Planning
 global S
 
-%% Paradigme
-
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
     S.Sequence      = '';
 end
+
+
+%% Paradigme
 
 switch S.Environement
     case 'Training'
@@ -20,22 +21,24 @@ switch S.Environement
         NrTaps          = 60;
 end
 
-BLockDuration = NrTaps; % in Taps, no secondes
-RestDuration  = 10    ; % in seconds
+RestDuration = 10; % in seconds
 
 switch S.OperationMode
     case 'Acquisition'
     case 'FastDebug'
         NrBlocksSimple  = 1;
         NrBlocksComplex = 1;
-        BLockDuration   = 5;  % in Taps, no secondes
+        NrTaps          = 5;
         RestDuration    = 3;  % in seconds
     case 'RealisticDebug'
         NrBlocksSimple  = 2;
         NrBlocksComplex = 2;
-        BLockDuration   = 10;  % in Taps, no secondes
+        NrTaps          = 10;
         RestDuration    = 5;  % in seconds
 end
+
+
+%% Backend setup
 
 Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
@@ -46,9 +49,9 @@ for b = 1:length(blocksOrder)
     switch blocksOrder(b)
         
         case 0
-            Paradigme  = [ Paradigme ; { 'Simple'  BLockDuration '5432'     } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+            Paradigme  = [ Paradigme ; { 'Simple'  NrTaps '5432'     } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
         case 1
-            Paradigme  = [ Paradigme ; { 'Complex' BLockDuration S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+            Paradigme  = [ Paradigme ; { 'Complex' NrTaps S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     end
     
 end

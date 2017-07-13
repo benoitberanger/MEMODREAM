@@ -13,7 +13,8 @@ try
         
         case 'Familiarization'
             names = {
-                ''
+                'Rest'
+                'Free'
                 };
             
         case 'Training'
@@ -32,12 +33,16 @@ try
             
         case 'DualTask_Complex'
             names = {
-                '';
+                'Rest'
+                'Simple'
+                'Complex'
                 };
             
         case 'DualTask_Simple'
             names = {
-                ''
+                'Rest'
+                'Simple'
+                'Complex'
                 };
             
     end

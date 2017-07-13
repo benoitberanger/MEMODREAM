@@ -8,8 +8,6 @@ switch limitType
         stopOnset = audioObj.StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 end
 
-% vbl = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
-
 ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
@@ -49,8 +47,8 @@ if ~strcmp(EP.Data{evt+1,1},'StopTime')
     
     switch EP.Data{evt+1,1}
         case 'Simple'
-            audioObj.SimpleSimple.Playback(PTBtimeLimit);
-        case 'Complex'
+            audioObj.SimpleSimple  .Playback(PTBtimeLimit);
+        case {'Complex','Free'}
             audioObj.ComplexComplex.Playback(PTBtimeLimit);
         otherwise
             error('')

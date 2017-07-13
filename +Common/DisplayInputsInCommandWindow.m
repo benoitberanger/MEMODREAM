@@ -14,14 +14,14 @@ global S
 %% Ouput var
 
 Exit_flag = 0;
-StopTime = [];
+StopTime  = [];
 
 
 %% Initialize the count-by-difference
 
-seq_num = EP.Data{evt,4}; % sequence
+sequence_str = EP.Data{evt,4}; % sequence
 
-next_input = seq_num(1); % initilization
+next_input = sequence_str(1); % initilization
 
 Left = S.Parameters.Fingers.Left; % shortcut
 
@@ -40,6 +40,8 @@ switch limitType
         condition = secs < limitValue;
 end
 
+good = 0;
+bad  = 0;
 while condition
     
     [keyIsDown, secs, keyCode] = KbCheck;
@@ -55,10 +57,13 @@ while condition
         
         if new_input == str2double(next_input)
             fprintf('%d\n',new_input)
-            seq_num = circshift(seq_num,[0 -1]);
-            next_input = seq_num(1);
+            sequence_str = circshift(sequence_str,[0 -1]);
+            next_input = sequence_str(1);
+            good = good + 1;
         else
             fprintf('%d <-\n',new_input)
+            good = 0; % reset the counter
+            bad  = bad + 1;
         end
         tap = tap+1;
         
@@ -74,10 +79,19 @@ while condition
     
     % Refresh condition
     switch limitType
+        
         case 'tap'
-            condition = tap  < limitValue;
+            if limitValue == Inf
+                if good == EP.Data{evt,3} * length(sequence_str)
+                    condition = 0;
+                end
+            else
+                condition = tap  < limitValue;
+            end
+            
         case 'time'
             condition = secs < limitValue;
+            
     end
     
 end % while

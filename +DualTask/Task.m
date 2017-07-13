@@ -71,7 +71,7 @@ try
                 % used across several tasks
                 [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, audioObj, evt, 'time' );
                 
-            case 'Sequence' % ---------------------------------------------
+            otherwise % ---------------------------------------------------
                 
                 bipseq = EP.Data{evt,5};
                 v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+0.5;
@@ -96,10 +96,10 @@ try
                     if b ~= length(bipseq)
                         PTBtimeLimit = StartTime + EP.Data{evt,2} + v_onset(b+1)   - S.PTB.anticipation;
                     else
-                        PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - S.PTB.anticipation*16;
+                        PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - 0.015;
                     end
                     
-                    [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, PTBtimeLimit, evt, StartTime );
+                    [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, 'time', PTBtimeLimit );
                     if Exit_flag
                         break
                     end

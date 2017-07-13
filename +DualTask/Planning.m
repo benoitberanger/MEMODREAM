@@ -1,13 +1,14 @@
 function [ EP ] = Planning
 global S
 
-%% Paradigme
-
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     S.Task          = 'DualTask_Complex';
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
 end
+
+
+%% Paradigme
 
 switch S.Environement
     case 'Training'
@@ -27,24 +28,29 @@ switch S.OperationMode
         NrBlocks      = 2;
         BLockDuration = 5; % seconds
         NrHighLow     = 1;
-        RestDuration  = 5;
+        RestDuration  = 3; % seconds
     case 'RealisticDebug'
 end
 
 switch S.Task
     case 'DualTask_Complex'
+        Difficulty      = 'Complex';
         SequenceFingers = S.Sequence;
     case 'DualTask_Simple'
+        Difficulty      = 'Simple';
         SequenceFingers = '5432';
 end
+
+
+%% Backend setup
 
 Paradigme = { 'Rest' RestDuration [] [] }; % initilaise the container
 
 for n = 1:NrBlocks
     
-    SequenceHighLow = DualTask.RandomizeHighLow(NrHighLow);
+    SequenceHighLow = Common.Randomize01(NrHighLow, NrHighLow);
     
-    Paradigme  = [ Paradigme ; { 'Sequence' BLockDuration SequenceFingers SequenceHighLow } ; { 'Rest' RestDuration [] [] } ]; %#ok<AGROW>
+    Paradigme  = [ Paradigme ; { Difficulty BLockDuration SequenceFingers SequenceHighLow } ; { 'Rest' RestDuration [] [] } ]; %#ok<AGROW>
     
 end
 

@@ -3,40 +3,21 @@ global S
 
 %% Paradigme
 
+numberConsecutiveGoogSequences = 3;
+RestDuration                   = 3; % secondes
+
+
+%% Backend setup
+
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    S.Environement  = 'MRI';
-    S.OperationMode = 'Acquisition';
-    S.Sequence      = '';
-end
-
-switch S.Environement
-    case 'Training'
-        NrBlocks = 4;
-        NrTaps   = 60;
-    case 'MRI'
-        NrBlocks = 14;
-        NrTaps   = 60;
-end
-
-RestDuration  = 10 ; % in seconds
-
-switch S.OperationMode
-    case 'Acquisition'
-    case 'FastDebug'
-        NrBlocks      = 2;
-        NrTaps        = 5;
-        RestDuration  = 3;  % in seconds
-    case 'RealisticDebug'
-        NrBlocks      = 2 ;
-        NrTaps        = 10;
-        RestDuration  = 5 ; % in seconds
+    S.Sequence = '';
 end
 
 Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
-for n = 1:NrBlocks
+for n = 1:1
     
-    Paradigme  = [ Paradigme ; { 'Complex' NrTaps S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+    Paradigme  = [ Paradigme ; { 'Free' numberConsecutiveGoogSequences S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     
 end
 
