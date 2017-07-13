@@ -3,6 +3,10 @@ function varargout = MEMODREAM_GUI
 % Then, MEMODREAM_main is always called to start each task. It is the
 % "main" program.
 
+% debug=1 closes previous figure and reopens it, and send the gui handles
+% to base workspace.
+debug = 0;
+
 
 %% Open a singleton figure, or gring the actual into focus.
 
@@ -14,8 +18,10 @@ if ~isempty(figPtr) % Figure exists so brings it to the focus
     figure(figPtr);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % close(figPtr);
-    % MEMODREAM_GUI;
+    if debug
+        close(figPtr); %#ok<UNRCH>
+        MEMODREAM_GUI;
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     
@@ -330,35 +336,36 @@ else % Create the figure
         'BackgroundColor',figureBGcolor);
     
     
-    %% Panel : Parallel port
+    %% Panel : Parallel port, Left & Right handed
     
-    p_pp.x = panelProp.xposP;
-    p_pp.w = panelProp.wP;
+    p_pplr.x = panelProp.xposP;
+    p_pplr.w = panelProp.wP;
     
     panelProp.countP = panelProp.countP - 1;
-    p_pp.y = panelProp.yposP(panelProp.countP);
-    p_pp.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    p_pplr.y = panelProp.yposP(panelProp.countP);
+    p_pplr.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
     
-    handles.uipanel_ParallelPort = uibuttongroup(handles.(mfilename),...
-        'Title','Parallel port',...
+    handles.uipanel_ParallelPortLeftRight = uibuttongroup(handles.(mfilename),...
+        'Title','Parallel port     ||     Left/Right handed',...
         'Units', 'Normalized',...
-        'Position',[p_pp.x p_pp.y p_pp.w p_pp.h],...
+        'Position',[p_pplr.x p_pplr.y p_pplr.w p_pplr.h],...
         'BackgroundColor',figureBGcolor);
     
-    p_pp.nbO    = 3; % Number of objects
-    p_pp.Ow     = 1/(p_pp.nbO + 1); % Object width
-    p_pp.countO = 0; % Object counter
-    p_pp.xposO  = @(countO) p_pp.Ow/(p_pp.nbO+1)*countO + (countO-1)*p_pp.Ow;
+    p_pplr.nbO    = 3; % Number of objects
+    p_pplr.Ow     = 1/(p_pplr.nbO + 1); % Object width
+    p_pplr.countO = 0; % Object counter
+    p_pplr.xposO  = @(countO) p_pplr.Ow/(p_pplr.nbO+1)*countO + (countO-1)*p_pplr.Ow;
+    
     
     % ---------------------------------------------------------------------
     % Checkbox : Parallel port
     
-    p_pp.countO = p_pp.countO + 1;
-    c_pp.x = p_pp.xposO(p_pp.countO);
+    p_pplr.countO = p_pplr.countO + 1;
+    c_pp.x = p_pplr.xposO(p_pplr.countO);
     c_pp.y = 0.1 ;
-    c_pp.w = p_pp.Ow*2;
+    c_pp.w = p_pplr.Ow*2;
     c_pp.h = 0.8;
-    handles.checkbox_ParPort = uicontrol(handles.uipanel_ParallelPort,...
+    handles.checkbox_ParPort = uicontrol(handles.uipanel_ParallelPortLeftRight,...
         'Style','checkbox',...
         'Units', 'Normalized',...
         'Position',[c_pp.x c_pp.y c_pp.w c_pp.h],...
@@ -369,6 +376,44 @@ else % Create the figure
         'Value',1,...
         'Callback',@GUI.Checkbox_ParPort_Callback,...
         'CreateFcn',@GUI.Checkbox_ParPort_Callback);
+    
+    
+    % ---------------------------------------------------------------------
+    % RadioButton : Left handed
+    
+    p_pplr.countO = p_pplr.countO + 1;
+    r_left.x   = p_pplr.xposO(p_pplr.countO);
+    r_left.y   = 0.1 ;
+    r_left.w   = p_pplr.Ow;
+    r_left.h   = 0.8;
+    r_left.tag = 'radiobutton_LeftHanded';
+    handles.(r_left.tag) = uicontrol(handles.uipanel_ParallelPortLeftRight,...
+        'Style','radiobutton',...
+        'Units', 'Normalized',...
+        'Position',[r_left.x r_left.y r_left.w r_left.h],...
+        'String','Left handed',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_left.tag,...
+        'BackgroundColor',figureBGcolor);
+    
+    
+    % ---------------------------------------------------------------------
+    % RadioButton : Right handed
+    
+    p_pplr.countO = p_pplr.countO + 1;
+    r_right.x   = p_pplr.xposO(p_pplr.countO);
+    r_right.y   = 0.1 ;
+    r_right.w   = p_pplr.Ow;
+    r_right.h   = 0.8;
+    r_right.tag = 'radiobutton_RightHanded';
+    handles.(r_right.tag) = uicontrol(handles.uipanel_ParallelPortLeftRight,...
+        'Style','radiobutton',...
+        'Units', 'Normalized',...
+        'Position',[r_right.x r_right.y r_right.w r_right.h],...
+        'String','Right handed',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_right.tag,...
+        'BackgroundColor',figureBGcolor);
     
     
     %% Panel : Task
@@ -686,8 +731,10 @@ else % Create the figure
     % handles=guidata(hObject)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % assignin('base','handles',handles)
-    % disp(handles)
+    if debug
+        assignin('base','handles',handles) %#ok<UNRCH>
+        disp(handles)
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     figPtr = figHandle;

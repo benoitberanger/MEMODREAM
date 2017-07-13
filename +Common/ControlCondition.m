@@ -12,17 +12,7 @@ ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
     KL.GetQueue;
-    %     switch S.Task
-    %         case 'DualTask_Complex'
-    %             Side = 'L';
-    %         case 'DualTask_Simple'
-    %             Side = 'L';
-    %         case 'Learning5432'
-    %             Side = EP.Data{evt-1,1};
-    %         case 'SpeedTest'
-    %             Side = 'L';
-    %     end
-    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, 'L', EP.Data{evt-1,3}, from, KL.EventCount, KL);
+    results = Common.SequenceAnalyzer(EP.Data{evt-1,4}, S.Side, EP.Data{evt-1,3}, from, KL.EventCount, KL);
     from = KL.EventCount;
     ER.Data{evt-1,4} = results;
     disp(results)

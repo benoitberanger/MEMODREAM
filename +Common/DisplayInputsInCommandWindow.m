@@ -23,9 +23,14 @@ sequence_str = EP.Data{evt,4}; % sequence
 
 next_input = sequence_str(1); % initilization
 
-Left = S.Parameters.Fingers.Left; % shortcut
+switch S.Side
+    case 'Left'
+        Side = S.Parameters.Fingers.Left; % shortcut
+    case 'Right'
+        Side = S.Parameters.Fingers.Right; % shortcut
+end
 
-KbVect_prev = zeros(size(Left));
+KbVect_prev = zeros(size(Side));
 
 
 %% Loop
@@ -47,7 +52,7 @@ while condition
     [keyIsDown, secs, keyCode] = KbCheck;
     
     % Compare last input with current unpur
-    KbVect_curr = keyCode(Left);
+    KbVect_curr = keyCode(Side);
     KbVect_diff = KbVect_curr - KbVect_prev;
     KbVect_prev = KbVect_curr;
     new_input   = find(KbVect_diff==1);

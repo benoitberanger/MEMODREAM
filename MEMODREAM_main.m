@@ -129,6 +129,7 @@ if isempty(Sequence)
 end
 S.Sequence = Sequence;
 
+
 %% Subject ID & Run number
 
 SubjectID = get(handles.edit_SubjectID,'String');
@@ -202,6 +203,20 @@ end
 
 handles.ParPort    = ParPort;
 S.ParPort = ParPort;
+
+
+%% Left or right handed ?
+
+switch get(get(handles.uipanel_ParallelPortLeftRight,'SelectedObject'),'Tag')
+    case 'radiobutton_LeftHanded'
+        Side = 'Left';
+    case 'radiobutton_RightHanded'
+        Side = 'Right';
+    otherwise
+        warning('MEMODREAM:LeftRight','Error in LeftRight')
+end
+
+S.Side = Side;
 
 
 %% Security : NEVER overwrite a file
