@@ -3,7 +3,7 @@ global S
 
 %% Paradigme
 
-numberConsecutiveGoogSequences = 3;
+numberConsecutiveGoogSequences = 5;
 RestDuration                   = 3; % secondes
 
 

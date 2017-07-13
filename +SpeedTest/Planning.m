@@ -14,7 +14,7 @@ switch S.Environement
         NrBlocks = 4;
         NrTaps   = 60;
     case 'MRI'
-        NrBlocks = 14;
+        NrBlocks = 4;
         NrTaps   = 60;
 end
 
