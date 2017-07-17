@@ -1,13 +1,14 @@
 function [ EP ] = Planning
 global S
 
-%% Paradigme
-
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
     S.Sequence      = '';
 end
+
+
+%% Paradigme
 
 switch S.Environement
     case 'Training'
