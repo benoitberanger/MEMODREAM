@@ -5,6 +5,7 @@ if nargout < 1 % only to plot the paradigme when we execute the function outside
     S.Task          = 'DualTask_Complex';
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
+    S.Sequence      = '';
 end
 
 
@@ -20,7 +21,7 @@ switch S.Environement
 end
 
 BLockDuration = 30; % seconds
-NrHighLow     = 7;
+NrHighLow     = 10;
 
 switch S.OperationMode
     case 'Acquisition'

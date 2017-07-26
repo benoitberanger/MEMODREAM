@@ -25,19 +25,13 @@ try
     
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
-    
    
     %% Prepare audio objects
     
-    [ LowBip       , HighBip        ] = Common.Audio.PrepareBips         ;
-    [ GoGo         , StopStop       ] = Common.Audio.PrepareGoStop       ;
-    [ SimpleSimple , ComplexComplex ] = Common.Audio.PrepareSimpleComplex;
-    audioObj.LowBip         = LowBip;
-    audioObj.HighBip        = HighBip;
-    audioObj.GoGo           = GoGo;
-    audioObj.StopStop       = StopStop;
-    audioObj.SimpleSimple   = SimpleSimple;
-    audioObj.ComplexComplex = ComplexComplex;
+    [ audioObj ] = Common.Audio.PrepareAudioFiles;
+    [ LowBip, HighBip ] = Common.Audio.PrepareBips;
+    audioObj.LowBip = LowBip;
+    audioObj.HighBip = HighBip;
     
     %% Go
     
@@ -53,6 +47,12 @@ try
         switch EP.Data{evt,1}
             
             case 'StartTime' % --------------------------------------------
+                
+                switch S.OperationMode
+                    case 'Acquisition'
+                        audioObj.instructions_dualtask.Playback();
+                        WaitSecs(audioObj.instructions_dualtask.duration);
+                end
                 
                 % Start audio capture immediately and wait for the capture to start.
                 % We set the number of 'repetitions' to zero,
@@ -74,8 +74,11 @@ try
             otherwise % ---------------------------------------------------
                 
                 bipseq = EP.Data{evt,5};
-                v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+0.5;
-                v_onset = v(1:end-1);
+                
+                mu  = 0.5; % mean
+                sig = 0.2; % standard deviation
+                v = linspace(0, EP.Data{evt,3},length(bipseq)+1)+mu + (sig*(randn(1,length(bipseq)+1)+mu)); % lineary spaced + jitter normally distributed
+                v_onset = v(1:end-1); % compute one more then take it out : easy method to have desired values inside a range.
                 
                 onset = WaitSecs('UntilTime',StartTime + EP.Data{evt,2} - S.PTB.anticipation);
                 
@@ -86,10 +89,10 @@ try
                     switch bipseq(b)
                         case 1 % high bip
                             last_onset = audioObj.HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
-                            RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'HighBip'})
+                            RR.AddEvent({'HighBip' last_onset-StartTime [] EP.Data{evt,1}})
                         case 0 % low bip
                             last_onset = audioObj.LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
-                            RR.AddEvent({EP.Data{evt,1} last_onset-StartTime [] 'LowBip'})
+                            RR.AddEvent({'LowBip' last_onset-StartTime [] EP.Data{evt,1}})
                     end
                     
                     

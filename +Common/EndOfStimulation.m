@@ -35,11 +35,11 @@ switch S.OperationMode
     case 'FastDebug'
         TR = 2.005; % seconds
         nbVolumes = ceil( EP.Data{end,2} / TR ) ; % nb of volumes for the estimated time of stimulation
-        KL.GenerateMRITrigger( TR , nbVolumes , StartTime );
+        KL.GenerateMRITrigger( TR , nbVolumes + 2 , StartTime );
     case 'RealisticDebug'
         TR = 2.005; % seconds
         nbVolumes = ceil( EP.Data{end,2} / TR ); % nb of volumes for the estimated time of stimulation
-        KL.GenerateMRITrigger( TR , nbVolumes , StartTime );
+        KL.GenerateMRITrigger( TR , nbVolumes + 2, StartTime );
     otherwise
 end
 KL.ScaleTime;

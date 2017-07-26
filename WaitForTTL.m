@@ -40,7 +40,7 @@ if strcmp(S.OperationMode,'Acquisition')
                     
                 case 'Training'
                     
-                    if keyCode(S.Parameters.Keybinds.Right_Blue_b_ASCII) || keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
+                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
                         
                         break
                         

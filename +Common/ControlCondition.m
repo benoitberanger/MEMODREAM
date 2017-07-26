@@ -18,7 +18,15 @@ if ~strcmp(EP.Data{evt-1,1},'StartTime')
     disp(results)
 end
 
-PTBtimeLimit = stopOnset + EP.Data{evt,3} - audioObj.GoGo.duration - S.PTB.anticipation;
+switch EP.Data{evt+1,1}
+    case 'Simple'
+        PTBtimeLimit = stopOnset + EP.Data{evt,3} - audioObj.SimpleSimple.duration - S.PTB.anticipation;
+    case {'Complex','Free'}
+        PTBtimeLimit = stopOnset + EP.Data{evt,3} - audioObj.ComplexComplex.duration - S.PTB.anticipation;
+    otherwise
+        PTBtimeLimit = stopOnset + EP.Data{evt,3} - S.PTB.anticipation;
+end
+
 
 % The WHILELOOP below is a trick so we can use ESCAPE key to quit
 % earlier.

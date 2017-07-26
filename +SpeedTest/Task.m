@@ -10,15 +10,15 @@ try
     %% Tunning of the task
     
     switch S.Task
-    
-    case 'Training'
-        [ EP ] = Training.Planning;
         
-    case 'SpeedTest'
-        [ EP ] = SpeedTest.Planning;
-        
-    otherwise
-        error('MEMODREAM:SpeedTest','Task error...')
+        case 'Training'
+            [ EP ] = Training.Planning;
+            
+        case 'SpeedTest'
+            [ EP ] = SpeedTest.Planning;
+            
+        otherwise
+            error('MEMODREAM:SpeedTest','Task error...')
     end
     
     % End of preparations
@@ -33,12 +33,7 @@ try
     
     %% Prepare audio objects
     
-    [ GoGo         , StopStop       ] = Common.Audio.PrepareGoStop       ;
-    [ SimpleSimple , ComplexComplex ] = Common.Audio.PrepareSimpleComplex;
-    audioObj.GoGo           = GoGo;
-    audioObj.StopStop       = StopStop;
-    audioObj.SimpleSimple   = SimpleSimple;
-    audioObj.ComplexComplex = ComplexComplex;
+    [ audioObj ] = Common.Audio.PrepareAudioFiles;
     
     
     %% Go
@@ -55,6 +50,21 @@ try
         switch EP.Data{evt,1}
             
             case 'StartTime' % --------------------------------------------
+                
+                switch S.OperationMode
+                    
+                    case 'Acquisition'
+                        
+                        switch S.Task
+                            case 'Training'
+                                audioObj.instructions_training.Playback();
+                                WaitSecs(audioObj.instructions_training.duration);
+                            case 'SpeedTest'
+                                audioObj.instructions_speedtest.Playback();
+                                WaitSecs(audioObj.instructions_speedtest.duration);
+                        end
+                        
+                end
                 
                 StartTime = Common.StartTimeEvent;
                 

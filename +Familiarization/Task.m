@@ -23,12 +23,7 @@ try
     
     %% Prepare audio objects
     
-    [ GoGo         , StopStop       ] = Common.Audio.PrepareGoStop       ;
-    [ SimpleSimple , ComplexComplex ] = Common.Audio.PrepareSimpleComplex;
-    audioObj.GoGo           = GoGo;
-    audioObj.StopStop       = StopStop;
-    audioObj.SimpleSimple   = SimpleSimple;
-    audioObj.ComplexComplex = ComplexComplex;
+    [ audioObj ] = Common.Audio.PrepareAudioFiles;
     
     
     %% Go

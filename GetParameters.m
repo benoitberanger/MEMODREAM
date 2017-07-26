@@ -47,7 +47,7 @@ KbName('UnifyKeyNames');
 
 
 Parameters.Keybinds.TTL_t_ASCII          = KbName('t'); % MRI trigger has to be the first defined key
-% Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
+Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
 Parameters.Keybinds.Stop_Escape_ASCII    = KbName('ESCAPE');
 
 switch S.OperationMode
