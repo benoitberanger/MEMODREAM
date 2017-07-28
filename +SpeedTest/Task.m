@@ -84,7 +84,7 @@ try
                 
                 ER.AddEvent({EP.Data{evt,1} vbl-StartTime [] [] []})
                 
-                [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, 'tap', EP.Data{evt,3} );
+                [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, audioObj, 'tap', EP.Data{evt,3} );
                 if Exit_flag
                     break
                 end

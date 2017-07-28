@@ -1,4 +1,4 @@
-function [ Exit_flag, StopTime ] = DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, limitType, limitValue )
+function [ Exit_flag, StopTime ] = DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, audioObj, limitType, limitValue )
 global S
 
 
@@ -45,6 +45,16 @@ switch limitType
         condition = secs < limitValue;
 end
 
+% Need wake up ?
+switch S.Task
+    case 'Training'
+        wakeup = 1;
+        wakeupTime = 10; % seconds
+        lastWakeup = secs;
+    otherwise
+        wakeup = 0;
+end
+
 good = 0;
 bad  = 0;
 while condition
@@ -72,6 +82,31 @@ while condition
         end
         tap = tap+1;
         
+        if wakeup
+            lastWakeup = secs;
+        end
+        
+    end
+    
+    if wakeup
+        if lastWakeup + wakeupTime < secs
+            
+            % Wakeup
+            onset = audioObj.rooster.Playback();
+            RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
+            lastWakeup = onset;
+            
+            % Recall of block's instructions
+            switch EP.Data{evt,1}
+                case 'Simple'
+                    tag = 'SimpleSimple';
+                case 'Complex'
+                    tag = 'ComplexComplex';
+            end
+            onset = audioObj.(tag).Playback();
+            RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
+            
+        end
     end
     
     % Escape ?

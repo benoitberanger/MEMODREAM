@@ -112,8 +112,8 @@ switch get(get(handles.uipanel_NameModulation,'SelectedObject'),'Tag')
         NameModulation = 'Pre';
     case 'radiobutton_Post'
         NameModulation = 'Post';
-    case 'radiobutton_Stop'
-        NameModulation = 'Stop';
+    case 'radiobutton_End'
+        NameModulation = 'End';
     otherwise
         warning('MEMODREAM:NameModulation','Error in Name Modulation')
 end

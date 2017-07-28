@@ -102,7 +102,7 @@ try
                         PTBtimeLimit = StartTime + EP.Data{evt,2} + EP.Data{evt,3} - 0.015;
                     end
                     
-                    [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, 'time', PTBtimeLimit );
+                    [ Exit_flag, StopTime ] = Common.DisplayInputsInCommandWindow( EP, ER, RR, evt, StartTime, audioObj, 'time', PTBtimeLimit );
                     if Exit_flag
                         break
                     end

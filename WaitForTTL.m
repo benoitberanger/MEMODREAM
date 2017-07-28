@@ -26,7 +26,7 @@ if strcmp(S.OperationMode,'Acquisition')
                 
                 case 'MRI'
                     
-                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
+                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) % || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
                         
                         break
                         
@@ -40,7 +40,7 @@ if strcmp(S.OperationMode,'Acquisition')
                     
                 case 'Training'
                     
-                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
+                    if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) % || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
                         
                         break
                         
