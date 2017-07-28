@@ -56,7 +56,7 @@ else % Create the figure
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 1 2 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
+        [1 1 2 1 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -414,6 +414,86 @@ else % Create the figure
         'HorizontalAlignment','Center',...
         'Tag',r_right.tag,...
         'BackgroundColor',figureBGcolor);
+    
+    
+    %% Panel : Instructions
+    
+    p_instr.x = panelProp.xposP;
+    p_instr.w = panelProp.wP;
+    
+    panelProp.countP = panelProp.countP - 1;
+    p_instr.y = panelProp.yposP(panelProp.countP);
+    p_instr.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    
+    handles.uipanel_Instructions = uibuttongroup(handles.(mfilename),...
+        'Title','Instructions',...
+        'Units', 'Normalized',...
+        'Position',[p_instr.x p_instr.y p_instr.w p_instr.h],...
+        'BackgroundColor',figureBGcolor);
+    
+    p_instr.nbO    = 3; % Number of objects
+    p_instr.Ow     = 1/(p_instr.nbO + 1); % Object width
+    p_instr.countO = 0; % Object counter
+    p_instr.xposO  = @(countO) p_instr.Ow/(p_instr.nbO+1)*countO + (countO-1)*p_instr.Ow;
+    
+    buttun_y = 0.20;
+    buttun_h = 0.80;
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Instructions for Training
+    
+    p_instr.countO = p_instr.countO + 1;
+    b_training.x = p_instr.xposO(p_instr.countO);
+    b_training.y = buttun_y;
+    b_training.w = p_instr.Ow;
+    b_training.h = buttun_h;
+    b_training.tag = 'pushbutton_InstructionTraining';
+    handles.(b_training.tag) = uicontrol(handles.uipanel_Instructions,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_training.x b_training.y b_training.w b_training.h],...
+        'String','Training',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_training.tag,...
+        'Callback',@PlayInstructions);
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Instructions for SpeedTest
+    
+    p_instr.countO = p_instr.countO + 1;
+    b_spd.x = p_instr.xposO(p_instr.countO);
+    b_spd.y = buttun_y;
+    b_spd.w = p_instr.Ow;
+    b_spd.h = buttun_h;
+    b_spd.tag = 'pushbutton_InstructionSpeedTest';
+    handles.(b_spd.tag) = uicontrol(handles.uipanel_Instructions,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_spd.x b_spd.y b_spd.w b_spd.h],...
+        'String','SpeedTest',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_spd.tag,...
+        'Callback',@PlayInstructions);
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Instructions for DualTask
+    
+    p_instr.countO = p_instr.countO + 1;
+    b_dt.x = p_instr.xposO(p_instr.countO);
+    b_dt.y = buttun_y;
+    b_dt.w = p_instr.Ow;
+    b_dt.h = buttun_h;
+    b_dt.tag = 'pushbutton_InstructionDualTask';
+    handles.(b_dt.tag) = uicontrol(handles.uipanel_Instructions,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_dt.x b_dt.y b_dt.w b_dt.h],...
+        'String','DualTask',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_dt.tag,...
+        'Callback',@PlayInstructions);
     
     
     %% Panel : Task
