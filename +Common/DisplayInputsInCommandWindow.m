@@ -91,24 +91,53 @@ while condition
     if wakeup
         if lastWakeup + wakeupTime < secs
             
-            % Wakeup
-            onset = audioObj.rooster.Playback();
-            RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
-            lastWakeup = onset;
             
-            if ( tap == 0 && strcmp(S.Task,'Training') ) || ( ~strcmp(S.Task,'Training') )
+            switch S.Task
                 
-                % Recall of block's instructions
-                switch EP.Data{evt,1}
-                    case 'Simple'
-                        tag = 'SimpleSimple';
-                    case 'Complex'
-                        tag = 'ComplexComplex';
-                end
-                onset = audioObj.(tag).Playback();
-                RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
-                
+                case 'Training'
+                    
+                    % Wakeup
+                    onset = audioObj.rooster.Playback();
+                    RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
+                    lastWakeup = onset;
+                    
+                        % Recall of block's instructions
+                        switch EP.Data{evt,1}
+                            case 'Simple'
+                                tag = 'SimpleSimple';
+                            case 'Complex'
+                                tag = 'ComplexComplex';
+                        end
+                        onset = audioObj.(tag).Playback();
+                        RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
+                   
+                    
+                otherwise
+                    
+                    % if participant doesn't tap at all, we assume he didn't hear the instructions => rooster sound + instructions; 
+                    % if participant tapped in the past but stopped tapping withtin the bloxk, we assumed he fell asleep => we wake him up during training (we need these data) but not during the tests
+                    if tap == 0
+                        
+                        % Wakeup
+                        onset = audioObj.rooster.Playback();
+                        RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
+                        lastWakeup = onset;
+                        
+                        % Recall of block's instructions
+                        switch EP.Data{evt,1}
+                            case 'Simple'
+                                tag = 'SimpleSimple';
+                            case 'Complex'
+                                tag = 'ComplexComplex';
+                        end
+                        onset = audioObj.(tag).Playback();
+                        RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
+                    end
+                    
             end
+            
+            
+            
             
         end
     end
