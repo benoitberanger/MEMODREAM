@@ -47,9 +47,9 @@ end
 
 % Need wake up ?
 switch S.Task
-    case 'Training'
+    case {'Training', 'SpeedTest', 'DualTask_Complex', 'DualTask_Simple'}
         wakeup = 1;
-        wakeupTime = 10; % seconds
+        wakeupTime = 5; % seconds
         lastWakeup = secs;
     otherwise
         wakeup = 0;
@@ -96,15 +96,19 @@ while condition
             RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
             lastWakeup = onset;
             
-            % Recall of block's instructions
-            switch EP.Data{evt,1}
-                case 'Simple'
-                    tag = 'SimpleSimple';
-                case 'Complex'
-                    tag = 'ComplexComplex';
+            if ( tap == 0 && strcmp(S.Task,'Training') ) || ( ~strcmp(S.Task,'Training') )
+                
+                % Recall of block's instructions
+                switch EP.Data{evt,1}
+                    case 'Simple'
+                        tag = 'SimpleSimple';
+                    case 'Complex'
+                        tag = 'ComplexComplex';
+                end
+                onset = audioObj.(tag).Playback();
+                RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
+                
             end
-            onset = audioObj.(tag).Playback();
-            RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
             
         end
     end
