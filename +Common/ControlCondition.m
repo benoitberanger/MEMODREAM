@@ -3,9 +3,9 @@ global S
 
 switch limitType
     case 'tap'
-        stopOnset = audioObj.StopStop.Playback();
+        stopOnset = audioObj.ReposRepos.Playback();
     case 'time'
-        stopOnset = audioObj.StopStop.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
+        stopOnset = audioObj.ReposRepos.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 end
 
 ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
