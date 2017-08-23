@@ -38,7 +38,7 @@ if strcmp(S.OperationMode,'Acquisition')
                         
                     end
                     
-                case 'Training'
+                case 'Practice'
                     
                     if keyCode(S.Parameters.Keybinds.TTL_t_ASCII) % || keyCode(S.Parameters.Keybinds.emulTTL_s_ASCII)
                         

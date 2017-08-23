@@ -29,7 +29,7 @@ Parameters.Path.wav = ['wav' filesep];
 Parameters.Audio.SamplingRate            = 44100; % Hz
 
 Parameters.Audio.Playback_Mode           = 1; % 1 = playback, 2 = record
-Parameters.Audio.Playback_LowLatencyMode = 0; % {0,1,2,3,4}
+Parameters.Audio.Playback_LowLatencyMode = 1; % {0,1,2,3,4}
 Parameters.Audio.Playback_freq           = Parameters.Audio.SamplingRate ;
 Parameters.Audio.Playback_Channels       = 2; % 1 = mono, 2 = stereo
 

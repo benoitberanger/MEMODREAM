@@ -64,8 +64,8 @@ S.Task = Task;
 switch get(get(handles.uipanel_Environement,'SelectedObject'),'Tag')
     case 'radiobutton_MRI'
         Environement = 'MRI';
-    case 'radiobutton_Training'
-        Environement = 'Training';
+    case 'radiobutton_Practice'
+        Environement = 'Practice';
     otherwise
         warning('MEMODREAM:ModeSelection','Error in Environement selection')
 end

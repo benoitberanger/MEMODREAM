@@ -12,7 +12,7 @@ end
 %% Paradigme
 
 switch S.Environement
-    case 'Training'
+    case 'Practice'
         NrBlocks      = 1;
         RestDuration  = 5; % seconds
     case 'MRI'

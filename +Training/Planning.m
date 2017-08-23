@@ -11,7 +11,7 @@ end
 %% Paradigme
 
 switch S.Environement
-    case 'Training'
+    case 'Practice'
         NrBlocksSimple  = 2;
         NrBlocksComplex = 2;
         NrTaps          = 60;
