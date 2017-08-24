@@ -112,6 +112,8 @@ switch get(get(handles.uipanel_NameModulation,'SelectedObject'),'Tag')
         NameModulation = 'Start';
     case 'radiobutton_Pre'
         NameModulation = 'Pre';
+    case 'radiobutton_PrePost'
+        NameModulation = 'PrePost';
     case 'radiobutton_Post'
         NameModulation = 'Post';
     case 'radiobutton_End'
