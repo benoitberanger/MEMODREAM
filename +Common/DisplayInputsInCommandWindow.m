@@ -70,6 +70,8 @@ while condition
     % New value
     if ~isempty(new_input) && isscalar(new_input)
         
+        Common.SendParPortMessage(['finger_' new_input]); % Parallel port
+        
         if new_input == str2double(next_input)
             fprintf('%d\n',new_input)
             sequence_str = circshift(sequence_str,[0 -1]);
@@ -99,6 +101,7 @@ while condition
                     % Wakeup
                     onset = audioObj.rooster.Playback();
                     RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
+                    Common.SendParPortMessage('WakeUp'); % Parallel port
                     lastWakeup = onset;
                     
                         % Recall of block's instructions
@@ -109,6 +112,7 @@ while condition
                                 tag = 'ComplexComplex';
                         end
                         onset = audioObj.(tag).Playback();
+                        Common.SendParPortMessage(tag); % Parallel port
                         RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
                    
                     
@@ -120,6 +124,7 @@ while condition
                         
                         % Wakeup
                         onset = audioObj.rooster.Playback();
+                        Common.SendParPortMessage('WakeUp'); % Parallel port
                         RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
                         lastWakeup = onset;
                         
@@ -131,6 +136,7 @@ while condition
                                 tag = 'ComplexComplex';
                         end
                         onset = audioObj.(tag).Playback();
+                        Common.SendParPortMessage(tag); % Parallel port
                         RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
                     end
                     

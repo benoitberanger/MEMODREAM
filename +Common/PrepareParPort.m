@@ -1,6 +1,8 @@
 function ParPortMessages = PrepareParPort
 global S
 
+%% On ? Off ?
+
 switch S.ParPort
     
     case 'On'
@@ -15,14 +17,32 @@ switch S.ParPort
         
 end
 
-% Prepare messages
-msg.cross       = 2^0; % 1
-msg.blackscreen = 2^1; % 2
-msg.word        = 2^2; % 4
-msg.img         = 2^3; % 8
-msg.wav         = 2^4; % 16
+%% Prepare messages
+
+% Finger tap
+msg.finger_1 = 1;
+msg.finger_2 = 2;
+msg.finger_3 = 3;
+msg.finger_4 = 4;
+msg.finger_5 = 5;
+
+% Audio instructions
+msg.ReposRepos     = 10;
+msg.ComplexComplex = 20;
+msg.SimpleSimple   = 30;
+
+msg.WakeUp         = 40;
+
+% High / Low sounds
+msg.LowBip  = 100;
+msg.HighBip = 110;
+
+
+%% Finalize
 
 % Pulse duration
-msg.duration             = 0.005; % seconds
+msg.duration    = 0.001; % seconds
 
-ParPortMessages = msg;
+ParPortMessages = msg; % shortcut
+
+end % function

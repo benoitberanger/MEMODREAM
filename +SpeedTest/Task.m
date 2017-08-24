@@ -2,11 +2,6 @@ function [ TaskData ] = Task
 global S
 
 try
-    %% Parallel port
-    
-    TaskData.ParPortMessages = Common.PrepareParPort;
-    
-    
     %% Tunning of the task
     
     switch S.Task

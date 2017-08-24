@@ -201,6 +201,7 @@ switch get( handles.checkbox_ParPort , 'Value' )
     
     case 1
         ParPort = 'On';
+        S.ParPortMessages = Common.PrepareParPort;
         
     case 0
         ParPort = 'Off';

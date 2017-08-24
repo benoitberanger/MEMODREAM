@@ -1,13 +1,12 @@
-function SendParPortMessage( S, EP )
+function SendParPortMessage( message )
+global S
 
 if strcmp( S.ParPort , 'On' )
     
-    pp = msg.(EP.Data{evt,1});
-    
     % Send Trigger
-    WriteParPort( pp );
-    WaitSecs( msg.duration );
-    WriteParPort( 0 );
+    WriteParPort( S.ParPortMessages.(message) );
+    WaitSecs    ( S.ParPortMessages.duration  );
+    WriteParPort( 0                           );
     
 end
 

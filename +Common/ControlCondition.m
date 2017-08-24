@@ -8,6 +8,8 @@ switch limitType
         stopOnset = audioObj.ReposRepos.Playback(StartTime + EP.Data{evt,2} - S.PTB.anticipation);
 end
 
+Common.SendParPortMessage('ReposRepos'); % Parallel port
+
 ER.AddEvent({EP.Data{evt,1} stopOnset-StartTime [] [] []})
 
 if ~strcmp(EP.Data{evt-1,1},'StartTime')
@@ -46,8 +48,10 @@ if ~strcmp(EP.Data{evt+1,1},'StopTime')
     switch EP.Data{evt+1,1}
         case 'Simple'
             audioObj.SimpleSimple  .Playback(PTBtimeLimit);
+            Common.SendParPortMessage('SimpleSimple');   % Parallel port
         case {'Complex','Free'}
             audioObj.ComplexComplex.Playback(PTBtimeLimit);
+            Common.SendParPortMessage('ComplexComplex'); % Parallel port
         otherwise
             error('')
     end

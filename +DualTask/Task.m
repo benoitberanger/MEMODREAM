@@ -7,11 +7,6 @@ try
     recPAh  = S.PTB.Record_pahandle;   % record   audio pointer
     
     
-    %% Parallel port
-    
-    TaskData.ParPortMessages = Common.PrepareParPort;
-    
-    
     %% Tunning of the task
     
     [ EP ] = DualTask.Planning;
@@ -25,7 +20,7 @@ try
     
     [ ER, RR, KL ] = Common.PrepareRecorders( EP );
     
-   
+    
     %% Prepare audio objects
     
     [ audioObj ] = Common.Audio.PrepareAudioFiles;
@@ -66,7 +61,7 @@ try
                 [ ER, RR, StopTime ] = Common.StopTimeEvent( EP, ER, RR, StartTime, evt );
                 
             case 'Rest' % -------------------------------------------------
-               
+                
                 % Wrapper for the control condition. It's a script itself,
                 % used across several tasks
                 [ ER, from, Exit_flag, StopTime ] = Common.ControlCondition( EP, ER, RR, KL, StartTime, from, audioObj, evt, 'time' );
@@ -89,9 +84,11 @@ try
                     switch bipseq(b)
                         case 1 % high bip
                             last_onset = audioObj.HighBip.Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            Common.SendParPortMessage('HighBip'); % Parallel port
                             RR.AddEvent({'HighBip' last_onset-StartTime [] EP.Data{evt,1}})
                         case 0 % low bip
                             last_onset = audioObj.LowBip. Playback(StartTime + EP.Data{evt,2} + v_onset(b));
+                            Common.SendParPortMessage('LowBip'); % Parallel port
                             RR.AddEvent({'LowBip' last_onset-StartTime [] EP.Data{evt,1}})
                     end
                     
