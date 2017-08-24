@@ -6,14 +6,14 @@ EchoStart(mfilename)
 %%  Which instructions ?
 
 switch get(hObject,'Tag')
-    case 'pushbutton_InstructionTraining'
-        Task = 'training';
+    case 'pushbutton_InstructionSleep'
+        Task = 'sleep';
         
-    case 'pushbutton_InstructionSpeedTest'
-        Task = 'speedtest';
+    case 'pushbutton_InstructionExecution'
+        Task = 'execution';
         
-    case 'pushbutton_InstructionDualTask'
-        Task = 'dualtask';
+    case 'pushbutton_InstructionImagination'
+        Task = 'imagination';
         
     otherwise
         error('MEMODREAM:Instructions','Error in Task selection')
@@ -33,8 +33,8 @@ S.PTB = StartPTB;
 audioObj = Common.Audio.PrepareAudioFiles;
 
 % Play
-audioObj.(['instructions_' Task]).Playback();
-WaitSecs(audioObj.(['instructions_' Task]).duration);
+audioObj.(Task).Playback();
+WaitSecs(audioObj.(Task).duration);
 
 % Stop engine
 PsychPortAudio('close');
