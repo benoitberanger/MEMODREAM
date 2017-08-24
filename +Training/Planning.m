@@ -2,9 +2,10 @@ function [ EP ] = Planning
 global S
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    S.Environement  = 'MRI';
-    S.OperationMode = 'Acquisition';
-    S.Sequence      = '';
+    S.Environement   = 'MRI';
+    S.OperationMode  = 'Acquisition';
+    S.Sequence       = '';
+    S.NameModulation = 'Start';
 end
 
 
@@ -19,6 +20,10 @@ switch S.Environement
         NrBlocksSimple  = 14;
         NrBlocksComplex = 14;
         NrTaps          = 60;
+        if strcmp(S.NameModulation,'End')
+            NrBlocksSimple  = 4;
+            NrBlocksComplex = 4;
+        end
 end
 
 RestDuration = 10; % in seconds
