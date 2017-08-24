@@ -45,6 +45,9 @@ try
                 'Complex'
                 };
             
+        case 'DreamDebrief'
+            names = {};
+            
     end
     
     % 'onsets' & 'durations' for SPM

@@ -51,6 +51,8 @@ switch get(hObject,'Tag')
     case 'pushbutton_DualTask_Simple'
         Task = 'DualTask_Simple';
         
+    case 'pushbutton_DreamDebrief'
+        Task = 'DreamDebrief';
         
     otherwise
         error('MEMODREAM:TaskSelection','Error in Task selection')
@@ -140,33 +142,34 @@ end
 
 % Prepare path
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
-DataPathNoRun = sprintf('%s_%s_%s_%s_', SubjectID, Task, Environement, NameModulation);
+% DataPathNoRun = sprintf('%s_%s_%s_%s_', SubjectID, Task, Environement, NameModulation);
 
-% Fetch content of the directory
-dirContent = dir(DataPath);
+% % Fetch content of the directory
+% dirContent = dir(DataPath);
 
-% Is there file of the previous run ?
-previousRun = nan(length(dirContent),1);
-for f = 1 : length(dirContent)
-    split = regexp(dirContent(f).name,DataPathNoRun,'split');
-    if length(split) == 2 && str2double(split{2}(1)) % yes there is a file
-        previousRun(f) = str2double(split{2}(1)); % save the previous run numbers
-    else % no file found
-        previousRun(f) = 0; % affect zero
-    end
-end
+% % Is there file of the previous run ?
+% previousRun = nan(length(dirContent),1);
+% for f = 1 : length(dirContent)
+%     split = regexp(dirContent(f).name,DataPathNoRun,'split');
+%     if length(split) == 2 && str2double(split{2}(1)) % yes there is a file
+%         previousRun(f) = str2double(split{2}(1)); % save the previous run numbers
+%     else % no file found
+%         previousRun(f) = 0; % affect zero
+%     end
+% end
 
-LastRunNumber = max(previousRun);
-% If no previous run, LastRunNumber is 0
-if isempty(LastRunNumber)
-    LastRunNumber = 0;
-end
-RunNumber = num2str(LastRunNumber + 1);
+% LastRunNumber = max(previousRun);
+% % If no previous run, LastRunNumber is 0
+% if isempty(LastRunNumber)
+%     LastRunNumber = 0;
+% end
+% RunNumber = num2str(LastRunNumber + 1);
 
-DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, RunNumber );
+% DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, RunNumber );
+DataFile = sprintf('%s%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation );
 
 S.SubjectID = SubjectID;
-S.RunNumber = RunNumber;
+% S.RunNumber = RunNumber;
 S.DataPath  = DataPath;
 S.DataFile  = DataFile;
 
@@ -261,6 +264,9 @@ switch Task
         
     case 'DualTask_Simple'
         TaskData = DualTask.Task;
+        
+    case 'DreamDebrief'
+        TaskData = DreamDebrief.Task;
         
     otherwise
         error('MEMODREAM:Task','Task ?')
