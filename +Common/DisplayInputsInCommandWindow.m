@@ -70,7 +70,7 @@ while condition
     % New value
     if ~isempty(new_input) && isscalar(new_input)
         
-        Common.SendParPortMessage(['finger_' new_input]); % Parallel port
+%         Common.SendParPortMessage(['finger_' new_input]); % Parallel port
         
         if new_input == str2double(next_input)
             fprintf('%d\n',new_input)

@@ -19,12 +19,12 @@ end
 
 %% Prepare messages
 
-% Finger tap
-msg.finger_1 = 1;
-msg.finger_2 = 2;
-msg.finger_3 = 3;
-msg.finger_4 = 4;
-msg.finger_5 = 5;
+% % Finger tap
+% msg.finger_1 = 1;
+% msg.finger_2 = 2;
+% msg.finger_3 = 3;
+% msg.finger_4 = 4;
+% msg.finger_5 = 5;
 
 % Audio instructions
 msg.ReposRepos     = 10;
