@@ -22,7 +22,9 @@ else
     seq = seq(:,2)';
 end
 
-results       = struct;
+results         = struct;
+results.rawdata = sidedata;
+
 results.N     = length(seq);          % number of clicks
 results.speed = length(seq)/duration; % clicks per seconds
 
@@ -40,4 +42,3 @@ results.iti_std  = round(std(iti));  % milliseconds
 results.error = results.N - results.completSeq*length(sequence);
 
 end % function
-

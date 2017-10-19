@@ -38,21 +38,27 @@ switch get(hObject,'Tag')
     
     case 'pushbutton_Familiarization'
         Task = 'Familiarization';
+        TaskNameFile = Task;
         
     case 'pushbutton_Training'
         Task = 'Training';
+        TaskNameFile = Task;
         
     case 'pushbutton_SpeedTest'
         Task = 'SpeedTest';
+        TaskNameFile = Task;
         
     case 'pushbutton_DualTask_Complex'
         Task = 'DualTask_Complex';
+        TaskNameFile = 'DT_Cplexe';
         
     case 'pushbutton_DualTask_Simple'
         Task = 'DualTask_Simple';
+        TaskNameFile = 'DT_Simple';
         
     case 'pushbutton_DreamDebrief'
         Task = 'DreamDebrief';
+        TaskNameFile = Task;
         
     otherwise
         error('MEMODREAM:TaskSelection','Error in Task selection')
@@ -115,7 +121,7 @@ S.NameModulation = NameModulation;
 %% Session name
 
 SessionNumber = get(get(handles.uipanel_SessionNumber,'SelectedObject'),'Tag');
-SessionNumber = SessionNumber(14:end); % remove 'radiobutton_'
+SessionNumber = SessionNumber(14:end); % remove 'radiobutton_s'
 S.SessionNumber = SessionNumber;
 
 
@@ -139,10 +145,12 @@ end
 % Prepare path
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
 
-DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, SessionNumber );
+DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Environement, TaskNameFile, NameModulation, SessionNumber );
+if isempty(SessionNumber)
+    DataFile(end) = []; % remove the last '_'
+end
 
 S.SubjectID = SubjectID;
-% S.RunNumber = RunNumber;
 S.DataPath  = DataPath;
 S.DataFile  = DataFile;
 

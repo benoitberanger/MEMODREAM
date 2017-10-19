@@ -56,7 +56,7 @@ else % Create the figure
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 1 1 2 1 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
+        [1 1 1.5 2 1.5 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -679,7 +679,7 @@ else % Create the figure
         r_name.(nameList{2,n}).y   = 0.05 ;
         r_name.(nameList{2,n}).w   = p_nm.Ow;
         r_name.(nameList{2,n}).h   = 0.45;
-        r_name.(nameList{2,n}).tag = ['radiobutton_' ['radiobutton_' nameList{2,n}]];
+        r_name.(nameList{2,n}).tag = ['radiobutton_' nameList{2,n}];
         handles.(r_name.(nameList{2,n}).tag) = uicontrol(handles.uipanel_NameModulation,...
             'Style','radiobutton',...
             'Units', 'Normalized',...
@@ -712,6 +712,9 @@ else % Create the figure
             'BackgroundColor',figureBGcolor);
         
     end
+    
+    
+    set(handles.uipanel_NameModulation,'SelectedObject',handles.radiobutton_Start);
     
     
     %% Panel : Session number
