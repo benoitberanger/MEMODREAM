@@ -52,11 +52,11 @@ else % Create the figure
     
     %% Panel proportions
     
-    panelProp.xposP = 0.05; % xposition of panel normalized : from 0 to 1
+    panelProp.xposP = 0.02; % xposition of panel normalized : from 0 to 1
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 1 2 1 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
+        [1 1 1 2 1 1 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -175,7 +175,7 @@ else % Create the figure
         'Visible','Off');
     
     
-    %% Panel : Sequence
+    %% Panel : ComplexSequence
     
     p_seq.x = panelProp.xposP;
     p_seq.w = panelProp.wP;
@@ -185,7 +185,7 @@ else % Create the figure
     p_seq.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
     
     handles.uipanel_Sequence = uibuttongroup(handles.(mfilename),...
-        'Title','Sequence',...
+        'Title','ComplexSequence',...
         'Units', 'Normalized',...
         'Position',[p_seq.x p_seq.y p_seq.w p_seq.h],...
         'BackgroundColor',figureBGcolor);
@@ -197,7 +197,7 @@ else % Create the figure
     
     
     % ---------------------------------------------------------------------
-    % Edit : Sequence
+    % Edit : ComplexSequence
     
     p_seq.countO = p_seq.countO + 1;
     e_seq.x   = p_seq.xposO(p_seq.countO);
@@ -542,7 +542,7 @@ else % Create the figure
     p_tk.countO = 0;
     
     buttun_y = 0.10;
-    buttun_h = 0.80;
+    buttun_h = 0.85;
     
     
     % ---------------------------------------------------------------------
@@ -643,6 +643,11 @@ else % Create the figure
     
     %% Panel : Name modulation
     
+    nameList = {
+        'Start' 'Pre' 'PreE' 'PreI' 'PreEPostI'
+        'PreIPostE' 'Post' 'PostE' 'PostI' 'End'
+        };
+    
     p_nm.x = panelProp.xposP;
     p_nm.w = panelProp.wP;
     
@@ -657,105 +662,105 @@ else % Create the figure
         'BackgroundColor',figureBGcolor,...
         'Visible','on');
     
-    p_nm.nbO    = 5; % Number of objects
+    p_nm.nbO    = length(nameList); % Number of objects
     p_nm.Ow     = 1/(p_nm.nbO + 1); % Object width
     p_nm.countO = 0; % Object counter
     p_nm.xposO  = @(countO) p_nm.Ow/(p_nm.nbO+1)*countO + (countO-1)*p_nm.Ow;
     
     
     % ---------------------------------------------------------------------
-    % RadioButton : Start
+    % RadioButton : all name modulators
     
-    p_nm.countO = p_nm.countO + 1;
-    r_start.x   = p_nm.xposO(p_nm.countO);
-    r_start.y   = 0.1 ;
-    r_start.w   = p_nm.Ow;
-    r_start.h   = 0.8;
-    r_start.tag = 'radiobutton_Start';
-    handles.(r_start.tag) = uicontrol(handles.uipanel_NameModulation,...
-        'Style','radiobutton',...
+    % Upper
+    for n = 1:size(nameList,2)
+        
+        p_nm.countO = p_nm.countO + 1;
+        r_name.(nameList{2,n}).x   = p_nm.xposO(p_nm.countO);
+        r_name.(nameList{2,n}).y   = 0.05 ;
+        r_name.(nameList{2,n}).w   = p_nm.Ow;
+        r_name.(nameList{2,n}).h   = 0.45;
+        r_name.(nameList{2,n}).tag = ['radiobutton_' ['radiobutton_' nameList{2,n}]];
+        handles.(r_name.(nameList{2,n}).tag) = uicontrol(handles.uipanel_NameModulation,...
+            'Style','radiobutton',...
+            'Units', 'Normalized',...
+            'Position',[r_name.(nameList{2,n}).x r_name.(nameList{2,n}).y r_name.(nameList{2,n}).w r_name.(nameList{2,n}).h],...
+            'String',nameList{2,n},...
+            'HorizontalAlignment','Center',...
+            'Tag',r_name.(nameList{2,n}).tag,...
+            'BackgroundColor',figureBGcolor);
+        
+    end
+    
+    p_nm.countO = 0;
+    
+    % Lower
+    for n = 1:size(nameList,2)
+        
+        p_nm.countO = p_nm.countO + 1;
+        r_name.(nameList{1,n}).x   = p_nm.xposO(p_nm.countO);
+        r_name.(nameList{1,n}).y   = 0.5 ;
+        r_name.(nameList{1,n}).w   = p_nm.Ow;
+        r_name.(nameList{1,n}).h   = 0.45;
+        r_name.(nameList{1,n}).tag = ['radiobutton_' nameList{1,n}];
+        handles.(r_name.(nameList{1,n}).tag) = uicontrol(handles.uipanel_NameModulation,...
+            'Style','radiobutton',...
+            'Units', 'Normalized',...
+            'Position',[r_name.(nameList{1,n}).x r_name.(nameList{1,n}).y r_name.(nameList{1,n}).w r_name.(nameList{1,n}).h],...
+            'String',nameList{1,n},...
+            'HorizontalAlignment','Center',...
+            'Tag',r_name.(nameList{1,n}).tag,...
+            'BackgroundColor',figureBGcolor);
+        
+    end
+    
+    
+    %% Panel : Session number
+    
+    % The first letter will be removed in the display and in the file name.
+    % But we still need a valid fieldname
+    sessionList = { 's' 's1' 's2' 's3' 's4' };
+    
+    p_sn.x = panelProp.xposP;
+    p_sn.w = panelProp.wP;
+    
+    panelProp.countP = panelProp.countP - 1;
+    p_sn.y = panelProp.yposP(panelProp.countP);
+    p_sn.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    
+    handles.uipanel_SessionNumber = uibuttongroup(handles.(mfilename),...
+        'Title','Session number',...
         'Units', 'Normalized',...
-        'Position',[r_start.x r_start.y r_start.w r_start.h],...
-        'String','Start',...
-        'HorizontalAlignment','Center',...
-        'Tag',r_start.tag,...
-        'BackgroundColor',figureBGcolor);
+        'Position',[p_sn.x p_sn.y p_sn.w p_sn.h],...
+        'BackgroundColor',figureBGcolor,...
+        'Visible','on');
+    
+    p_sn.nbO    = length(sessionList); % Number of objects
+    p_sn.Ow     = 1/(p_sn.nbO + 1); % Object width
+    p_sn.countO = 0; % Object counter
+    p_sn.xposO  = @(countO) p_sn.Ow/(p_sn.nbO+1)*countO + (countO-1)*p_sn.Ow;
     
     
     % ---------------------------------------------------------------------
-    % RadioButton : Pre
+    % RadioButton : all session number
     
-    p_nm.countO = p_nm.countO + 1;
-    r_pre.x   = p_nm.xposO(p_nm.countO);
-    r_pre.y   = 0.1 ;
-    r_pre.w   = p_nm.Ow;
-    r_pre.h   = 0.8;
-    r_pre.tag = 'radiobutton_Pre';
-    handles.(r_pre.tag) = uicontrol(handles.uipanel_NameModulation,...
-        'Style','radiobutton',...
-        'Units', 'Normalized',...
-        'Position',[r_pre.x r_pre.y r_pre.w r_pre.h],...
-        'String','Pre',...
-        'HorizontalAlignment','Center',...
-        'Tag',r_pre.tag,...
-        'BackgroundColor',figureBGcolor);
-    
-    
-    % ---------------------------------------------------------------------
-    % RadioButton : PrePost
-    
-    p_nm.countO = p_nm.countO + 1;
-    r_pre.x   = p_nm.xposO(p_nm.countO);
-    r_pre.y   = 0.1 ;
-    r_pre.w   = p_nm.Ow;
-    r_pre.h   = 0.8;
-    r_pre.tag = 'radiobutton_PrePost';
-    handles.(r_pre.tag) = uicontrol(handles.uipanel_NameModulation,...
-        'Style','radiobutton',...
-        'Units', 'Normalized',...
-        'Position',[r_pre.x r_pre.y r_pre.w r_pre.h],...
-        'String','PrePost',...
-        'HorizontalAlignment','Center',...
-        'Tag',r_pre.tag,...
-        'BackgroundColor',figureBGcolor);
-    
-    
-    % ---------------------------------------------------------------------
-    % RadioButton : Post
-    
-    p_nm.countO = p_nm.countO + 1;
-    r_post.x   = p_nm.xposO(p_nm.countO);
-    r_post.y   = 0.1 ;
-    r_post.w   = p_nm.Ow;
-    r_post.h   = 0.8;
-    r_post.tag = 'radiobutton_Post';
-    handles.(r_post.tag) = uicontrol(handles.uipanel_NameModulation,...
-        'Style','radiobutton',...
-        'Units', 'Normalized',...
-        'Position',[r_post.x r_post.y r_post.w r_post.h],...
-        'String','Post',...
-        'HorizontalAlignment','Center',...
-        'Tag',r_post.tag,...
-        'BackgroundColor',figureBGcolor);
-    
-    
-    % ---------------------------------------------------------------------
-    % RadioButton : End
-    
-    p_nm.countO = p_nm.countO + 1;
-    r_stop.x   = p_nm.xposO(p_nm.countO);
-    r_stop.y   = 0.1 ;
-    r_stop.w   = p_nm.Ow;
-    r_stop.h   = 0.8;
-    r_stop.tag = 'radiobutton_End';
-    handles.(r_stop.tag) = uicontrol(handles.uipanel_NameModulation,...
-        'Style','radiobutton',...
-        'Units', 'Normalized',...
-        'Position',[r_stop.x r_stop.y r_stop.w r_stop.h],...
-        'String','End',...
-        'HorizontalAlignment','Center',...
-        'Tag',r_stop.tag,...
-        'BackgroundColor',figureBGcolor);
+    for s = 1:size(sessionList,2)
+        
+        p_sn.countO = p_sn.countO + 1;
+        r_session.(sessionList{s}).x   = p_sn.xposO(p_sn.countO);
+        r_session.(sessionList{s}).y   = 0.1 ;
+        r_session.(sessionList{s}).w   = p_sn.Ow;
+        r_session.(sessionList{s}).h   = 0.85;
+        r_session.(sessionList{s}).tag = ['radiobutton_' sessionList{s}];
+        handles.(r_session.(sessionList{s}).tag) = uicontrol(handles.uipanel_SessionNumber,...
+            'Style','radiobutton',...
+            'Units', 'Normalized',...
+            'Position',[r_session.(sessionList{s}).x r_session.(sessionList{s}).y r_session.(sessionList{s}).w r_session.(sessionList{s}).h],...
+            'String',sessionList{s}(2:end),...
+            'HorizontalAlignment','Center',...
+            'Tag',r_session.(sessionList{s}).tag,...
+            'BackgroundColor',figureBGcolor);
+        
+    end
     
     
     %% Panel : Operation mode
@@ -878,21 +883,21 @@ sequence_str = get(hObject,'String');
 
 if length(sequence_str) ~= 5
     set(hObject,'String','')
-    error('Sequence must be 5 non consecutive numbers')
+    error('ComplexSequence must be 5 non consecutive numbers')
 end
 
 sequence_vect = (  cellstr(sequence_str')' );
 sequence_vect = cellfun(@str2double,sequence_vect);
 if any(sequence_vect > 5  |  sequence_vect < 2  |  round(sequence_vect) ~= sequence_vect)
     set(hObject,'String','')
-    error('Sequence must be numbers from 2 to 5 (positive integers)')
+    error('ComplexSequence must be numbers from 2 to 5 (positive integers)')
 end
 
 if any( diff(sequence_vect) == 0 )
     set(hObject,'String','')
-    error('Sequence not have two identical consecutive numbers')
+    error('ComplexSequence not have two identical consecutive numbers')
 end
 
-fprintf('Sequence OK : %s \n', sequence_str)
+fprintf('ComplexSequence OK : %s \n', sequence_str)
 
 end % function

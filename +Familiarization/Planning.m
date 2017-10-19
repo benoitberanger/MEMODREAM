@@ -10,14 +10,14 @@ RestDuration                   = 3; % secondes
 %% Backend setup
 
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
-    S.Sequence = '';
+    S.ComplexSequence = '';
 end
 
 Paradigme = { 'Rest' RestDuration [] }; % initilaise the container
 
 for n = 1:1
     
-    Paradigme  = [ Paradigme ; { 'Free' numberConsecutiveGoogSequences S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+    Paradigme  = [ Paradigme ; { 'Free' numberConsecutiveGoogSequences S.ComplexSequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     
 end
 

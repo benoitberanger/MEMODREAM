@@ -5,7 +5,7 @@ if nargout < 1 % only to plot the paradigme when we execute the function outside
     S.Task          = 'DualTask_Complex';
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
-    S.Sequence      = '';
+    S.ComplexSequence      = '';
 end
 
 
@@ -36,7 +36,7 @@ end
 switch S.Task
     case 'DualTask_Complex'
         Difficulty      = 'Complex';
-        SequenceFingers = S.Sequence;
+        SequenceFingers = S.ComplexSequence;
     case 'DualTask_Simple'
         Difficulty      = 'Simple';
         SequenceFingers = '5432';

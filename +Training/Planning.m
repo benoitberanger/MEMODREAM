@@ -4,7 +4,7 @@ global S
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     S.Environement   = 'MRI';
     S.OperationMode  = 'Acquisition';
-    S.Sequence       = '';
+    S.ComplexSequence       = '';
     S.NameModulation = 'Start';
 end
 
@@ -56,7 +56,7 @@ for b = 1:length(blocksOrder)
         case 0
             Paradigme  = [ Paradigme ; { 'Simple'  NrTaps '5432'     } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
         case 1
-            Paradigme  = [ Paradigme ; { 'Complex' NrTaps S.Sequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
+            Paradigme  = [ Paradigme ; { 'Complex' NrTaps S.ComplexSequence } ; { 'Rest' RestDuration [] } ]; %#ok<AGROW>
     end
     
 end

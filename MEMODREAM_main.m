@@ -107,31 +107,25 @@ S.OperationMode = OperationMode;
 
 %% Name modulation selection
 
-switch get(get(handles.uipanel_NameModulation,'SelectedObject'),'Tag')
-    case 'radiobutton_Start'
-        NameModulation = 'Start';
-    case 'radiobutton_Pre'
-        NameModulation = 'Pre';
-    case 'radiobutton_PrePost'
-        NameModulation = 'PrePost';
-    case 'radiobutton_Post'
-        NameModulation = 'Post';
-    case 'radiobutton_End'
-        NameModulation = 'End';
-    otherwise
-        warning('MEMODREAM:NameModulation','Error in Name Modulation')
-end
-
+NameModulation = get(get(handles.uipanel_NameModulation,'SelectedObject'),'Tag');
+NameModulation = NameModulation(13:end); % remove 'radiobutton_'
 S.NameModulation = NameModulation;
 
 
-%% Sequence
+%% Session name
 
-Sequence = get(handles.edit_Sequence,'String');
-if isempty(Sequence)
-    error('Sequence is empty')
+SessionNumber = get(get(handles.uipanel_SessionNumber,'SelectedObject'),'Tag');
+SessionNumber = SessionNumber(14:end); % remove 'radiobutton_'
+S.SessionNumber = SessionNumber;
+
+
+%% ComplexSequence
+
+ComplexSequence = get(handles.edit_Sequence,'String');
+if isempty(ComplexSequence)
+    error('ComplexSequence is empty')
 end
-S.Sequence = Sequence;
+S.ComplexSequence = ComplexSequence;
 
 
 %% Subject ID & Run number
@@ -144,31 +138,8 @@ end
 
 % Prepare path
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
-% DataPathNoRun = sprintf('%s_%s_%s_%s_', SubjectID, Task, Environement, NameModulation);
 
-% % Fetch content of the directory
-% dirContent = dir(DataPath);
-
-% % Is there file of the previous run ?
-% previousRun = nan(length(dirContent),1);
-% for f = 1 : length(dirContent)
-%     split = regexp(dirContent(f).name,DataPathNoRun,'split');
-%     if length(split) == 2 && str2double(split{2}(1)) % yes there is a file
-%         previousRun(f) = str2double(split{2}(1)); % save the previous run numbers
-%     else % no file found
-%         previousRun(f) = 0; % affect zero
-%     end
-% end
-
-% LastRunNumber = max(previousRun);
-% % If no previous run, LastRunNumber is 0
-% if isempty(LastRunNumber)
-%     LastRunNumber = 0;
-% end
-% RunNumber = num2str(LastRunNumber + 1);
-
-% DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, RunNumber );
-DataFile = sprintf('%s%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation );
+DataFile = sprintf('%s%s_%s_%s_%s_%s_%s', DataPath, S.TimeStampFile, SubjectID, Task, Environement, NameModulation, SessionNumber );
 
 S.SubjectID = SubjectID;
 % S.RunNumber = RunNumber;
@@ -344,7 +315,7 @@ end
 
 set(handles.text_LastFileNameAnnouncer,'Visible','on')
 set(handles.text_LastFileName,         'Visible','on')
-set(handles.text_LastFileName,'String',DataFile(length(DataPath)+1:end))
+set(handles.text_LastFileName,'String' ,DataFile(length(DataPath)+1:end))
 
 printResults(S.TaskData.ER)
 
