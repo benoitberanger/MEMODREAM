@@ -180,14 +180,16 @@ switch get( handles.checkbox_ParPort , 'Value' )
     
     case 1
         ParPort = 'On';
-        S.ParPortMessages = Common.PrepareParPort;
+        
         
     case 0
         ParPort = 'Off';
+        
 end
 
-handles.ParPort    = ParPort;
-S.ParPort = ParPort;
+S.ParPort         = ParPort;
+S.ParPortMessages = Common.PrepareParPort; % wrapper
+
 
 
 %% Left or right handed ?

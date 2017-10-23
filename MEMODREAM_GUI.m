@@ -644,8 +644,8 @@ else % Create the figure
     %% Panel : Name modulation
     
     nameList = {
-        'Start' 'Pre' 'PreE' 'PreI' 'PreEPostI'
-        'PreIPostE' 'Post' 'PostE' 'PostI' 'End'
+        'Start' 'Pre' 'PreE' 'PreI' 'PostEPreI'
+        'PostIPreE' 'Post' 'PostE' 'PostI' 'End'
         };
     
     p_nm.x = panelProp.xposP;
