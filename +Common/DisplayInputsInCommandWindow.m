@@ -70,7 +70,7 @@ while condition
     % New value
     if ~isempty(new_input) && isscalar(new_input)
         
-%         Common.SendParPortMessage(['finger_' new_input]); % Parallel port
+        %         Common.SendParPortMessage(['finger_' new_input]); % Parallel port
         
         if new_input == str2double(next_input)
             fprintf('%d\n',new_input)
@@ -90,6 +90,7 @@ while condition
         
     end
     
+    
     if wakeup
         if lastWakeup + wakeupTime < secs
             
@@ -104,21 +105,21 @@ while condition
                     Common.SendParPortMessage('WakeUp'); % Parallel port
                     lastWakeup = onset;
                     
-                        % Recall of block's instructions
-                        switch EP.Data{evt,1}
-                            case 'Simple'
-                                tag = 'SimpleSimple';
-                            case 'Complex'
-                                tag = 'ComplexComplex';
-                        end
-                        onset = audioObj.(tag).Playback();
-                        Common.SendParPortMessage(tag); % Parallel port
-                        RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
-                   
+                    % Recall of block's instructions
+                    switch EP.Data{evt,1}
+                        case 'Simple'
+                            tag = 'SimpleSimple';
+                        case 'Complex'
+                            tag = 'ComplexComplex';
+                    end
+                    onset = audioObj.(tag).Playback();
+                    Common.SendParPortMessage(tag); % Parallel port
+                    RR.AddEvent({'Recall' onset-StartTime [] [tag '.wav']});
+                    
                     
                 otherwise
                     
-                    % if participant doesn't tap at all, we assume he didn't hear the instructions => rooster sound + instructions; 
+                    % if participant doesn't tap at all, we assume he didn't hear the instructions => rooster sound + instructions;
                     % if participant tapped in the past but stopped tapping withtin the bloxk, we assumed he fell asleep => we wake him up during training (we need these data) but not during the tests
                     if tap == 0
                         
@@ -150,10 +151,22 @@ while condition
     
     % Escape ?
     if keyIsDown
+        
+        if keyCode(S.Parameters.Keybinds.WakeUp) && secs-lastWakeup>1 % to avoid sendeing a wakeup signal two times in a row
+            
+            % Wakeup
+            onset = audioObj.rooster.Playback();
+            Common.SendParPortMessage('WakeUp'); % Parallel port
+            RR.AddEvent({'Wakeup' onset-StartTime [] 'rooster.wav'});
+            lastWakeup = onset;
+            
+        end
+        
         [ Exit_flag, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
         if Exit_flag
             return
         end
+        
     end
     
     % Refresh condition

@@ -50,6 +50,8 @@ Parameters.Keybinds.TTL_t_ASCII          = KbName('t'); % MRI trigger has to be 
 % Parameters.Keybinds.emulTTL_s_ASCII      = KbName('s');
 Parameters.Keybinds.Stop_Escape_ASCII    = KbName('ESCAPE');
 
+Parameters.Keybinds.WakeUp               = KbName('w');
+
 switch S.OperationMode
     
     case 'Acquisition'
